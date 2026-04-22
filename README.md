@@ -81,31 +81,18 @@ podman --version
 
 ---
 
-### 2. Install Docker Compose (sebagai provider `podman compose`)
+### 2. Verifikasi `podman compose`
 
-Podman menggunakan Docker Compose sebagai compose provider eksternal.
+**Podman Desktop sudah menyertakan `podman compose` secara built-in** — tidak perlu menginstall Docker Compose secara terpisah.
 
-#### Windows
-
-```powershell
-# Cek apakah sudah tersedia
-docker-compose --version
-
-# Jika belum, install via winget:
-winget install Docker.DockerDesktop
-# Atau download manual dari: https://github.com/docker/compose/releases
-```
-
-#### macOS / Linux
+Setelah Podman Desktop terinstall, verifikasi langsung di terminal:
 
 ```bash
-# Install via package manager
-brew install docker-compose          # macOS
-sudo apt-get install docker-compose  # Ubuntu/Debian
-
-# Verifikasi
 podman compose --version
+# Output: podman compose version x.x.x
 ```
+
+Jika perintah di atas tidak ditemukan, pastikan Podman Desktop sudah berjalan (ikon muncul di system tray), lalu coba buka ulang terminal.
 
 ---
 
