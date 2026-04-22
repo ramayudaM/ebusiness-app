@@ -1,0 +1,28 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Laravel
+.env
+vendor/
+storage/logs/
+storage/app/public/
+bootstrap/cache/
+public/build/
+public/hot
+public/storage
+
+# Node / Vite
+node_modules/
+.env.local
+
+# Podman / Container
+.podman/
+
+# General
+*.log
