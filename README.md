@@ -364,6 +364,10 @@ Lalu restart Vite dev server:
 ```bash
 # Ctrl+C untuk stop, lalu:
 podman exec nadakita-app npm run dev
+podman exec -it nadakita-app npm run dev
+
+# Untuk Menghentikan Proses di Background
+podman exec nadakita-app sh -c "pkill -f vite"
 ```
 
 ### Port sudah dipakai (EADDRINUSE)
