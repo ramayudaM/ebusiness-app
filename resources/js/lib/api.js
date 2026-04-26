@@ -1,36 +1,36 @@
 import axios from 'axios'
 
-export const api = axios.create({
-  baseURL: '/api/v1',      // Relative URL — tidak perlu VITE_API_URL karena monolith
-  withCredentials: true,   // Wajib untuk Sanctum cookie-based auth
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1',
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest',
+    Accept: 'application/json',
   },
+  withCredentials: true, // PENTING: untuk Sanctum cookie-based auth
 })
 
-// Interceptor request: tambahkan CSRF token dari meta tag
+// Request interceptor: otomatis tambahkan Bearer token ke setiap request
 api.interceptors.request.use((config) => {
-  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
-  if (csrfToken) {
-    config.headers['X-CSRF-TOKEN'] = csrfToken
-  }
-  const token = localStorage.getItem('nadakita_token')
+  const token = localStorage.getItem('auth_token')
   if (token) {
-    config.headers.Authorization = 'Bearer ' + token
+    config.headers.Authorization = `Bearer ${token}`
   }
   return config
 })
 
-// Interceptor response: handle 401 Unauthorized → redirect ke login
+// Response interceptor: tangani error 401 secara global
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('nadakita_token')
+    if (error.response?.status === 401) {
+      // Token tidak valid atau expired, hapus data auth
+      localStorage.removeItem('auth_token')
+      localStorage.removeItem('auth-storage')
+      // Redirect ke halaman login
       window.location.href = '/login'
     }
     return Promise.reject(error)
   }
 )
+
+export default api

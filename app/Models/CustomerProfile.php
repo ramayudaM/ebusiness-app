@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class CustomerProfile extends Model
 {
@@ -14,11 +13,14 @@ class CustomerProfile extends Model
         'city',
         'province',
         'postal_code',
-        'avatar_url',
     ];
 
-    public function user(): BelongsTo
+    /**
+     * Relasi ke User (belongsTo).
+     */
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 }
+

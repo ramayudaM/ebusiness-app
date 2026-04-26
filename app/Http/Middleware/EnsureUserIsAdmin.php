@@ -8,17 +8,25 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsAdmin
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->user() || ! $request->user()->hasRole('admin')) {
-            abort(403, 'Unauthorized action.');
+        if (! $request->user()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated. Silakan login terlebih dahulu.',
+                'code'    => 'UNAUTHENTICATED',
+            ], 401);
+        }
+
+        if (! $request->user()->isAdmin()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Forbidden. Halaman ini hanya untuk Admin.',
+                'code'    => 'FORBIDDEN',
+            ], 403);
         }
 
         return $next($request);
     }
 }
+
