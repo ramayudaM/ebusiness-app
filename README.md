@@ -6,7 +6,7 @@ pembayaran via Midtrans, dan kalkulasi ongkir via RajaOngkir.
 ## Tech Stack
 
 | Layer     | Teknologi                                |
-|-----------|------------------------------------------|
+| --------- | ---------------------------------------- |
 | Frontend  | React 18 + Vite 6 + TailwindCSS          |
 | Backend   | Laravel 11 + PHP 8.3                     |
 | Database  | PostgreSQL 15                            |
@@ -38,7 +38,7 @@ Yang wajib diinstall di host:
 - **Podman** ≥ 4.x
 - **Docker Compose** (sebagai provider untuk `podman compose`)
 - **Git** ≥ 2.x
-- **Node.js** ≥ 20.x + **npm** ≥ 10.x *(dipakai untuk scaffold awal saja)*
+- **Node.js** ≥ 20.x + **npm** ≥ 10.x _(dipakai untuk scaffold awal saja)_
 
 ---
 
@@ -171,6 +171,12 @@ RAJAONGKIR_ORIGIN_CITY_ID=<id_kota_asal>
 ```bash
 podman compose build
 podman compose up -d
+
+# Untuk mematikan kontainer tanpa menghapus data sementara (rekomendasi)
+podman compose stop
+
+# Untuk mematikan dan menghapus kontainer secara permanen
+podman compose down
 ```
 
 Tunggu hingga semua container berstatus `running`.
@@ -189,9 +195,15 @@ xxxxxxxxxxxx  nadakita-app-app:latest php-fpm     Up              nadakita-app
 xxxxxxxxxxxx  nginx:alpine            nginx ...   Up              nadakita-nginx
 ```
 
-### Langkah 4 — Inisialisasi Laravel (hanya pertama kali)
+### Langkah 4 — Inisialisasi Dependensi dan Laravel (hanya pertama kali)
 
 ```bash
+# Instal dependensi PHP
+podman exec nadakita-app composer install
+
+# Instal dependensi JavaScript
+podman exec nadakita-app npm install
+
 # Generate application key
 podman exec nadakita-app php artisan key:generate
 
@@ -202,12 +214,16 @@ podman exec nadakita-app php artisan migrate --seed
 podman exec nadakita-app php artisan storage:link
 ```
 
-### Langkah 5 — Jalankan Vite Dev Server
+### Langkah 5 — Jalankan Vite Dev Server (Hot Reload)
 
 Buka terminal baru (biarkan container tetap berjalan di terminal sebelumnya):
 
 ```bash
-podman exec nadakita-app npm run dev
+# Menjalankan Vite untuk development (HMR aktif)
+podman exec -it nadakita-app npm run dev
+
+# Jalankan ini jika ingin melakukan build untuk produksi (statis)
+podman exec nadakita-app npm run build
 ```
 
 Output yang diharapkan:
@@ -225,15 +241,35 @@ VITE v6.x.x  ready in xxx ms
 
 ### Langkah 6 — Buka di Browser
 
-| URL                         | Keterangan                          |
-|-----------------------------|-------------------------------------|
-| http://localhost:8000       | Aplikasi utama (React via Nginx)    |
-| http://localhost:8000/catalog | Halaman katalog (React Router)    |
-| http://localhost:8000/admin | Panel admin                         |
-| http://localhost:5432       | PostgreSQL (untuk tools seperti TablePlus) |
+| URL                           | Keterangan                                 |
+| ----------------------------- | ------------------------------------------ |
+| http://localhost:8000         | Aplikasi utama (React via Nginx)           |
+| http://localhost:8000/catalog | Halaman katalog (React Router)             |
+| http://localhost:8000/admin   | Panel admin                                |
+| http://localhost:5432         | PostgreSQL (untuk tools seperti TablePlus) |
 
-> **Penting:** Akses aplikasi melalui **port 8000**, bukan 5173.
-> Port 5173 hanya dipakai untuk Vite HMR (Hot Module Replacement).
+---
+
+## Pengembangan dengan VS Code (Penting)
+
+Karena seluruh dependensi (PHP, Laravel, Vendor) berada di dalam container, VS Code yang berjalan di Windows secara default tidak akan mengenali kode Laravel (muncul error _Undefined type_).
+
+**Sangat Direkomendasikan** untuk membuka project ini menggunakan extension **Dev Containers**.
+
+### Mengapa Menggunakan Dev Containers?
+
+- **Autocomplete Sempurna:** VS Code akan membaca folder `vendor` dari dalam container.
+- **Bebas Error Visual:** Garis merah _Undefined type_ pada class Laravel akan hilang.
+- **Environment Identik:** Editor menggunakan environment PHP yang sama dengan yang menjalankan aplikasi.
+
+### Cara Menyiapkan:
+
+1.  Install extension **"Dev Containers"** resmi dari Microsoft di VS Code.
+2.  Buka **Settings** (Ctrl + ,), cari `dev.containers.dockerPath`, dan ubah nilainya menjadi `podman`.
+3.  Pastikan container `nadakita-app` sedang berjalan (`podman compose up -d`).
+4.  Klik ikon hijau **"><"** di pojok kiri bawah VS Code.
+5.  Pilih **Attach to Running Container** lalu pilih **nadakita-app**.
+6.  Setelah jendela baru terbuka, pilih menu **File > Open Folder** dan ketik path: `/var/www/html`.
 
 ---
 
@@ -368,6 +404,7 @@ podman exec -it nadakita-app npm run dev
 
 # Untuk Menghentikan Proses di Background
 podman exec nadakita-app sh -c "pkill -f vite"
+podman exec nadakita-app pkill -f vite
 ```
 
 ### Port sudah dipakai (EADDRINUSE)
@@ -393,29 +430,29 @@ podman exec nadakita-app php artisan migrate:fresh --seed
 
 ## Environment Variables
 
-| Variable                    | Keterangan                                   | Contoh Nilai                     |
-|-----------------------------|----------------------------------------------|----------------------------------|
-| `APP_KEY`                   | Application key Laravel (auto-generated)     | `base64:xxx...`                  |
-| `DB_HOST`                   | Host database — **harus** `db`               | `db`                             |
-| `DB_DATABASE`               | Nama database                                | `nadakita_db`                    |
-| `DB_USERNAME`               | Username PostgreSQL                          | `nadakita`                       |
-| `DB_PASSWORD`               | Password PostgreSQL                          | `secret`                         |
-| `MAIL_USERNAME`             | Username Mailtrap (untuk sandbox email)      | `xxxxxxxxxxxxxxxx`               |
-| `MAIL_PASSWORD`             | Password Mailtrap                            | `xxxxxxxxxxxxxxxx`               |
-| `MIDTRANS_SERVER_KEY`       | Server Key dari dashboard Midtrans sandbox   | `SB-Mid-server-xxx`              |
-| `MIDTRANS_CLIENT_KEY`       | Client Key dari dashboard Midtrans sandbox   | `SB-Mid-client-xxx`              |
-| `MIDTRANS_IS_PRODUCTION`    | `false` untuk sandbox, `true` untuk produksi | `false`                          |
-| `RAJAONGKIR_API_KEY`        | API Key dari RajaOngkir                      | `xxxxxxxxxxxxxxxx`               |
-| `RAJAONGKIR_ORIGIN_CITY_ID` | ID kota asal toko di RajaOngkir              | `501` (Jakarta)                  |
-| `SENTRY_LARAVEL_DSN`        | DSN untuk error monitoring (opsional)        | `https://xxx@sentry.io/xxx`      |
+| Variable                    | Keterangan                                   | Contoh Nilai                |
+| --------------------------- | -------------------------------------------- | --------------------------- |
+| `APP_KEY`                   | Application key Laravel (auto-generated)     | `base64:xxx...`             |
+| `DB_HOST`                   | Host database — **harus** `db`               | `db`                        |
+| `DB_DATABASE`               | Nama database                                | `nadakita_db`               |
+| `DB_USERNAME`               | Username PostgreSQL                          | `nadakita`                  |
+| `DB_PASSWORD`               | Password PostgreSQL                          | `secret`                    |
+| `MAIL_USERNAME`             | Username Mailtrap (untuk sandbox email)      | `xxxxxxxxxxxxxxxx`          |
+| `MAIL_PASSWORD`             | Password Mailtrap                            | `xxxxxxxxxxxxxxxx`          |
+| `MIDTRANS_SERVER_KEY`       | Server Key dari dashboard Midtrans sandbox   | `SB-Mid-server-xxx`         |
+| `MIDTRANS_CLIENT_KEY`       | Client Key dari dashboard Midtrans sandbox   | `SB-Mid-client-xxx`         |
+| `MIDTRANS_IS_PRODUCTION`    | `false` untuk sandbox, `true` untuk produksi | `false`                     |
+| `RAJAONGKIR_API_KEY`        | API Key dari RajaOngkir                      | `xxxxxxxxxxxxxxxx`          |
+| `RAJAONGKIR_ORIGIN_CITY_ID` | ID kota asal toko di RajaOngkir              | `501` (Jakarta)             |
+| `SENTRY_LARAVEL_DSN`        | DSN untuk error monitoring (opsional)        | `https://xxx@sentry.io/xxx` |
 
 ---
 
 ## Layanan Eksternal yang Dibutuhkan
 
-| Layanan    | URL Pendaftaran                             | Tier Gratis |
-|------------|---------------------------------------------|-------------|
-| Mailtrap   | https://mailtrap.io                         | ✅ Ya       |
-| Midtrans   | https://dashboard.sandbox.midtrans.com      | ✅ Sandbox  |
-| RajaOngkir | https://rajaongkir.com                      | ✅ Starter  |
-| Sentry     | https://sentry.io                           | ✅ Ya       |
+| Layanan    | URL Pendaftaran                        | Tier Gratis |
+| ---------- | -------------------------------------- | ----------- |
+| Mailtrap   | https://mailtrap.io                    | ✅ Ya       |
+| Midtrans   | https://dashboard.sandbox.midtrans.com | ✅ Sandbox  |
+| RajaOngkir | https://rajaongkir.com                 | ✅ Starter  |
+| Sentry     | https://sentry.io                      | ✅ Ya       |
