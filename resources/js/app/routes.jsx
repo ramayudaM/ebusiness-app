@@ -1,8 +1,11 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from '../features/auth/LoginPage'
 import RegisterPage from '../features/auth/RegisterPage'
 import GuestRoute from '../shared/components/GuestRoute'
 import ProtectedRoute from '../shared/components/ProtectedRoute'
+import AdminLoginPage from '../features/admin/auth/AdminLoginPage'
+import AdminRoute from '../shared/components/AdminRoute'
+import AdminGuestRoute from '../shared/components/AdminGuestRoute'
 
 export function AppRoutes() {
   return (
@@ -57,13 +60,24 @@ export function AppRoutes() {
         }
       />
 
+      {/* Admin Auth Routes */}
+      <Route
+        path="/admin/login"
+        element={
+          <AdminGuestRoute>
+            <AdminLoginPage />
+          </AdminGuestRoute>
+        }
+      />
+      <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
+
       {/* Protected Admin Routes */}
       <Route
-        path="/admin"
+        path="/admin/dashboard"
         element={
-          <ProtectedRoute requiredRole="ADMIN">
-            <div>Admin Dashboard</div>
-          </ProtectedRoute>
+          <AdminRoute>
+            <div className="text-white p-8">Admin Dashboard — Coming Soon</div>
+          </AdminRoute>
         }
       />
       <Route

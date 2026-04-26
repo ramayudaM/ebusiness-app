@@ -11,10 +11,15 @@ const api = axios.create({
 
 // Request interceptor: otomatis tambahkan Bearer token ke setiap request
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('auth_token')
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`
+  const adminToken = localStorage.getItem('admin_token')
+  const authToken = localStorage.getItem('auth_token')
+  
+  if (window.location.pathname.startsWith('/admin')) {
+    if (adminToken) config.headers.Authorization = `Bearer ${adminToken}`
+  } else {
+    if (authToken) config.headers.Authorization = `Bearer ${authToken}`
   }
+  
   return config
 })
 
@@ -23,11 +28,15 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token tidak valid atau expired, hapus data auth
-      localStorage.removeItem('auth_token')
-      localStorage.removeItem('auth-storage')
-      // Redirect ke halaman login
-      window.location.href = '/login'
+      if (window.location.pathname.startsWith('/admin')) {
+        localStorage.removeItem('admin_token')
+        localStorage.removeItem('admin-auth-storage')
+        window.location.href = '/admin/login'
+      } else {
+        localStorage.removeItem('auth_token')
+        localStorage.removeItem('auth-storage')
+        window.location.href = '/login'
+      }
     }
     return Promise.reject(error)
   }

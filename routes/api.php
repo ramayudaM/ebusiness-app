@@ -28,6 +28,21 @@ Route::prefix('v1')->group(function () {
     });
 
     // ===================================================================
+    // ADMIN AUTH ROUTES
+    // ===================================================================
+    Route::prefix('admin')->group(function () {
+        Route::post('/auth/login', [
+            \App\Http\Controllers\Api\V1\Admin\AdminAuthController::class, 'login'
+        ])->name('admin.auth.login');
+
+        Route::middleware(['auth:sanctum'])->group(function () {
+            Route::post('/auth/logout', [
+                \App\Http\Controllers\Api\V1\Admin\AdminAuthController::class, 'logout'
+            ])->name('admin.auth.logout');
+        });
+    });
+
+    // ===================================================================
     // PROTECTED ROUTES — Membutuhkan Bearer token
     // ===================================================================
     Route::middleware(['auth:sanctum'])->group(function () {
