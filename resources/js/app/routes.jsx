@@ -6,13 +6,21 @@ import ProtectedRoute from '../shared/components/ProtectedRoute'
 import AdminLoginPage from '../features/admin/auth/AdminLoginPage'
 import AdminRoute from '../shared/components/AdminRoute'
 import AdminGuestRoute from '../shared/components/AdminGuestRoute'
+import AdminDashboardPage from '../features/admin/dashboard/AdminDashboardPage'
+import AdminProductsPage from '../features/admin/products/AdminProductsPage'
+import AdminOrdersPage from '../features/admin/orders/AdminOrdersPage'
+import AdminCustomersPage from '../features/admin/customers/AdminCustomersPage'
+import AdminReportsPage from '../features/admin/reports/AdminReportsPage'
 
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<div>NadaKita — Coming Soon</div>} />
+      <Route path="/admin/dashboard" element={<AdminDashboardPage />} /> 
       <Route path="/catalog" element={<div>Catalog Page</div>} />
-      <Route path="/product/:slug" element={<div>Product Detail Page</div>} />
+      <Route path="/admin/products" element={<AdminProductsPage />} />
+      <Route path="/admin/orders" element={<AdminOrdersPage />} />
+      <Route path="/admin/customers" element={<AdminCustomersPage />} />
+      <Route path="/admin/reports" element={<AdminReportsPage />} />
 
       {/* Auth Routes */}
       <Route
