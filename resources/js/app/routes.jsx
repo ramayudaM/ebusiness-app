@@ -1,4 +1,5 @@
 import { HomePage } from '../features/home/pages/HomePage';
+import { ExplorePage } from '../features/explore/pages/ExplorePage';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from '../features/auth/LoginPage'
 import RegisterPage from '../features/auth/RegisterPage'
@@ -12,7 +13,8 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
-      <Route path="/catalog" element={<div>Catalog Page</div>} />
+      <Route path="/explore" element={<ExplorePage />} />
+      <Route path="/catalog" element={<Navigate to="/explore" replace />} />
       <Route path="/product/:slug" element={<div>Product Detail Page</div>} />
 
       {/* Auth Routes */}
