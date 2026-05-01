@@ -5,3 +5,5 @@ export const FALLBACK_PRODUCT = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.
 export const FALLBACK_CATEGORY = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='24' fill='%239ca3af'%3E🎸%3C/text%3E%3C/svg%3E";
 
 export const FALLBACK_AVATAR = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23e5e7eb'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='32' fill='%239ca3af'%3E👤%3C/text%3E%3C/svg%3E";
+
+export const FALLBACK_MEDIA = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='450' viewBox='0 0 800 450'%3E%3Crect width='800' height='450' fill='%23e5e7eb'/%3E%3Cpath d='M400 225 l -30 -20 v 40 z' fill='%236b7280'/%3E%3Ccircle cx='400' cy='225' r='50' fill='none' stroke='%236b7280' stroke-width='4'/%3E%3C/svg%3E";

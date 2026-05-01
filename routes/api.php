@@ -15,6 +15,13 @@ Route::prefix('v1')->group(function () {
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     // ===================================================================
+    // PUBLIC CATALOG ROUTES — Tidak perlu login
+    // ===================================================================
+    Route::get('/categories', [\App\Http\Controllers\Api\V1\Public\CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/products', [\App\Http\Controllers\Api\V1\Public\ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/{slug}', [\App\Http\Controllers\Api\V1\Public\ProductController::class, 'show'])->name('products.show');
+
+    // ===================================================================
     // AUTH ROUTES — Tidak perlu login
     // ===================================================================
     Route::prefix('auth')->group(function () {
