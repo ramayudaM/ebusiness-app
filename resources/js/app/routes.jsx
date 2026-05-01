@@ -1,3 +1,4 @@
+import { HomePage } from '../features/home/pages/HomePage';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from '../features/auth/LoginPage'
 import RegisterPage from '../features/auth/RegisterPage'
@@ -10,7 +11,7 @@ import AdminGuestRoute from '../shared/components/AdminGuestRoute'
 export function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<div>NadaKita — Coming Soon</div>} />
+      <Route path="/" element={<HomePage />} />
       <Route path="/catalog" element={<div>Catalog Page</div>} />
       <Route path="/product/:slug" element={<div>Product Detail Page</div>} />
 

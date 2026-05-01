@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
+    // HOMEPAGE
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
     // ===================================================================
     // AUTH ROUTES — Tidak perlu login
