@@ -6,16 +6,19 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     container_name: nadakita-app
+    user: root
     restart: unless-stopped
     volumes:
       - .:/var/www/html
       - /var/www/html/node_modules
       - /var/www/html/vendor
+      - nadakita-cache:/var/www/html/bootstrap/cache
     ports:
       - "9000:9000"
       - "5173:5173"
     environment:
       - PHP_OPCACHE_ENABLE=0
+      - COMPOSER_ALLOW_SUPERUSER=1
     depends_on:
       db:
         condition: service_healthy
@@ -56,8 +59,23 @@ services:
     networks:
       - nadakita-network
 
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: nadakita-pgadmin
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@nadakita.id
+      PGADMIN_DEFAULT_PASSWORD: secret
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - nadakita-network
+
 volumes:
   nadakita-pgdata:
+  nadakita-cache:
 
 networks:
   nadakita-network:

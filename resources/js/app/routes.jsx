@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import HomePage from '../features/Guest/HomePage'
 import LoginPage from '../features/auth/LoginPage'
 import RegisterPage from '../features/auth/RegisterPage'
 import GuestRoute from '../shared/components/GuestRoute'
@@ -16,6 +17,7 @@ export function AppRoutes() {
   return (
     <Routes>
       <Route path="/admin/dashboard" element={<AdminDashboardPage />} /> 
+      <Route path="/" element={<HomePage />} />
       <Route path="/catalog" element={<div>Catalog Page</div>} />
       <Route path="/admin/products" element={<AdminProductsPage />} />
       <Route path="/admin/orders" element={<AdminOrdersPage />} />

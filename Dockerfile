@@ -33,18 +33,12 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy project files
 COPY . .
-
-# Install Composer dependencies
-RUN composer install --no-dev --optimize-autoloader
-
-# Install Node dependencies and build assets
-RUN npm ci && npm run build
-
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage \
-    && chown -R www-data:www-data /var/www/html/bootstrap/cache
+RUN mkdir -p bootstrap/cache storage/logs storage/framework/sessions storage/framework/views storage/framework/cache \
+    && chmod -R 775 bootstrap/cache storage \
+    && git config --global --add safe.directory /var/www/html \
+    && composer install --no-dev --optimize-autoloader --no-scripts \
+    && chown -R www-data:www-data bootstrap/cache storage
 
 EXPOSE 9000
 CMD ["php-fpm"]
