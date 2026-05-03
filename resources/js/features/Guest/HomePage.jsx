@@ -83,7 +83,10 @@ export default function HomePage() {
           <div className="flex items-center gap-3">
             {user ? (
               <>
-                <Link to="/account/orders" className="text-sm text-gray-700 hover:text-orange-500">
+                <Link to="/customer/profile" className="text-sm text-gray-700 hover:text-orange-500">
+                  Akun Saya
+                </Link>
+                <Link to="/customer/orders" className="text-sm text-gray-700 hover:text-orange-500">
                   Pesanan
                 </Link>
                 <Link to="/cart" className="relative text-gray-700 hover:text-orange-500">

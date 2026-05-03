@@ -2,6 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import HomePage from '../features/Guest/HomePage'
 import LoginPage from '../features/auth/LoginPage'
 import RegisterPage from '../features/auth/RegisterPage'
+import CustomerProfilePage from '../features/customer/CustomerProfilePage'
 import GuestRoute from '../shared/components/GuestRoute'
 import ProtectedRoute from '../shared/components/ProtectedRoute'
 import AdminLoginPage from '../features/admin/auth/AdminLoginPage'
@@ -45,10 +46,34 @@ export function AppRoutes() {
 
       {/* Protected Customer Routes */}
       <Route
-        path="/checkout"
+        path="/customer/profile"
         element={
           <ProtectedRoute>
-            <div>Checkout Page</div>
+            <CustomerProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customer/orders"
+        element={
+          <ProtectedRoute>
+            <div>Customer Orders Page</div>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customer/wishlist"
+        element={
+          <ProtectedRoute>
+            <div>Customer Wishlist Page</div>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/customer/change-password"
+        element={
+          <ProtectedRoute>
+            <div>Change Password Page</div>
           </ProtectedRoute>
         }
       />
@@ -57,14 +82,6 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <div>Order History</div>
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/account/wishlist"
-        element={
-          <ProtectedRoute>
-            <div>Wishlist</div>
           </ProtectedRoute>
         }
       />
