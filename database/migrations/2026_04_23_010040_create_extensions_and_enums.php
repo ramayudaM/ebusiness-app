@@ -13,11 +13,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Skip untuk SQLite, hanya untuk PostgreSQL
-        if (DB::connection()->getDriverName() !== 'pgsql') {
-            return;
-        }
-        
         DB::statement('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
         DB::statement('CREATE EXTENSION IF NOT EXISTS "pg_trgm"');
 
