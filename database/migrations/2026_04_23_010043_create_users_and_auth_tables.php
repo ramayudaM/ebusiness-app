@@ -4,80 +4,44 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Support\Facades\DB;
-
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        DB::statement("
-            CREATE TABLE IF NOT EXISTS users (
-                id              BIGSERIAL PRIMARY KEY,
-                name            VARCHAR(255) NOT NULL,
-                email           VARCHAR(255) NOT NULL UNIQUE,
-                email_verified_at TIMESTAMPTZ DEFAULT NULL,
-                password        VARCHAR(255) NOT NULL,
-                role            user_role NOT NULL DEFAULT 'customer',
-                remember_token  VARCHAR(100) DEFAULT NULL,
-                created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                deleted_at      TIMESTAMPTZ DEFAULT NULL
-            )
-        ");
-        DB::statement('CREATE INDEX IF NOT EXISTS idx_users_email ON users (email)');
-        DB::statement('CREATE INDEX IF NOT EXISTS idx_users_role ON users (role)');
-        DB::statement('CREATE INDEX IF NOT EXISTS idx_users_deleted_at ON users (deleted_at) WHERE deleted_at IS NULL');
+        Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->string('role')->default('customer'); // 'admin' or 'customer'
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
+            $table->rememberToken();
+            $table->timestamps();
+            $table->softDeletes();
+        });
 
-        DB::statement("
-            CREATE TABLE IF NOT EXISTS personal_access_tokens (
-                id              BIGSERIAL PRIMARY KEY,
-                tokenable_type  VARCHAR(255) NOT NULL,
-                tokenable_id    BIGINT NOT NULL,
-                name            VARCHAR(255) NOT NULL,
-                token           VARCHAR(64) NOT NULL UNIQUE,
-                abilities       TEXT DEFAULT NULL,
-                last_used_at    TIMESTAMPTZ DEFAULT NULL,
-                expires_at      TIMESTAMPTZ DEFAULT NULL,
-                created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
-            )
-        ");
-        DB::statement('CREATE INDEX IF NOT EXISTS idx_tokens_tokenable ON personal_access_tokens (tokenable_type, tokenable_id)');
-        DB::statement('CREATE INDEX IF NOT EXISTS idx_tokens_token ON personal_access_tokens (token)');
+        Schema::create('password_reset_tokens', function (Blueprint $table) {
+            $table->string('email')->primary();
+            $table->string('token');
+            $table->timestamp('created_at')->nullable();
+        });
 
-        DB::statement("
-            CREATE TABLE IF NOT EXISTS sessions (
-                id              VARCHAR(255) PRIMARY KEY,
-                user_id         BIGINT REFERENCES users(id) ON DELETE CASCADE,
-                ip_address      VARCHAR(45),
-                user_agent      TEXT,
-                payload         TEXT NOT NULL,
-                last_activity   INTEGER NOT NULL
-            )
-        ");
-        DB::statement('CREATE INDEX IF NOT EXISTS idx_sessions_user_id ON sessions (user_id)');
-        DB::statement('CREATE INDEX IF NOT EXISTS idx_sessions_last_activity ON sessions (last_activity)');
-
-        DB::statement("
-            CREATE TABLE IF NOT EXISTS password_reset_tokens (
-                email       VARCHAR(255) PRIMARY KEY,
-                token       VARCHAR(255) NOT NULL,
-                created_at  TIMESTAMPTZ
-            )
-        ");
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->string('id')->primary();
+            $table->foreignId('user_id')->nullable()->index();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->integer('last_activity')->index();
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        DB::statement('DROP TABLE IF EXISTS password_reset_tokens');
-        DB::statement('DROP TABLE IF EXISTS sessions');
-        DB::statement('DROP TABLE IF EXISTS personal_access_tokens');
-        DB::statement('DROP TABLE IF EXISTS users CASCADE');
+        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };
