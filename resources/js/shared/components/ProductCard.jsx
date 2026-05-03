@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { ShoppingCart } from 'lucide-react';
 import { FALLBACK_PRODUCT } from '@/shared/utils/placeholders';
+import { ImageFallback } from '@/shared/components/ImageFallback';
 
 export const formatRupiah = (price) => {
     if (price === null || price === undefined) return '';
@@ -14,20 +16,24 @@ export const formatRupiah = (price) => {
 };
 
 export const ProductCard = ({ product }) => {
-    const hasPromo = product.promo_price_sen !== null;
+    const navigate = useNavigate();
+    const hasPromo = product.promo_price_sen !== null && product.promo_price_sen !== undefined;
 
     const handleAddToCart = () => {
         toast.success(`${product.name} ditambahkan ke keranjang`);
     };
 
     return (
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 group flex flex-col h-full cursor-pointer relative">
+        <div 
+            onClick={() => navigate(`/product/${product.id}`)}
+            className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow duration-300 group flex flex-col h-full cursor-pointer relative"
+        >
             <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
-                <img 
-                    src={product.primary_image_url || FALLBACK_PRODUCT} 
+                <ImageFallback 
+                    src={product.primary_image_url} 
                     alt={product.name} 
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    onError={(e) => { e.target.src = FALLBACK_PRODUCT }}
+                    fallbackType="instrument,guitar"
                 />
                 
                 {hasPromo && (
@@ -44,7 +50,7 @@ export const ProductCard = ({ product }) => {
                 
                 <div className="flex items-center gap-1 mb-2">
                     <span className="text-yellow-400 text-sm leading-none">★</span>
-                    <span className="text-xs text-gray-600 font-medium">{product.average_rating?.toFixed(1) || '0.0'}</span>
+                    <span className="text-xs text-gray-600 font-medium">{product.average_rating ? Number(product.average_rating).toFixed(1) : '0.0'}</span>
                     <span className="text-xs text-gray-400">({product.review_count || 0})</span>
                 </div>
 

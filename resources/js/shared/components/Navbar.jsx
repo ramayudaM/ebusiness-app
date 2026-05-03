@@ -51,7 +51,7 @@ export const Navbar = () => {
     const navLinks = [
         { name: 'Beranda', path: '/' },
         { name: 'Eksplorasi', path: '/explore' },
-        { name: 'Koleksi', path: '/collection' },
+        ...(isAuthenticated ? [{ name: 'Koleksi', path: '/collection' }] : []),
         { name: 'Bantuan', path: '/help' },
     ];
 
@@ -110,15 +110,15 @@ export const Navbar = () => {
 
                 {/* Right Actions */}
                 <div className="flex items-center gap-4 md:gap-5 shrink-0">
-                    <Link to="/cart" className="text-gray-700 hover:text-orange-600 relative transition-colors">
-                        <ShoppingCart size={22} className="md:w-6 md:h-6" />
-                        <span className="absolute -top-1.5 -right-1.5 bg-orange-600 text-white text-[10px] w-4 h-4 md:w-4.5 md:h-4.5 rounded-full flex items-center justify-center font-bold border border-white">
-                            3
-                        </span>
-                    </Link>
-
                     {isAuthenticated ? (
                         <>
+                            <Link to="/cart" className="text-gray-700 hover:text-orange-600 relative transition-colors">
+                                <ShoppingCart size={22} className="md:w-6 md:h-6" />
+                                <span className="absolute -top-1.5 -right-1.5 bg-orange-600 text-white text-[10px] w-4 h-4 md:w-4.5 md:h-4.5 rounded-full flex items-center justify-center font-bold border border-white">
+                                    3
+                                </span>
+                            </Link>
+
                             <button className="text-gray-700 hover:text-orange-600 relative hidden sm:block transition-colors">
                                 <Bell size={22} className="md:w-6 md:h-6" />
                                 <span className="absolute top-0.5 right-0.5 bg-orange-600 w-2 h-2 rounded-full border border-white"></span>

@@ -1,11 +1,12 @@
 import { FALLBACK_HERO, FALLBACK_CATEGORY } from '@/shared/utils/placeholders';
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Navbar } from '@/shared/components/Navbar';
 import { Footer } from '@/shared/components/Footer';
 import { ProductCard } from '@/shared/components/ProductCard';
 import { CategoryIcon } from '@/shared/components/CategoryIcon';
 import { useHomeData } from '../hooks/useHomeData';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, ShieldCheck, Truck, Award, Music } from 'lucide-react';
 
 // SKELETON COMPONENTS
 const CategorySkeleton = () => (
@@ -56,6 +57,17 @@ export const HomePage = () => {
 
     const { hero, categories, flash_sale, new_arrivals } = data || {};
 
+    const globalBrands = [
+        { name: 'Yamaha', logo: 'https://cdn.worldvectorlogo.com/logos/yamaha-2.svg' },
+        { name: 'Fender', logo: 'https://cdn.worldvectorlogo.com/logos/fender-1.svg' },
+        { name: 'Gibson', logo: 'https://cdn.worldvectorlogo.com/logos/gibson-guitars.svg' },
+        { name: 'Roland', logo: 'https://cdn.worldvectorlogo.com/logos/roland-2.svg' },
+        { name: 'Korg', logo: 'https://cdn.worldvectorlogo.com/logos/korg.svg' },
+        { name: 'Pearl', logo: 'https://cdn.worldvectorlogo.com/logos/pearl-1.svg' },
+        { name: 'Marshall', logo: 'https://cdn.worldvectorlogo.com/logos/marshall-1.svg' },
+        { name: 'Ibanez', logo: 'https://cdn.worldvectorlogo.com/logos/ibanez.svg' }
+    ];
+
     return (
         <div className="min-h-screen bg-gray-50 font-sans flex flex-col text-gray-900">
             <Navbar />
@@ -94,14 +106,14 @@ export const HomePage = () => {
                     )}
                 </section>
 
-                {/* Categories Container centered over the Hero bottom maybe? For now just below */}
+                {/* Categories Container */}
                 <section className="py-12 md:py-16 px-4 md:px-8 max-w-7xl mx-auto">
-                    <div className="grid grid-cols-4 md:grid-cols-8 gap-4 md:gap-8">
+                    <div className="flex flex-wrap justify-center gap-6 md:gap-10">
                         {isLoading ? (
                             Array.from({ length: 8 }).map((_, i) => <CategorySkeleton key={`cat-skel-${i}`} />)
                         ) : (
                             categories?.map((cat) => (
-                                <a href={`/category/${cat.slug}`} key={cat.id} className="flex flex-col items-center group cursor-pointer">
+                                <Link to={`/explore?category=${cat.slug}`} key={cat.id} className="flex flex-col items-center group cursor-pointer">
                                     <div className="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center p-3.5 mb-3 group-hover:shadow-md group-hover:border-orange-200 transition-all group-hover:-translate-y-1 text-gray-500 group-hover:text-orange-600">
                                         {cat.icon_url ? (
                                             <img 
@@ -115,53 +127,91 @@ export const HomePage = () => {
                                         )}
                                     </div>
                                     <span className="text-[11px] md:text-xs font-semibold text-gray-700 text-center group-hover:text-orange-600 leading-tight block truncate w-full px-1">{cat.name}</span>
-                                </a>
+                                </Link>
                             ))
                         )}
                     </div>
                 </section>
 
-                {/* Flash Sale Ribbon & Section */}
+                {/* Features Section (Replacement for Flash Sale) */}
                 <section className="px-4 md:px-8 max-w-7xl mx-auto mb-16">
-                    <div className="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4">
-                        <div className="flex items-center gap-4">
-                            <div className="bg-orange-600 tracking-wider text-white text-sm md:text-base font-extrabold px-3 py-1.5 rounded uppercase flex items-center gap-2">
-                                <span className="text-yellow-300">⚡</span> FLASH SALE
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {[
+                            {
+                                icon: <ShieldCheck size={32} className="text-orange-600" />,
+                                title: 'Garansi Resmi',
+                                desc: '100% Produk original dengan perlindungan garansi resmi dari distributor.'
+                            },
+                            {
+                                icon: <Truck size={32} className="text-orange-600" />,
+                                title: 'Pengiriman Aman',
+                                desc: 'Asuransi pengiriman penuh untuk setiap instrumen musik yang Anda pesan.'
+                            },
+                            {
+                                icon: <Award size={32} className="text-orange-600" />,
+                                title: 'Kualitas Terjamin',
+                                desc: 'Setiap instrumen melewati proses pengecekan kualitas (QC) yang ketat sebelum dikirim.'
+                            },
+                            {
+                                icon: <Music size={32} className="text-orange-600" />,
+                                title: 'Pilihan Terlengkap',
+                                desc: 'Menyediakan ribuan instrumen dan aksesori musik untuk semua tingkat keahlian.'
+                            }
+                        ].map((feature, idx) => (
+                            <div key={idx} className="bg-white p-6 md:p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col items-center text-center">
+                                <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                                    {feature.icon}
+                                </div>
+                                <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
+                                <p className="text-sm text-gray-500 leading-relaxed">{feature.desc}</p>
                             </div>
-                            <div className="flex gap-1.5 font-mono text-sm md:text-base font-bold text-gray-700 bg-gray-200 px-2 py-1 rounded">
-                                <span>02</span>:<span>45</span>:<span>12</span>
-                            </div>
-                        </div>
-                        <a href="/flash-sale" className="text-sm font-bold text-orange-600 hover:text-orange-700 transition-colors">Lihat Semua &rarr;</a>
+                        ))}
                     </div>
-
-                    {isLoading ? (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
-                            {Array.from({ length: 5 }).map((_, i) => <ProductSkeleton key={`fs-skel-${i}`} />)}
-                        </div>
-                    ) : flash_sale?.length === 0 ? (
-                        <div className="bg-white border border-gray-200 rounded-lg p-12 text-center shadow-sm">
-                            <p className="text-gray-500 font-medium">Belum ada produk Flash Sale saat ini.</p>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-5">
-                            {flash_sale?.map((product) => (
-                                <ProductCard key={`fs-${product.id}`} product={product} />
-                            ))}
-                        </div>
-                    )}
                 </section>
 
-                {/* New Arrivals Section */}
+                {/* Top Brands Section */}
+                <section className="px-4 md:px-8 max-w-7xl mx-auto mb-20 overflow-hidden relative">
+                    <div className="flex flex-col items-center">
+                        <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-10">Merek Kelas Dunia Tersedia di Sini</h3>
+                        
+                        <div className="w-full relative flex items-center h-20">
+                            {/* Left Fade */}
+                            <div className="absolute left-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none"></div>
+                            
+                            {/* Marquee Track */}
+                            <div className="flex w-max animate-marquee hover-pause items-center">
+                                {[...globalBrands, ...globalBrands].map((brand, i) => (
+                                    <div key={i} className="flex items-center justify-center w-32 md:w-48 mx-6 shrink-0 group/logo">
+                                        <img 
+                                            src={brand.logo} 
+                                            alt={brand.name} 
+                                            className="w-full h-8 md:h-12 object-contain filter grayscale group-hover/logo:grayscale-0 opacity-50 group-hover/logo:opacity-100 transition-all duration-300 cursor-pointer"
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                                e.target.nextElementSibling.style.display = 'block';
+                                            }}
+                                        />
+                                        <span className="hidden text-xl md:text-2xl font-black text-gray-400 group-hover/logo:text-gray-800 tracking-tighter uppercase transition-colors">
+                                            {brand.name}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            {/* Right Fade */}
+                            <div className="absolute right-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none"></div>
+                        </div>
+                    </div>
+                </section>                {/* New Arrivals Section */}
                 <section className="px-4 md:px-8 max-w-7xl mx-auto pb-20">
                     <div className="flex justify-between items-end mb-6 pb-2 border-b-2 border-gray-100">
-                        <h2 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">Baru</h2>
-                        <a href="/new-arrivals" className="text-sm font-bold text-orange-600 hover:text-orange-700 transition-colors">Lihat Semua &rarr;</a>
+                        <h2 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">Koleksi Terbaru</h2>
+                        <Link to="/explore" className="text-sm font-bold text-orange-600 hover:text-orange-700 transition-colors">Lihat Semua &rarr;</Link>
                     </div>
                     
                     {isLoading ? (
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 md:gap-5">
-                            {Array.from({ length: 4 }).map((_, i) => <ProductSkeleton key={`na-skel-${i}`} />)}
+                            {Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={`na-skel-${i}`} />)}
                         </div>
                     ) : new_arrivals?.length === 0 ? (
                         <div className="bg-white border border-gray-200 rounded-lg p-12 text-center shadow-sm">
@@ -169,7 +219,7 @@ export const HomePage = () => {
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 md:gap-5">
-                            {new_arrivals?.map((product) => (
+                            {new_arrivals?.slice(0, 8).map((product) => (
                                 <ProductCard key={`na-${product.id}`} product={product} />
                             ))}
                         </div>

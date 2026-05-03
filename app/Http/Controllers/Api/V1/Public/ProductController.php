@@ -90,16 +90,19 @@ class ProductController extends Controller
             'reviews.user:id,name,avatar'
         ])
         ->where('is_active', true)
-        ->where('slug', $slug)
+        ->where(function ($query) use ($slug) {
+            if (is_numeric($slug)) {
+                $query->where('id', $slug);
+            } else {
+                $query->where('slug', $slug);
+            }
+        })
         ->first();
         
         if (!$product) {
             return response()->json(['status' => 'error', 'message' => 'Product not found'], 404);
         }
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $product
-        ]);
+        return new \App\Http\Resources\Api\V1\ProductDetailResource($product);
     }
 }

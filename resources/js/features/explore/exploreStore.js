@@ -67,7 +67,7 @@ const useExploreStore = create((set, get) => ({
         try {
             const data = await exploreService.getCategories();
             if (data.status === 'success') {
-                set({ categories: data.data, isLoadingCategories: false });
+                set({ categories: data.data || [], isLoadingCategories: false });
             }
         } catch (error) {
             set({ 
@@ -91,8 +91,8 @@ const useExploreStore = create((set, get) => ({
             
             if (data.status === 'success') {
                 set({ 
-                    products: data.data, 
-                    meta: data.meta,
+                    products: data.data || [], 
+                    meta: data.meta || { current_page: 1, last_page: 1, per_page: 12, total: 0 },
                     isLoadingProducts: false 
                 });
             }

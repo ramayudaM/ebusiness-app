@@ -13,6 +13,14 @@
     @vite(['resources/css/app.css', 'resources/js/app.jsx'])
 </head>
 <body>
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            document.body.innerHTML += '<div style="color:red; background:white; padding:20px; z-index:9999; position:absolute; top:0; left:0; width:100%; font-family:monospace;"><h3>Global Error:</h3><p>' + message + '</p><p>Line: ' + lineno + '</p><pre>' + (error && error.stack ? error.stack : '') + '</pre></div>';
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+            document.body.innerHTML += '<div style="color:red; background:white; padding:20px; z-index:9999; position:absolute; top:0; left:0; width:100%; font-family:monospace;"><h3>Unhandled Promise Rejection:</h3><pre>' + (event.reason && event.reason.stack ? event.reason.stack : event.reason) + '</pre></div>';
+        });
+    </script>
     <div id="root"></div>
 </body>
 </html>

@@ -68,6 +68,12 @@ Route::prefix('v1')->group(function () {
         Route::put('/user/profile', [UserController::class, 'updateProfile'])
             ->name('user.profile.update');
 
+        // Cart
+        Route::post('/cart', [\App\Http\Controllers\Api\V1\User\CartController::class, 'store'])->name('cart.store');
+        
+        // Wishlist
+        Route::post('/wishlist', [\App\Http\Controllers\Api\V1\User\WishlistController::class, 'store'])->name('wishlist.store');
+
     });
 
     // ===================================================================

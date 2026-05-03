@@ -1,7 +1,14 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Search, Filter, X, ChevronDown, Check } from 'lucide-react';
-import debounce from 'lodash/debounce';
+// Custom debounce to avoid lodash import issues
+function debounce(func, wait) {
+    let timeout;
+    return function(...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func(...args), wait);
+    };
+}
 
 import { Layout } from '@/shared/components/Layout';
 import { ProductCard } from '@/shared/components/ProductCard';
@@ -29,14 +36,21 @@ export const ExplorePage = () => {
     const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
     const [localSearch, setLocalSearch] = useState(filters.search || '');
 
-    // Sync URL search param initially
+    // Sync URL params initially
     useEffect(() => {
         const queryParams = new URLSearchParams(location.search);
+        
         const searchParam = queryParams.get('search');
         if (searchParam) {
             setFilter('search', searchParam);
             setLocalSearch(searchParam);
         }
+        
+        const categoryParam = queryParams.get('category');
+        if (categoryParam) {
+            setFilter('category', categoryParam);
+        }
+
         fetchCategories();
     }, []); // Run once on mount
 
@@ -44,13 +58,21 @@ export const ExplorePage = () => {
     useEffect(() => {
         fetchProducts();
         
-        // Update URL to match search search filter if we want deep linking
+        // Update URL to match filters if we want deep linking
         const queryParams = new URLSearchParams(location.search);
+        
         if (filters.search) {
             queryParams.set('search', filters.search);
         } else {
             queryParams.delete('search');
         }
+
+        if (filters.category) {
+            queryParams.set('category', filters.category);
+        } else {
+            queryParams.delete('category');
+        }
+        
         navigate({ search: queryParams.toString() }, { replace: true });
         
     }, [
@@ -88,6 +110,16 @@ export const ExplorePage = () => {
         const value = e.target.value;
         const [by, order] = value.split('-');
         setFilters({ sort_by: by, sort_order: order });
+    };
+
+    const formatPriceDisplay = (value) => {
+        if (!value) return '';
+        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    };
+
+    const handlePriceInput = (key, value) => {
+        const numericValue = value.replace(/\D/g, '');
+        setFilter(key, numericValue);
     };
 
     return (
@@ -169,18 +201,18 @@ export const ExplorePage = () => {
                             <label className="block text-sm font-bold text-gray-700 mb-2">Harga (Rp)</label>
                             <div className="flex items-center gap-2">
                                 <input 
-                                    type="number" 
+                                    type="text" 
                                     placeholder="Min" 
-                                    value={filters.min_price}
-                                    onChange={(e) => setFilter('min_price', e.target.value)}
+                                    value={formatPriceDisplay(filters.min_price)}
+                                    onChange={(e) => handlePriceInput('min_price', e.target.value)}
                                     className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none"
                                 />
                                 <span className="text-gray-400">-</span>
                                 <input 
-                                    type="number" 
+                                    type="text" 
                                     placeholder="Max" 
-                                    value={filters.max_price}
-                                    onChange={(e) => setFilter('max_price', e.target.value)}
+                                    value={formatPriceDisplay(filters.max_price)}
+                                    onChange={(e) => handlePriceInput('max_price', e.target.value)}
                                     className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none"
                                 />
                             </div>
@@ -285,7 +317,7 @@ export const ExplorePage = () => {
                     </div>
 
                     {/* Pagination */}
-                    {!isLoadingProducts && meta.last_page > 1 && (
+                    {!isLoadingProducts && meta?.last_page > 1 && (
                         <div className="mt-10 flex items-center justify-center gap-2">
                             <button 
                                 onClick={() => handlePageChange(meta.current_page - 1)}
@@ -411,17 +443,17 @@ export const ExplorePage = () => {
                                     <label className="block text-sm font-bold text-gray-700 mb-2">Harga</label>
                                     <div className="flex gap-2">
                                         <input 
-                                            type="number" 
+                                            type="text" 
                                             placeholder="Min" 
-                                            value={filters.min_price}
-                                            onChange={(e) => setFilter('min_price', e.target.value)}
+                                            value={formatPriceDisplay(filters.min_price)}
+                                            onChange={(e) => handlePriceInput('min_price', e.target.value)}
                                             className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-3 text-sm"
                                         />
                                         <input 
-                                            type="number" 
+                                            type="text" 
                                             placeholder="Max" 
-                                            value={filters.max_price}
-                                            onChange={(e) => setFilter('max_price', e.target.value)}
+                                            value={formatPriceDisplay(filters.max_price)}
+                                            onChange={(e) => handlePriceInput('max_price', e.target.value)}
                                             className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-3 text-sm"
                                         />
                                     </div>

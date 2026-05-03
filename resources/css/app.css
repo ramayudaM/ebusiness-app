@@ -19,6 +19,20 @@
   ::-webkit-scrollbar-thumb { @apply bg-gray-300 rounded-full; }
 }
 
+@layer utilities {
+  .animate-marquee {
+    animation: marquee 30s linear infinite;
+  }
+  .hover-pause:hover {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
+}
+
 @layer components {
   .container-page {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
