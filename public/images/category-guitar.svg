@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" fill="none">
+  <rect width="400" height="400" fill="#f3f4f6"/>
+  <path d="M200 80 L220 100 L220 280 L200 320 L180 280 L180 100 Z" fill="#f97316"/>
+  <circle cx="200" cy="200" r="40" fill="#fb923c"/>
+  <text x="200" y="360" font-family="Arial" font-size="20" fill="#374151" text-anchor="middle">Gitar</text>
+</svg>

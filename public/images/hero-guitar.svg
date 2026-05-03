@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" fill="none">
+  <rect width="800" height="600" fill="#1a1a1a"/>
+  <path d="M400 150 L450 200 L450 450 L400 500 L350 450 L350 200 Z" fill="#f97316" opacity="0.8"/>
+  <circle cx="400" cy="300" r="80" fill="#fb923c" opacity="0.6"/>
+  <path d="M380 250 L420 250 L420 350 L380 350 Z" fill="#fff" opacity="0.3"/>
+  <text x="400" y="550" font-family="Arial" font-size="24" fill="#fff" text-anchor="middle">NadaKita Music Store</text>
+</svg>

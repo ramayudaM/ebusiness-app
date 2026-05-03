@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="none">
+  <defs>
+    <linearGradient id="micGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a4a4a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2c2c2c;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="meshGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#5a5a5a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3a3a3a;stop-opacity:1" />
+    </radialGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="400" height="600" fill="#f8f8f8"/>
+  <!-- Microphone Head (Mesh Grille) -->
+  <ellipse cx="200" cy="200" rx="80" ry="90" fill="url(#meshGrad)"/>
+  <!-- Mesh Pattern -->
+  <g opacity="0.3">
+    <circle cx="200" cy="160" r="3" fill="#1a1a1a"/>
+    <circle cx="220" cy="170" r="3" fill="#1a1a1a"/>
+    <circle cx="180" cy="170" r="3" fill="#1a1a1a"/>
+    <circle cx="200" cy="180" r="3" fill="#1a1a1a"/>
+    <circle cx="230" cy="190" r="3" fill="#1a1a1a"/>
+    <circle cx="170" cy="190" r="3" fill="#1a1a1a"/>
+    <circle cx="210" cy="200" r="3" fill="#1a1a1a"/>
+    <circle cx="190" cy="200" r="3" fill="#1a1a1a"/>
+    <circle cx="240" cy="210" r="3" fill="#1a1a1a"/>
+    <circle cx="160" cy="210" r="3" fill="#1a1a1a"/>
+    <circle cx="220" cy="220" r="3" fill="#1a1a1a"/>
+    <circle cx="180" cy="220" r="3" fill="#1a1a1a"/>
+    <circle cx="200" cy="230" r="3" fill="#1a1a1a"/>
+    <circle cx="230" cy="240" r="3" fill="#1a1a1a"/>
+    <circle cx="170" cy="240" r="3" fill="#1a1a1a"/>
+  </g>
+  <!-- Microphone Body -->
+  <rect x="160" y="280" width="80" height="180" rx="8" fill="url(#micGrad)"/>
+  <rect x="165" y="285" width="70" height="170" rx="6" fill="#2c2c2c"/>
+  <!-- Shure Logo -->
+  <rect x="175" y="310" width="50" height="25" rx="3" fill="#1a1a1a"/>
+  <text x="200" y="328" font-family="Arial" font-size="16" font-weight="bold" fill="#4a90e2" text-anchor="middle">SHURE</text>
+  <!-- Model Number -->
+  <text x="200" y="360" font-family="Arial" font-size="14" font-weight="bold" fill="#e0e0e0" text-anchor="middle">SM58</text>
+  <!-- Grip Texture Lines -->
+  <line x1="165" y1="380" x2="235" y2="380" stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="165" y1="390" x2="235" y2="390" stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="165" y1="400" x2="235" y2="400" stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="165" y1="410" x2="235" y2="410" stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="165" y1="420" x2="235" y2="420" stroke="#1a1a1a" stroke-width="2"/>
+  <line x1="165" y1="430" x2="235" y2="430" stroke="#1a1a1a" stroke-width="2"/>
+  <!-- XLR Connector -->
+  <rect x="175" y="460" width="50" height="30" rx="4" fill="#3a3a3a"/>
+  <circle cx="190" cy="475" r="4" fill="#c0c0c0"/>
+  <circle cx="200" cy="475" r="4" fill="#c0c0c0"/>
+  <circle cx="210" cy="475" r="4" fill="#c0c0c0"/>
+  <!-- Cable -->
+  <path d="M 200 490 Q 180 520 160 550" stroke="#1a1a1a" stroke-width="8" fill="none" stroke-linecap="round"/>
+  <path d="M 200 490 Q 180 520 160 550" stroke="#2c2c2c" stroke-width="6" fill="none" stroke-linecap="round"/>
+  <!-- Stand Clip -->
+  <rect x="140" y="340" width="15" height="60" rx="3" fill="#3a3a3a" opacity="0.7"/>
+  <rect x="245" y="340" width="15" height="60" rx="3" fill="#3a3a3a" opacity="0.7"/>
+</svg>

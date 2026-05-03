@@ -18,7 +18,6 @@ export function AppRoutes() {
     <Routes>
       <Route path="/admin/dashboard" element={<AdminDashboardPage />} /> 
       <Route path="/" element={<HomePage />} />
-      <Route path="/catalog" element={<div>Catalog Page</div>} />
       <Route path="/admin/products" element={<AdminProductsPage />} />
       <Route path="/admin/orders" element={<AdminOrdersPage />} />
       <Route path="/admin/customers" element={<AdminCustomersPage />} />

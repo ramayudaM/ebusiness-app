@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="none">
+  <defs>
+    <linearGradient id="keyboardGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2c2c2c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="400" height="600" fill="#e8e8e8"/>
+  <!-- Keyboard Body -->
+  <rect x="30" y="200" width="340" height="200" rx="8" fill="url(#keyboardGrad)"/>
+  <rect x="35" y="205" width="330" height="190" rx="6" fill="#1a1a1a"/>
+  <!-- Brand Logo -->
+  <text x="200" y="235" font-family="Arial" font-size="18" font-weight="bold" fill="#ff4444" text-anchor="middle">ROLAND</text>
+  <!-- Display Screen -->
+  <rect x="50" y="250" width="120" height="50" rx="4" fill="#0a3d62"/>
+  <rect x="55" y="255" width="110" height="40" rx="2" fill="#1e5f8c"/>
+  <text x="110" y="280" font-family="monospace" font-size="12" fill="#00ff88" text-anchor="middle">JUNO-DS88</text>
+  <!-- Control Buttons -->
+  <circle cx="200" cy="270" r="6" fill="#333" stroke="#666" stroke-width="1"/>
+  <circle cx="220" cy="270" r="6" fill="#333" stroke="#666" stroke-width="1"/>
+  <circle cx="240" cy="270" r="6" fill="#333" stroke="#666" stroke-width="1"/>
+  <circle cx="260" cy="270" r="6" fill="#333" stroke="#666" stroke-width="1"/>
+  <!-- Knobs -->
+  <circle cx="290" cy="270" r="12" fill="#2c2c2c" stroke="#555" stroke-width="2"/>
+  <circle cx="320" cy="270" r="12" fill="#2c2c2c" stroke="#555" stroke-width="2"/>
+  <circle cx="350" cy="270" r="12" fill="#2c2c2c" stroke="#555" stroke-width="2"/>
+  <line x1="290" y1="270" x2="290" y2="262" stroke="#ff4444" stroke-width="2"/>
+  <line x1="320" y1="270" x2="320" y2="262" stroke="#ff4444" stroke-width="2"/>
+  <line x1="350" y1="270" x2="350" y2="262" stroke="#ff4444" stroke-width="2"/>
+  <!-- White Keys -->
+  <rect x="50" y="320" width="25" height="70" rx="2" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+  <rect x="80" y="320" width="25" height="70" rx="2" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+  <rect x="110" y="320" width="25" height="70" rx="2" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+  <rect x="140" y="320" width="25" height="70" rx="2" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+  <rect x="170" y="320" width="25" height="70" rx="2" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+  <rect x="200" y="320" width="25" height="70" rx="2" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+  <rect x="230" y="320" width="25" height="70" rx="2" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+  <rect x="260" y="320" width="25" height="70" rx="2" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+  <rect x="290" y="320" width="25" height="70" rx="2" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+  <rect x="320" y="320" width="25" height="70" rx="2" fill="#fafafa" stroke="#ccc" stroke-width="1"/>
+  <!-- Black Keys -->
+  <rect x="68" y="320" width="18" height="45" rx="2" fill="#1a1a1a"/>
+  <rect x="98" y="320" width="18" height="45" rx="2" fill="#1a1a1a"/>
+  <rect x="158" y="320" width="18" height="45" rx="2" fill="#1a1a1a"/>
+  <rect x="188" y="320" width="18" height="45" rx="2" fill="#1a1a1a"/>
+  <rect x="218" y="320" width="18" height="45" rx="2" fill="#1a1a1a"/>
+  <rect x="278" y="320" width="18" height="45" rx="2" fill="#1a1a1a"/>
+  <rect x="308" y="320" width="18" height="45" rx="2" fill="#1a1a1a"/>
+  <!-- Stand -->
+  <rect x="80" y="400" width="8" height="120" fill="#444"/>
+  <rect x="312" y="400" width="8" height="120" fill="#444"/>
+  <rect x="60" y="510" width="280" height="15" rx="4" fill="#555"/>
+</svg>
