@@ -3,6 +3,7 @@ import HomePage from '../features/Guest/HomePage'
 import LoginPage from '../features/auth/LoginPage'
 import RegisterPage from '../features/auth/RegisterPage'
 import CustomerProfilePage from '../features/customer/CustomerProfilePage'
+import CustomerWishlistPage from '../features/customer/CustomerWishlistPage'
 import GuestRoute from '../shared/components/GuestRoute'
 import ProtectedRoute from '../shared/components/ProtectedRoute'
 import AdminLoginPage from '../features/admin/auth/AdminLoginPage'
@@ -54,18 +55,18 @@ export function AppRoutes() {
         }
       />
       <Route
-        path="/customer/orders"
+        path="/customer/wishlist"
         element={
           <ProtectedRoute>
-            <div>Customer Orders Page</div>
+            <CustomerWishlistPage />
           </ProtectedRoute>
         }
       />
       <Route
-        path="/customer/wishlist"
+        path="/customer/orders"
         element={
           <ProtectedRoute>
-            <div>Customer Wishlist Page</div>
+            <div>Customer Orders Page</div>
           </ProtectedRoute>
         }
       />
