@@ -54,9 +54,9 @@ export default function HomePage() {
               <Link to="/" className="hover:text-orange-500 transition">
                 Beranda
               </Link>
-              <Link to="/admin/products" className="hover:text-orange-500 transition">
+              <button onClick={() => document.getElementById('products').scrollIntoView({ behavior: 'smooth' })} className="hover:text-orange-500 transition">
                 Produk
-              </Link>
+              </button>
               <button onClick={() => document.getElementById('about').scrollIntoView({ behavior: 'smooth' })} className="hover:text-orange-500 transition">
                 Tentang
               </button>
@@ -247,7 +247,7 @@ export default function HomePage() {
       </section>
 
       {/* Popular Products */}
-      <section className="max-w-7xl mx-auto px-4 py-16">
+      <section id="products" className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Produk Populer</h2>
