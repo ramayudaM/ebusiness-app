@@ -1,18 +1,50 @@
 import { FALLBACK_AVATAR } from '@/shared/utils/placeholders';
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Search, ShoppingCart, Bell, LogOut, Menu, X, User, Heart, Package } from 'lucide-react';
+import { Search, ShoppingCart, Bell, LogOut, Menu, X, User, Heart, Package, Clock, Check, Zap } from 'lucide-react';
 import useAuthStore from '@/features/auth/authStore';
+import { useCartStore } from '@/shared/stores/cartStore';
+import { useWishlistStore } from '@/shared/stores/wishlistStore';
+import { useNotificationStore } from '@/shared/stores/notificationStore';
 
 export const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { isAuthenticated, user, clearAuth } = useAuthStore();
+    
+    // Store Hooks
+    const cartCount = useCartStore(state => state.getTotalItems());
+    const wishlistCount = useWishlistStore(state => state.items.length);
+    const { 
+        notifications, 
+        getUnreadCount, 
+        markAsRead, 
+        markAllAsRead,
+        fetchNotifications 
+    } = useNotificationStore();
+    
+    const fetchCart = useCartStore(state => state.fetchItems);
+    const fetchWishlist = useWishlistStore(state => state.fetchItems);
+
+    const unreadNotifications = getUnreadCount();
+
+    // Fetch initial data on mount
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchCart();
+            fetchWishlist();
+            fetchNotifications();
+        }
+    }, [isAuthenticated]);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [searchError, setSearchError] = useState('');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-    const dropdownRef = useRef(null);
+    const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+    
+    const profileDropdownRef = useRef(null);
+    const notificationDropdownRef = useRef(null);
 
     // Initial search sync from URL query
     useEffect(() => {
@@ -23,8 +55,11 @@ export const Navbar = () => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+            if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target)) {
                 setIsProfileDropdownOpen(false);
+            }
+            if (notificationDropdownRef.current && !notificationDropdownRef.current.contains(event.target)) {
+                setIsNotificationOpen(false);
             }
         };
         document.addEventListener('mousedown', handleClickOutside);
@@ -113,22 +148,98 @@ export const Navbar = () => {
                         <>
                             <Link to="/cart" className="text-gray-700 hover:text-orange-600 relative transition-colors">
                                 <ShoppingCart size={22} className="md:w-6 md:h-6" />
-                                <span className="absolute -top-1.5 -right-1.5 bg-orange-600 text-white text-[10px] w-4 h-4 md:w-4.5 md:h-4.5 rounded-full flex items-center justify-center font-bold border border-white">
-                                    3
-                                </span>
+                                {cartCount > 0 && (
+                                    <span className="absolute -top-1.5 -right-1.5 bg-orange-600 text-white text-[10px] w-4 h-4 md:w-4.5 md:h-4.5 rounded-full flex items-center justify-center font-bold border border-white">
+                                        {cartCount > 9 ? '9+' : cartCount}
+                                    </span>
+                                )}
                             </Link>
 
-                            <button className="text-gray-700 hover:text-orange-600 relative hidden sm:block transition-colors">
-                                <Bell size={22} className="md:w-6 md:h-6" />
-                                <span className="absolute top-0.5 right-0.5 bg-orange-600 w-2 h-2 rounded-full border border-white"></span>
-                            </button>
+                            {/* Notifications Dropdown */}
+                            <div className="relative hidden sm:block" ref={notificationDropdownRef}>
+                                <button 
+                                    onClick={() => setIsNotificationOpen(!isNotificationOpen)}
+                                    className="text-gray-700 hover:text-orange-600 relative transition-colors focus:outline-none"
+                                >
+                                    <Bell size={22} className="md:w-6 md:h-6" />
+                                    {unreadNotifications > 0 && (
+                                        <span className="absolute top-0.5 right-0.5 bg-orange-600 w-2.5 h-2.5 rounded-full border-2 border-white"></span>
+                                    )}
+                                </button>
 
-                            <div className="relative hidden md:block" ref={dropdownRef}>
+                                {isNotificationOpen && (
+                                    <div className="absolute right-0 mt-3 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                                        <div className="p-4 border-b border-gray-50 flex items-center justify-between bg-gray-50/50">
+                                            <h3 className="font-extrabold text-gray-900">Notifikasi</h3>
+                                            {unreadNotifications > 0 && (
+                                                <button 
+                                                    onClick={markAllAsRead}
+                                                    className="text-xs font-bold text-orange-600 hover:text-orange-700"
+                                                >
+                                                    Tandai semua dibaca
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="max-h-[400px] overflow-y-auto">
+                                            {notifications.length > 0 ? (
+                                                <div className="divide-y divide-gray-50">
+                                                    {notifications.map((n) => (
+                                                        <div 
+                                                            key={n.id} 
+                                                            onClick={() => markAsRead(n.id)}
+                                                            className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors relative ${!n.read ? 'bg-orange-50/30' : ''}`}
+                                                        >
+                                                            {!n.read && (
+                                                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-orange-600"></div>
+                                                            )}
+                                                            <div className="flex gap-3">
+                                                                <div className={`w-10 h-10 rounded-xl shrink-0 flex items-center justify-center ${
+                                                                    n.type === 'promo' ? 'bg-purple-100 text-purple-600' : 'bg-blue-100 text-blue-600'
+                                                                }`}>
+                                                                    {n.type === 'promo' ? <Zap size={18} /> : <Bell size={18} />}
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <p className={`text-sm mb-0.5 ${!n.read ? 'font-bold text-gray-900' : 'text-gray-700'}`}>
+                                                                        {n.title}
+                                                                    </p>
+                                                                    <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed">
+                                                                        {n.message}
+                                                                    </p>
+                                                                    <div className="mt-2 flex items-center gap-1.5 text-[10px] text-gray-400 font-medium">
+                                                                        <Clock size={10} />
+                                                                        {new Date(n.time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="py-12 px-6 text-center">
+                                                    <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                        <Bell size={24} className="text-gray-300" />
+                                                    </div>
+                                                    <p className="text-sm text-gray-500">Belum ada notifikasi baru untuk Anda.</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <Link 
+                                            to="/notifications" 
+                                            onClick={() => setIsNotificationOpen(false)}
+                                            className="block p-3 text-center text-xs font-bold text-gray-500 hover:text-gray-900 bg-gray-50 border-t border-gray-50"
+                                        >
+                                            Lihat Semua Notifikasi
+                                        </Link>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="relative hidden md:block" ref={profileDropdownRef}>
                                 <button 
                                     onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                                     className="flex items-center focus:outline-none"
                                 >
-                                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden border-2 border-transparent hover:border-orange-200 transition-all bg-gray-100 shrink-0 object-cover">
+                                    <div className="w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden border-2 border-transparent hover:border-orange-200 transition-all bg-gray-100 shrink-0 object-cover shadow-sm">
                                         <img 
                                             src={user?.avatar || FALLBACK_AVATAR} 
                                             alt="Avatar" 
@@ -139,28 +250,33 @@ export const Navbar = () => {
                                 </button>
 
                                 {isProfileDropdownOpen && (
-                                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-xl border border-gray-100 py-2 z-50">
-                                        <div className="px-4 py-3 border-b border-gray-100">
-                                            <p className="text-sm font-bold text-gray-900 truncate">{user?.name || 'Customer'}</p>
+                                    <div className="absolute right-0 mt-3 w-64 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                                        <div className="px-5 py-4 border-b border-gray-50 bg-gray-50/50">
+                                            <p className="text-sm font-extrabold text-gray-900 truncate">{user?.name || 'Customer'}</p>
                                             <p className="text-xs text-gray-500 truncate mt-0.5">{user?.email}</p>
                                         </div>
-                                        <div className="py-1">
-                                            <Link to="/profile" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600">
-                                                <User size={16} /> Profil Saya
+                                        <div className="py-2">
+                                            <Link to="/profile" className="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
+                                                <User size={18} /> Profil Saya
                                             </Link>
-                                            <Link to="/orders" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600">
-                                                <Package size={16} /> Pesanan
+                                            <Link to="/orders" className="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
+                                                <Package size={18} /> Pesanan Saya
                                             </Link>
-                                            <Link to="/wishlist" className="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600">
-                                                <Heart size={16} /> Wishlist
+                                            <Link to="/wishlist" className="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
+                                                <Heart size={18} /> Wishlist 
+                                                {wishlistCount > 0 && (
+                                                    <span className="ml-auto bg-gray-100 text-gray-600 text-[10px] px-1.5 py-0.5 rounded-full font-bold">
+                                                        {wishlistCount}
+                                                    </span>
+                                                )}
                                             </Link>
                                         </div>
-                                        <div className="py-1 border-t border-gray-100">
+                                        <div className="py-2 border-t border-gray-50">
                                             <button 
                                                 onClick={handleLogout}
-                                                className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-medium"
+                                                className="flex w-full items-center gap-3 px-5 py-2.5 text-sm text-red-600 hover:bg-red-50 font-bold transition-colors"
                                             >
-                                                <LogOut size={16} /> Keluar
+                                                <LogOut size={18} /> Keluar
                                             </button>
                                         </div>
                                     </div>

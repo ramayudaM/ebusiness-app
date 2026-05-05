@@ -1,6 +1,9 @@
 import { HomePage } from '../features/home/pages/HomePage';
 import { ExplorePage } from '../features/explore/pages/ExplorePage';
 import { ProductDetailPage } from '../features/product/pages/ProductDetailPage';
+import { HelpPage } from '../features/static/pages/HelpPage';
+import { HelpArticlePage } from '../features/static/pages/HelpArticlePage';
+import { NotificationPage } from '../features/user/pages/NotificationPage';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from '../features/auth/LoginPage'
 import RegisterPage from '../features/auth/RegisterPage'
@@ -17,6 +20,8 @@ export function AppRoutes() {
       <Route path="/explore" element={<ExplorePage />} />
       <Route path="/catalog" element={<Navigate to="/explore" replace />} />
       <Route path="/product/:id" element={<ProductDetailPage />} />
+      <Route path="/help" element={<HelpPage />} />
+      <Route path="/help/:slug" element={<HelpArticlePage />} />
 
       {/* Auth Routes */}
       <Route
@@ -52,6 +57,14 @@ export function AppRoutes() {
         element={
           <ProtectedRoute>
             <div>Order History</div>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/notifications"
+        element={
+          <ProtectedRoute>
+            <NotificationPage />
           </ProtectedRoute>
         }
       />

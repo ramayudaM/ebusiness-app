@@ -4,6 +4,8 @@ import { Navbar } from '@/shared/components/Navbar';
 import { Footer } from '@/shared/components/Footer';
 import { useProductDetail } from '../hooks/useProductDetail';
 import { useRequireAuth } from '@/features/auth/hooks/useRequireAuth';
+import { useCartStore } from '@/shared/stores/cartStore';
+import { useWishlistStore } from '@/shared/stores/wishlistStore';
 import { ProductGallery } from '../components/ProductGallery';
 import { ProductVariationSelector } from '../components/ProductVariationSelector';
 import { ProductMedia } from '../components/ProductMedia';
@@ -16,6 +18,10 @@ export const ProductDetailPage = () => {
     const { data: product, isLoading, error, refetch } = useProductDetail(id);
     const { withAuth } = useRequireAuth();
     const navigate = useNavigate();
+
+    const addItem = useCartStore(state => state.addItem);
+    const toggleWishlist = useWishlistStore(state => state.toggleWishlist);
+    const isInWishlist = useWishlistStore(state => state.isInWishlist(Number(id)));
 
     const [selectedVariationId, setSelectedVariationId] = useState(null);
     const [quantity, setQuantity] = useState(1);
@@ -61,7 +67,8 @@ export const ProductDetailPage = () => {
             return;
         }
 
-        // Call backend API /cart here
+        // Add to Cart Store
+        addItem(product, currentVariation, quantity);
         toast.success(`✅ ${product.name} berhasil ditambahkan ke keranjang!`);
     });
 
@@ -78,14 +85,19 @@ export const ProductDetailPage = () => {
             return;
         }
 
-        // Add to cart behind the scenes then redirect
+        // Add to cart then navigate
+        addItem(product, currentVariation, quantity);
         toast.success(`✅ Mengarahkan ke pembayaran...`);
-        navigate('/checkout');
+        navigate('/cart'); // Changed to /cart for better flow, or /checkout if exists
     });
 
     const handleWishlist = withAuth(() => {
-        // Call backend API /wishlist
-        toast.success(`❤️ Ditambahkan ke Wishlist!`);
+        const added = toggleWishlist(product);
+        if (added) {
+            toast.success(`❤️ ${product.name} ditambahkan ke Wishlist!`);
+        } else {
+            toast.info(`💔 ${product.name} dihapus dari Wishlist`);
+        }
     });
 
     if (isLoading) {
@@ -260,8 +272,12 @@ export const ProductDetailPage = () => {
                                 </button>
                             </div>
 
-                            <button onClick={handleWishlist} className="w-12 h-12 flex items-center justify-center shrink-0 rounded-lg border border-gray-300 text-gray-600 hover:bg-red-50 hover:text-red-500 hover:border-red-200 transition-colors">
-                                <Heart size={24} />
+                            <button onClick={handleWishlist} className={`w-12 h-12 flex items-center justify-center shrink-0 rounded-lg border transition-colors ${
+                                isInWishlist 
+                                    ? 'bg-red-50 text-red-500 border-red-200' 
+                                    : 'border-gray-300 text-gray-600 hover:bg-red-50 hover:text-red-500 hover:border-red-200'
+                            }`}>
+                                <Heart size={24} className={isInWishlist ? 'fill-current' : ''} />
                             </button>
                             <button className="w-12 h-12 flex items-center justify-center shrink-0 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-50 transition-colors" onClick={() => {
                                 navigator.clipboard.writeText(window.location.href);

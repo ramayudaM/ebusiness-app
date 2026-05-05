@@ -127,8 +127,8 @@ export const ExplorePage = () => {
             <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 flex flex-col lg:flex-row gap-8">
                 
                 {/* Desktop Sidebar Filter */}
-                <aside className="hidden lg:block w-64 shrink-0 space-y-6">
-                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm sticky top-24">
+                <aside className="hidden lg:block w-64 shrink-0 space-y-6 sticky top-[88px] h-fit self-start">
+                    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
                         <div className="flex items-center justify-between mb-4">
                             <h2 className="font-extrabold text-lg text-gray-900 flex items-center gap-2">
                                 <Filter size={20} /> Filter

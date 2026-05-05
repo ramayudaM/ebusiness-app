@@ -7,7 +7,7 @@ export const Layout = ({ children }) => {
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col font-sans text-gray-900 border-x border-gray-100 max-w-[1920px] mx-auto">
             <Navbar />
-            <main className="flex-1 w-full overflow-x-hidden">
+            <main className="flex-1 w-full">
                 {children}
             </main>
             <Footer />

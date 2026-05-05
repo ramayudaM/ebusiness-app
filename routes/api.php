@@ -68,11 +68,23 @@ Route::prefix('v1')->group(function () {
         Route::put('/user/profile', [UserController::class, 'updateProfile'])
             ->name('user.profile.update');
 
-        // Cart
+        // CART
+        Route::get('/cart', [\App\Http\Controllers\Api\V1\User\CartController::class, 'index'])->name('cart.index');
         Route::post('/cart', [\App\Http\Controllers\Api\V1\User\CartController::class, 'store'])->name('cart.store');
+        Route::put('/cart/{id}', [\App\Http\Controllers\Api\V1\User\CartController::class, 'update'])->name('cart.update');
+        Route::delete('/cart/{id}', [\App\Http\Controllers\Api\V1\User\CartController::class, 'destroy'])->name('cart.destroy');
+        Route::delete('/cart', [\App\Http\Controllers\Api\V1\User\CartController::class, 'clear'])->name('cart.clear');
         
-        // Wishlist
-        Route::post('/wishlist', [\App\Http\Controllers\Api\V1\User\WishlistController::class, 'store'])->name('wishlist.store');
+        // WISHLIST
+        Route::get('/wishlist', [\App\Http\Controllers\Api\V1\User\WishlistController::class, 'index'])->name('wishlist.index');
+        Route::post('/wishlist/toggle', [\App\Http\Controllers\Api\V1\User\WishlistController::class, 'toggle'])->name('wishlist.toggle');
+
+        // NOTIFICATIONS
+        Route::get('/notifications', [\App\Http\Controllers\Api\V1\User\NotificationController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/{id}/read', [\App\Http\Controllers\Api\V1\User\NotificationController::class, 'markAsRead'])->name('notifications.read');
+        Route::post('/notifications/read-all', [\App\Http\Controllers\Api\V1\User\NotificationController::class, 'markAllAsRead'])->name('notifications.read_all');
+        Route::delete('/notifications/clear-all', [\App\Http\Controllers\Api\V1\User\NotificationController::class, 'clearAll'])->name('notifications.clear_all');
+        Route::delete('/notifications/{id}', [\App\Http\Controllers\Api\V1\User\NotificationController::class, 'destroy'])->name('notifications.destroy');
 
     });
 
