@@ -51,7 +51,6 @@ export const Navbar = () => {
     const navLinks = [
         { name: 'Beranda', path: '/' },
         { name: 'Eksplorasi', path: '/explore' },
-        ...(isAuthenticated ? [{ name: 'Koleksi', path: '/collection' }] : []),
         { name: 'Bantuan', path: '/help' },
     ];
 
