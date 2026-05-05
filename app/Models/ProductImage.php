@@ -11,6 +11,8 @@ class ProductImage extends Model
     use HasFactory;
 
     public $timestamps = false;
+    
+    protected $appends = ['image_url'];
 
     protected $fillable = [
         'product_id',
@@ -26,5 +28,17 @@ class ProductImage extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Get the full URL for the image.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if (!$this->url) {
+            return null;
+        }
+
+        return asset('storage/' . $this->url);
     }
 }

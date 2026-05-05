@@ -12,7 +12,7 @@ export const ProductGallery = ({ images, mainImageUrl }) => {
     } else if (mainImageUrl) {
         galleryList = [mainImageUrl];
     } else {
-        galleryList = [null]; // This triggers ImageFallback's default behavior
+        galleryList = [null];
     }
 
     const [activeIndex, setActiveIndex] = useState(0);

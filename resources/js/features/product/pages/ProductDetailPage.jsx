@@ -162,7 +162,7 @@ export const ProductDetailPage = () => {
                         <div className="sticky top-24">
                             <ProductGallery
                                 images={product.images}
-                                mainImageUrl={product.primaryImage?.image_url}
+                                mainImageUrl={product.primary_image_url}
                             />
                             {product.media && product.media.length > 0 && (
                                 <ProductMedia mediaItems={product.media} />

@@ -87,7 +87,7 @@ class ProductController extends Controller
             'reviews' => function($q) {
                 $q->latest()->take(5); // Bring only recent reviews initially or adjust.
             },
-            'reviews.user:id,name,avatar'
+            'reviews.user:id,name'
         ])
         ->where('is_active', true)
         ->where(function ($query) use ($slug) {

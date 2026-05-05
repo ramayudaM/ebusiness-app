@@ -17,10 +17,20 @@ export const ProductMedia = ({ mediaItems }) => {
         if (mediaRef.current) {
             if (isPlaying) {
                 mediaRef.current.pause();
+                setIsPlaying(false);
             } else {
-                mediaRef.current.play();
+                const playPromise = mediaRef.current.play();
+                if (playPromise !== undefined) {
+                    playPromise
+                        .then(() => {
+                            setIsPlaying(true);
+                        })
+                        .catch(error => {
+                            console.error("Playback was interrupted:", error);
+                            setIsPlaying(false);
+                        });
+                }
             }
-            setIsPlaying(!isPlaying);
         }
     };
 

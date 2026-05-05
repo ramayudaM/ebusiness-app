@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FALLBACK_PRODUCT } from '../utils/placeholders';
 
 /**
@@ -8,20 +8,20 @@ import { FALLBACK_PRODUCT } from '../utils/placeholders';
  * a placeholder image from Unsplash related to musical instruments.
  */
 export const ImageFallback = ({ src, alt, className, fallbackType = 'instrument' }) => {
-    const [imgSrc, setImgSrc] = useState(src);
     const [hasError, setHasError] = useState(false);
 
+    // Reset error state when the source URL changes
+    useEffect(() => {
+        setHasError(false);
+    }, [src]);
+
     const handleError = () => {
-        if (!hasError) {
-            // Prevent infinite loop if fallback also fails
-            setHasError(true);
-            setImgSrc(FALLBACK_PRODUCT);
-        }
+        setHasError(true);
     };
 
     return (
         <img
-            src={imgSrc || FALLBACK_PRODUCT}
+            src={(!src || hasError) ? FALLBACK_PRODUCT : src}
             alt={alt || 'Product Image'}
             className={className}
             onError={handleError}

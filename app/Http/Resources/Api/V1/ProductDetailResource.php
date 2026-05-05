@@ -57,8 +57,10 @@ class ProductDetailResource extends JsonResource
             'media' => $this->media->map(function ($media) {
                 return [
                     'id' => $media->id,
-                    'type' => $media->media_type, // 'video', 'audio'
-                    'url' => $media->media_url,
+                    'media_type' => $media->media_type,
+                    'media_url' => $media->media_url,
+                    'label' => $media->label,
+                    'duration' => $media->duration_seconds,
                 ];
             }),
 
@@ -79,6 +81,7 @@ class ProductDetailResource extends JsonResource
             'total_reviews' => $this->reviews_count ?? $this->reviews->count(),
             'is_active' => $this->is_active,
             'price_sen' => $this->price_sen, // Base price
+            'primary_image_url' => $this->primary_image_url,
         ];
     }
 }

@@ -74,19 +74,17 @@ class HomeController extends Controller
 
     private function formatProduct(Product $product): array
     {
-        $primaryImage = $product->images->firstWhere('is_primary', true) ?? $product->images->first();
-        
         return [
             'id' => $product->id,
             'name' => $product->name,
             'slug' => $product->slug,
             'price_sen' => $product->price_sen,
             'promo_price_sen' => null,
-            'primary_image_url' => $primaryImage ? $primaryImage->url : null,
+            'primary_image_url' => $product->primary_image_url,
             'average_rating' => (float)($product->average_rating ?? 0),
             'review_count' => (int)($product->reviews_count ?? 0),
-            'is_active' => $product->is_active
-            ,'variations_count' => (int)($product->variations_count ?? 0)
+            'is_active' => $product->is_active,
+            'variations_count' => (int)($product->variations_count ?? 0)
         ];
     }
 }

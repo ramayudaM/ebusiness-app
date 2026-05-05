@@ -53,15 +53,55 @@ class ProductSeeder extends Seeder
 
         // 5. Images
         DB::table('product_images')->insert([
-            ['product_id' => 1, 'url' => 'products/yamaha-fg800/yamaha-fg800-1.jpg', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 6, 'url' => 'products/fender-player-strat/strat-sunburst-1.jpg', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 15, 'url' => 'products/boss-tu3/boss-tu3-1.jpg', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 1, 'url' => 'products/yamaha-fg800/yamaha-fg800-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 1, 'url' => 'products/yamaha-fg800/yamaha-fg800-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+            ['product_id' => 1, 'url' => 'products/yamaha-fg800/yamaha-fg800-3.png', 'sort_order' => 2, 'is_primary' => false, 'created_at' => now()],
+            
+            ['product_id' => 2, 'url' => 'products/fender-cd-60s-sunburst/fender-cd60s-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 2, 'url' => 'products/fender-cd-60s-sunburst/fender-cd60s-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+
+            ['product_id' => 6, 'url' => 'products/fender-player-strat-sunburst/strat-sunburst-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 6, 'url' => 'products/fender-player-strat-sunburst/strat-sunburst-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+
+            ['product_id' => 7, 'url' => 'products/gibson-les-paul-studio-wine/gibson-les-paul-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 7, 'url' => 'products/gibson-les-paul-studio-wine/gibson-les-paul-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+
+            ['product_id' => 8, 'url' => 'products/ibanez-rg550-dsy/ibanez-rg550-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 8, 'url' => 'products/ibanez-rg550-dsy/ibanez-rg550-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+
+            ['product_id' => 13, 'url' => 'products/daddario-exl110-electric/daddario-strings-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 13, 'url' => 'products/daddario-exl110-electric/daddario-strings-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+
+            ['product_id' => 4, 'url' => 'products/taylor-bt1-baby/taylor-bt1-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 4, 'url' => 'products/taylor-bt1-baby/taylor-bt1-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+
+            ['product_id' => 5, 'url' => 'products/martin-lx1-little/martin-lx1-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 5, 'url' => 'products/martin-lx1-little/martin-lx1-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+
+            ['product_id' => 14, 'url' => 'products/fender-champion-50/fender-champion-50-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 14, 'url' => 'products/fender-champion-50/fender-champion-50-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+
+            ['product_id' => 15, 'url' => 'products/boss-tu-3-tuner/boss-tu3-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 15, 'url' => 'products/boss-tu-3-tuner/boss-tu3-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+
+            ['product_id' => 17, 'url' => 'products/yamaha-stage-custom-jet-black/yamaha-stage-custom-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 17, 'url' => 'products/yamaha-stage-custom-jet-black/yamaha-stage-custom-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+
+            ['product_id' => 18, 'url' => 'products/starter-pack-fender-strat/starter-pack-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
+            ['product_id' => 18, 'url' => 'products/starter-pack-fender-strat/starter-pack-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
         ]);
 
         // 6. Media
         DB::table('product_media')->insert([
             ['product_id' => 1, 'type' => 'audio', 'url' => 'products/yamaha-fg800/preview/fg800-strumming-demo.mp3', 'label' => 'Demo Strumming', 'duration_seconds' => 45, 'file_size_bytes' => 720000, 'created_at' => now()],
-            ['product_id' => 6, 'type' => 'video', 'url' => 'products/fender-player-strat/strat-sound-demo.mp4', 'label' => 'Full Sound Demo', 'duration_seconds' => 300, 'file_size_bytes' => 60000000, 'created_at' => now()],
+            ['product_id' => 2, 'type' => 'audio', 'url' => 'products/fender-cd-60s-sunburst/preview/acoustic-demo.mp3', 'label' => 'Acoustic Sound', 'duration_seconds' => 30, 'file_size_bytes' => 500000, 'created_at' => now()],
+            ['product_id' => 4, 'type' => 'audio', 'url' => 'products/taylor-bt1-baby/preview/baby-taylor-demo.mp3', 'label' => 'Bright Tone Demo', 'duration_seconds' => 25, 'file_size_bytes' => 400000, 'created_at' => now()],
+            ['product_id' => 5, 'type' => 'audio', 'url' => 'products/martin-lx1-little/preview/martin-demo.mp3', 'label' => 'Warm Tone Demo', 'duration_seconds' => 28, 'file_size_bytes' => 450000, 'created_at' => now()],
+            ['product_id' => 6, 'type' => 'video', 'url' => 'products/fender-player-strat-sunburst/preview/strat-sound-demo.mp4', 'label' => 'Full Sound Demo', 'duration_seconds' => 300, 'file_size_bytes' => 60000000, 'created_at' => now()],
+            ['product_id' => 7, 'type' => 'audio', 'url' => 'products/gibson-les-paul-studio-wine/preview/electric-demo.mp3', 'label' => 'Crunch Demo', 'duration_seconds' => 40, 'file_size_bytes' => 600000, 'created_at' => now()],
+            ['product_id' => 8, 'type' => 'audio', 'url' => 'products/ibanez-rg550-dsy/preview/shred-demo.mp3', 'label' => 'High Gain Demo', 'duration_seconds' => 35, 'file_size_bytes' => 550000, 'created_at' => now()],
+            ['product_id' => 17, 'type' => 'audio', 'url' => 'products/yamaha-stage-custom-jet-black/preview/drum-demo.mp3', 'label' => 'Drum Kit Sample', 'duration_seconds' => 50, 'file_size_bytes' => 800000, 'created_at' => now()],
+            ['product_id' => 18, 'type' => 'audio', 'url' => 'products/starter-pack-fender-strat/preview/starter-demo.mp3', 'label' => 'Beginner Guide Audio', 'duration_seconds' => 60, 'file_size_bytes' => 900000, 'created_at' => now()],
         ]);
     }
 }
