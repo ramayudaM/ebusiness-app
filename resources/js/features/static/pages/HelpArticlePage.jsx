@@ -26,13 +26,13 @@ export const HelpArticlePage = () => {
                 <div className="space-y-6">
                     <p>NadaKita berkomitmen memberikan pengalaman pengiriman instrumen musik yang paling aman di Indonesia. Kami memahami bahwa instrumen Anda sangat berharga.</p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                            <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2"><Clock size={18} /> Estimasi Waktu</h4>
-                            <p className="text-sm text-gray-600">Proses packing kayu standar studio kami memakan waktu 24 jam untuk memastikan keamanan maksimal sebelum dikirim.</p>
+                        <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 transition-colors">
+                            <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2"><Clock size={18} /> Estimasi Waktu</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Proses packing kayu standar studio kami memakan waktu 24 jam untuk memastikan keamanan maksimal sebelum dikirim.</p>
                         </div>
-                        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100">
-                            <h4 className="font-bold text-gray-900 mb-3 flex items-center gap-2"><ShieldCheck size={18} /> Proteksi Ganda</h4>
-                            <p className="text-sm text-gray-600">Setiap gitar dan keyboard wajib menggunakan Hardcase atau Box Kayu tambahan untuk pengiriman luar kota.</p>
+                        <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 transition-colors">
+                            <h4 className="font-bold text-gray-900 dark:text-white mb-3 flex items-center gap-2"><ShieldCheck size={18} /> Proteksi Ganda</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Setiap gitar dan keyboard wajib menggunakan Hardcase atau Box Kayu tambahan untuk pengiriman luar kota.</p>
                         </div>
                     </div>
                 </div>
@@ -45,18 +45,18 @@ export const HelpArticlePage = () => {
                 <div className="space-y-6">
                     <p>Kami menyediakan berbagai metode pembayaran yang aman dan terverifikasi untuk kenyamanan Anda berbelanja instrumen musik.</p>
                     <ul className="space-y-4">
-                        <li className="flex gap-4 p-4 bg-white border border-gray-100 rounded-xl">
-                            <div className="font-bold text-orange-600">01.</div>
+                        <li className="flex gap-4 p-4 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl transition-colors">
+                            <div className="font-bold text-orange-600 dark:text-orange-400">01.</div>
                             <div>
-                                <h4 className="font-bold">Transfer Bank (VA)</h4>
-                                <p className="text-sm text-gray-500">Mendukung BCA, Mandiri, BNI, dan BRI dengan verifikasi otomatis 24/7.</p>
+                                <h5 className="font-bold text-gray-900 dark:text-white">Virtual Account & Bank Transfer</h5>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Verifikasi otomatis untuk BCA, Mandiri, BNI, dan BRI.</p>
                             </div>
                         </li>
-                        <li className="flex gap-4 p-4 bg-white border border-gray-100 rounded-xl">
-                            <div className="font-bold text-orange-600">02.</div>
+                        <li className="flex gap-4 p-4 bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl transition-colors">
+                            <div className="font-bold text-orange-600 dark:text-orange-400">02.</div>
                             <div>
-                                <h4 className="font-bold">Cicilan 0%</h4>
-                                <p className="text-sm text-gray-500">Nikmati cicilan 0% hingga 12 bulan menggunakan kartu kredit atau partner pembiayaan kami.</p>
+                                <h4 className="font-bold text-gray-900 dark:text-white">Cicilan 0%</h4>
+                                <p className="text-sm text-gray-500 dark:text-gray-400">Nikmati cicilan 0% hingga 12 bulan menggunakan kartu kredit atau partner pembiayaan kami.</p>
                             </div>
                         </li>
                     </ul>
@@ -68,10 +68,10 @@ export const HelpArticlePage = () => {
             icon: <RotateCcw className="text-orange-500" />,
             content: (
                 <div className="space-y-6">
-                    <p>Kepuasan Anda adalah prioritas kami. Jika instrumen yang diterima tidak sesuai atau mengalami kendala teknis, Anda dapat mengajukan retur.</p>
-                    <div className="bg-orange-50 p-6 rounded-2xl border border-orange-100">
-                        <h4 className="font-bold text-orange-900 mb-3 flex items-center gap-2"><CircleAlert size={18} /> Aturan Emas Retur</h4>
-                        <p className="text-sm text-orange-800">Wajib melampirkan video unboxing tanpa terputus. Tanpa video ini, mohon maaf klaim tidak dapat diproses.</p>
+                     <p>Kepuasan Anda adalah prioritas kami. Jika instrumen yang diterima tidak sesuai atau mengalami kendala teknis, Anda dapat mengajukan retur.</p>
+                    <div className="bg-orange-50 dark:bg-orange-950/30 p-6 rounded-2xl border border-orange-100 dark:border-orange-900/50 transition-colors">
+                        <h4 className="font-bold text-orange-900 dark:text-orange-400 mb-3 flex items-center gap-2"><CircleAlert size={18} /> Aturan Emas Retur</h4>
+                        <p className="text-sm text-orange-800 dark:text-orange-300">Wajib melampirkan video unboxing tanpa terputus. Tanpa video ini, mohon maaf klaim tidak dapat diproses.</p>
                     </div>
                 </div>
             )
@@ -81,9 +81,9 @@ export const HelpArticlePage = () => {
             icon: <ShieldCheck className="text-purple-500" />,
             content: (
                 <div className="space-y-6">
-                    <p>NadaKita menjamin data pribadi dan transaksi Anda terlindungi dengan enkripsi standar perbankan.</p>
+                     <p>NadaKita menjamin data pribadi dan transaksi Anda terlindungi dengan enkripsi standar perbankan.</p>
                     <p>Jika Anda merasa ada aktivitas mencurigakan pada akun Anda, segera lakukan:</p>
-                    <ul className="list-disc pl-5 space-y-2 text-sm text-gray-600">
+                    <ul className="list-disc pl-5 space-y-2 text-sm text-gray-600 dark:text-gray-400">
                         <li>Ganti password secara berkala.</li>
                         <li>Jangan berikan kode OTP kepada siapapun, termasuk staf NadaKita.</li>
                         <li>Pastikan URL website selalu <strong>nadakita.id</strong>.</li>
@@ -97,15 +97,15 @@ export const HelpArticlePage = () => {
             content: (
                 <div className="space-y-6">
                     <p>Setelah pesanan Anda dikirim, Anda akan menerima nomor resi melalui email dan notifikasi di akun NadaKita Anda. Anda dapat melacak status pengiriman melalui langkah berikut:</p>
-                    <ol className="list-decimal pl-5 space-y-3">
+                     <ol className="list-decimal pl-5 space-y-3">
                         <li>Masuk ke akun NadaKita Anda.</li>
                         <li>Buka menu <strong>Pesanan Saya</strong>.</li>
                         <li>Pilih pesanan yang ingin Anda lacak.</li>
                         <li>Klik tombol <strong>Lacak Resi</strong> untuk melihat status terbaru dari ekspedisi.</li>
                     </ol>
-                    <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 flex gap-4">
-                        <Info className="text-blue-600 shrink-0" size={24} />
-                        <p className="text-sm text-blue-800 leading-relaxed">Pembaruan status pengiriman biasanya memakan waktu 1x24 jam setelah kurir menjemput paket dari studio kami.</p>
+                    <div className="bg-blue-50 dark:bg-blue-950/30 p-6 rounded-2xl border border-blue-100 dark:border-blue-900/50 flex gap-4 transition-colors">
+                        <Info className="text-blue-600 dark:text-blue-400 shrink-0" size={24} />
+                        <p className="text-sm text-blue-800 dark:text-blue-300 leading-relaxed">Pembaruan status pengiriman biasanya memakan waktu 1x24 jam setelah kurir menjemput paket dari studio kami.</p>
                     </div>
                 </div>
             )
@@ -130,19 +130,19 @@ export const HelpArticlePage = () => {
             icon: <ShieldCheck className="text-green-500" />,
             content: (
                 <div className="space-y-6">
-                    <p>Semua instrumen yang dibeli di NadaKita sudah termasuk <strong>Asuransi Pengiriman Penuh</strong> secara gratis.</p>
-                    <div className="grid md:grid-cols-2 gap-4">
-                        <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                            <h4 className="font-bold mb-2">Apa yang Dicover?</h4>
-                            <ul className="text-sm space-y-1 text-gray-600">
+                    <p className="text-gray-900 dark:text-gray-100">Semua instrumen yang dibeli di NadaKita sudah termasuk <strong>Asuransi Pengiriman Penuh</strong> secara gratis.</p>
+                     <div className="grid md:grid-cols-2 gap-4">
+                        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 transition-colors">
+                            <h4 className="font-bold text-gray-900 dark:text-white mb-2">Apa yang Dicover?</h4>
+                            <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
                                 <li>• Kerusakan fisik akibat benturan</li>
                                 <li>• Kehilangan paket</li>
                                 <li>• Kerusakan akibat air/cuaca</li>
                             </ul>
                         </div>
-                        <div className="p-4 bg-gray-50 rounded-xl border border-gray-100">
-                            <h4 className="font-bold mb-2">Syarat Klaim</h4>
-                            <ul className="text-sm space-y-1 text-gray-600">
+                        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 transition-colors">
+                            <h4 className="font-bold text-gray-900 dark:text-white mb-2">Syarat Klaim</h4>
+                            <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-400">
                                 <li>• Video Unboxing tanpa jeda</li>
                                 <li>• Foto resi yang jelas</li>
                                 <li>• Maksimal 24 jam setelah diterima</li>
@@ -158,18 +158,18 @@ export const HelpArticlePage = () => {
             content: (
                 <div className="space-y-6">
                     <p>Pilih metode pembayaran yang paling nyaman untuk Anda:</p>
-                    <div className="space-y-4">
-                        <div className="p-4 border border-gray-100 rounded-xl">
-                            <h4 className="font-bold">Virtual Account</h4>
-                            <p className="text-sm text-gray-600">BCA, Mandiri, BNI, BRI, Permata. Verifikasi otomatis.</p>
+                     <div className="space-y-4">
+                        <div className="p-4 border border-gray-100 dark:border-gray-800 rounded-xl transition-colors">
+                            <h4 className="font-bold text-gray-900 dark:text-white">Virtual Account</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">BCA, Mandiri, BNI, BRI, Permata. Verifikasi otomatis.</p>
                         </div>
-                        <div className="p-4 border border-gray-100 rounded-xl">
-                            <h4 className="font-bold">E-Wallet</h4>
-                            <p className="text-sm text-gray-600">GoPay, OVO, ShopeePay, Dana, LinkAja.</p>
+                        <div className="p-4 border border-gray-100 dark:border-gray-800 rounded-xl transition-colors">
+                            <h4 className="font-bold text-gray-900 dark:text-white">E-Wallet</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">GoPay, OVO, ShopeePay, Dana, LinkAja.</p>
                         </div>
-                        <div className="p-4 border border-gray-100 rounded-xl">
-                            <h4 className="font-bold">Kartu Kredit & Cicilan</h4>
-                            <p className="text-sm text-gray-600">Visa, Mastercard, JCB, AMEX. Cicilan 0% hingga 12 bulan.</p>
+                        <div className="p-4 border border-gray-100 dark:border-gray-800 rounded-xl transition-colors">
+                            <h4 className="font-bold text-gray-900 dark:text-white">Kartu Kredit & Cicilan</h4>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">Visa, Mastercard, JCB, AMEX. Cicilan 0% hingga 12 bulan.</p>
                         </div>
                     </div>
                 </div>
@@ -196,7 +196,7 @@ export const HelpArticlePage = () => {
             content: (
                 <div className="space-y-6">
                     <p>Proses refund dilakukan jika pesanan dibatalkan atau produk tidak tersedia.</p>
-                    <ol className="list-decimal pl-5 space-y-2 text-sm text-gray-600">
+                     <ol className="list-decimal pl-5 space-y-2 text-sm text-gray-600 dark:text-gray-400">
                         <li>Pengajuan refund diproses maksimal 3-5 hari kerja.</li>
                         <li>Refund akan dikirimkan ke saldo akun NadaKita atau rekening asal pembayar.</li>
                         <li>Untuk pembayaran via Kartu Kredit, refund akan muncul pada tagihan bulan berikutnya.</li>
@@ -210,8 +210,8 @@ export const HelpArticlePage = () => {
             content: (
                 <div className="space-y-6">
                     <p>Produk dapat diretur jika terjadi kerusakan pabrik atau kesalahan pengiriman oleh tim NadaKita.</p>
-                    <p><strong>Syarat Retur:</strong></p>
-                    <ul className="list-disc pl-5 text-sm text-gray-600 space-y-1">
+                     <p><strong>Syarat Retur:</strong></p>
+                    <ul className="list-disc pl-5 text-sm text-gray-600 dark:text-gray-400 space-y-1">
                         <li>Produk belum digunakan secara intensif.</li>
                         <li>Kelengkapan (box, kartu garansi, aksesoris) masih utuh.</li>
                         <li>Maksimal pengajuan 3 hari setelah barang diterima.</li>
@@ -225,9 +225,9 @@ export const HelpArticlePage = () => {
             content: (
                 <div className="space-y-6">
                     <p>Setiap instrumen di NadaKita mendapatkan garansi resmi distributor atau garansi toko selama 1 tahun.</p>
-                    <div className="bg-blue-50 p-6 rounded-2xl">
-                        <h4 className="font-bold text-blue-900 mb-2">Cara Klaim:</h4>
-                        <p className="text-sm text-blue-800">Cukup bawa unit Anda beserta invoice pembelian dan kartu garansi ke Service Center mitra kami atau kirimkan kembali ke Studio NadaKita.</p>
+                     <div className="bg-blue-50 dark:bg-blue-950/30 p-6 rounded-2xl transition-colors">
+                        <h4 className="font-bold text-blue-900 dark:text-blue-400 mb-2">Cara Klaim:</h4>
+                        <p className="text-sm text-blue-800 dark:text-blue-300">Cukup bawa unit Anda beserta invoice pembelian dan kartu garansi ke Service Center mitra kami atau kirimkan kembali ke Studio NadaKita.</p>
                     </div>
                 </div>
             )
@@ -238,7 +238,7 @@ export const HelpArticlePage = () => {
             content: (
                 <div className="space-y-6">
                     <p>Ingin ganti warna atau tipe instrumen? Kami melayani tukar unit dengan ketentuan:</p>
-                    <ul className="list-disc pl-5 text-sm text-gray-600 space-y-2">
+                     <ul className="list-disc pl-5 text-sm text-gray-600 dark:text-gray-400 space-y-2">
                         <li>Hanya berlaku dalam 1x24 jam setelah barang diterima.</li>
                         <li>Kondisi barang harus 100% mulus (Like New).</li>
                         <li>Biaya pengiriman bolak-balik ditanggung oleh pembeli.</li>
@@ -297,9 +297,9 @@ export const HelpArticlePage = () => {
                             { q: "Di mana lokasi studio fisik NadaKita?", a: "Studio utama kami berada di Jakarta Selatan. Anda dapat berkunjung untuk mencoba instrumen dengan membuat janji temu terlebih dahulu." },
                             { q: "Apakah ada diskon untuk pelajar?", a: "Ya! Kami memiliki program NadaPelajar yang memberikan potongan harga 10% untuk instrumen tertentu dengan melampirkan kartu pelajar." }
                         ].map((item, i) => (
-                            <div key={i} className="border-b border-gray-100 pb-6">
-                                <h4 className="font-bold text-gray-900 mb-2">Q: {item.q}</h4>
-                                <p className="text-gray-600 text-sm leading-relaxed">A: {item.a}</p>
+                            <div key={i} className="border-b border-gray-100 dark:border-gray-800 pb-6 transition-colors">
+                                <h4 className="font-bold text-gray-900 dark:text-white mb-2">Q: {item.q}</h4>
+                                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">A: {item.a}</p>
                             </div>
                         ))}
                     </div>
@@ -321,9 +321,9 @@ export const HelpArticlePage = () => {
 
     return (
         <Layout>
-            <div className="bg-white border-b border-gray-100">
+            <div className="bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 transition-colors">
                 <div className="max-w-4xl mx-auto px-4 md:px-8 py-4">
-                    <Link to="/help" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-orange-600 transition-colors font-medium">
+                    <Link to="/help" className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 transition-colors font-medium">
                         <ChevronLeft size={16} /> Kembali ke Pusat Bantuan
                     </Link>
                 </div>
@@ -331,24 +331,23 @@ export const HelpArticlePage = () => {
 
             <div className="max-w-4xl mx-auto px-4 md:px-8 py-16">
                 <header className="mb-12">
-                    <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-3xl">
+                    <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-6 text-3xl transition-colors">
                         {article.icon}
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-4 transition-colors">
                         {article.title}
                     </h1>
-                    <div className="flex items-center gap-4 text-sm text-gray-400">
+                    <div className="flex items-center gap-4 text-sm text-gray-400 dark:text-gray-500">
                         <span className="flex items-center gap-1.5"><Clock size={14} /> Terakhir diperbarui: 5 Mei 2026</span>
-                        <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                        <span className="w-1 h-1 bg-gray-300 dark:bg-gray-700 rounded-full"></span>
                         <span>Estimasi baca: 3 menit</span>
                     </div>
                 </header>
 
-                <div className="prose prose-orange max-w-none text-gray-700 leading-relaxed">
+                <div className="prose prose-orange max-w-none text-gray-700 dark:text-gray-300 leading-relaxed transition-colors">
                     {article.content}
                 </div>
             </div>
         </Layout>
     );
 };
-

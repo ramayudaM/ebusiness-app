@@ -8,7 +8,9 @@ import { CartPage } from '../features/cart/pages/CartPage';
 import { CheckoutPage } from '../features/cart/pages/CheckoutPage';
 import { OrdersPage } from '../features/account/pages/OrdersPage';
 import { OrderDetailPage } from '../features/account/pages/OrderDetailPage';
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { WishlistPage } from '../features/account/pages/WishlistPage';
+import { ProfilePage } from '../features/account/pages/ProfilePage';
+import { Routes, Route, Navigate, Link } from 'react-router-dom'
 import LoginPage from '../features/auth/LoginPage'
 import RegisterPage from '../features/auth/RegisterPage'
 import GuestRoute from '../shared/components/GuestRoute'
@@ -100,17 +102,7 @@ export function AppRoutes() {
         path="/account/profile"
         element={
           <ProtectedRoute>
-            <div className="min-h-screen bg-gray-50 flex flex-col">
-              <Navbar />
-              <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-12 text-center">
-                <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <User size={40} />
-                </div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">Profil Saya</h1>
-                <p className="text-gray-500">Halaman profil sedang dalam pengembangan.</p>
-              </div>
-              <Footer />
-            </div>
+            <ProfilePage />
           </ProtectedRoute>
         }
       />
@@ -118,17 +110,7 @@ export function AppRoutes() {
         path="/account/wishlist"
         element={
           <ProtectedRoute>
-            <div className="min-h-screen bg-gray-50 flex flex-col">
-              <Navbar />
-              <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-12 text-center">
-                <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Heart size={40} />
-                </div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">Wishlist Saya</h1>
-                <p className="text-gray-500">Halaman wishlist sedang dalam pengembangan.</p>
-              </div>
-              <Footer />
-            </div>
+            <WishlistPage />
           </ProtectedRoute>
         }
       />
@@ -171,7 +153,16 @@ export function AppRoutes() {
         }
       />
 
-      <Route path="*" element={<div>404 — Halaman tidak ditemukan</div>} />
+      <Route path="*" element={
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center text-center p-4 transition-colors duration-300">
+          <div className="text-9xl font-black text-gray-200 dark:text-gray-800 absolute -z-10 select-none">404</div>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Halaman Tidak Ditemukan</h1>
+          <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md">Maaf, halaman yang Anda cari tidak ada atau telah dipindahkan ke alamat lain.</p>
+          <Link to="/" className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-8 rounded-full transition-all">
+            Kembali ke Beranda
+          </Link>
+        </div>
+      } />
     </Routes>
   )
 }

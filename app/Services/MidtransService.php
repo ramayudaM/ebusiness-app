@@ -4,15 +4,21 @@ namespace App\Services;
 
 use Midtrans\Config;
 use Midtrans\Snap;
+use Midtrans\Transaction;
 
 class MidtransService
 {
     public function __construct()
     {
-        Config::$serverKey = env('MIDTRANS_SERVER_KEY');
-        Config::$isProduction = env('MIDTRANS_IS_PRODUCTION', false);
-        Config::$isSanitized = env('MIDTRANS_IS_SANITIZED', true);
-        Config::$is3ds = env('MIDTRANS_IS_3DS', true);
+        Config::$serverKey = config('services.midtrans.server_key');
+        Config::$isProduction = config('services.midtrans.is_production', false);
+        Config::$isSanitized = config('services.midtrans.is_sanitized', true);
+        Config::$is3ds = config('services.midtrans.is_3ds', true);
+    }
+
+    public function checkStatus($orderNumber)
+    {
+        return Transaction::status($orderNumber);
     }
 
     public function getSnapToken($order, $items)

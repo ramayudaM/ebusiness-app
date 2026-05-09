@@ -112,7 +112,7 @@ export const HelpPage = () => {
                             placeholder="Cari kendala atau pertanyaan Anda..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl py-5 pl-14 pr-6 text-white placeholder-gray-400 outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-lg"
+                            className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl py-5 pl-14 pr-6 text-white placeholder-gray-400 outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-lg"
                         />
                     </div>
                 </div>
@@ -122,24 +122,24 @@ export const HelpPage = () => {
             <div className="max-w-7xl mx-auto px-4 md:px-8 -mt-12 mb-20 relative z-20">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {categories.map((cat, i) => (
-                        <div key={i} className="bg-white rounded-3xl p-7 shadow-xl shadow-gray-200/50 border border-gray-100 hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                        <div key={i} className="bg-white dark:bg-gray-900 rounded-3xl p-7 shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-800 hover:-translate-y-1 transition-all duration-300 flex flex-col">
                             <Link to={`/help/${cat.slug}`} className="block group mb-6">
-                                <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 text-2xl group-hover:bg-orange-50 group-hover:text-orange-600 transition-colors">
+                                <div className="w-14 h-14 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-6 text-2xl group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 group-hover:text-orange-600 transition-colors">
                                     {cat.icon}
                                 </div>
-                                <h3 className="font-extrabold text-xl text-gray-900 mb-3 group-hover:text-orange-600 transition-colors">{cat.title}</h3>
-                                <p className="text-sm text-gray-500 leading-relaxed">
+                                <h3 className="font-extrabold text-xl text-gray-900 dark:text-white mb-3 group-hover:text-orange-600 transition-colors">{cat.title}</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
                                     {cat.description}
                                 </p>
                             </Link>
                             
-                            <div className="mt-auto pt-6 border-t border-gray-50">
+                            <div className="mt-auto pt-6 border-t border-gray-100 dark:border-gray-800 transition-colors">
                                 <ul className="space-y-4">
                                     {cat.links.map(link => (
                                         <li key={link.slug}>
                                             <Link 
                                                 to={`/help/${link.slug}`}
-                                                className="flex items-center justify-between w-full text-sm font-bold text-gray-700 hover:text-orange-600 group transition-colors"
+                                                className="flex items-center justify-between w-full text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-orange-600 transition-colors"
                                             >
                                                 {link.name}
                                                 <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
@@ -160,7 +160,7 @@ export const HelpPage = () => {
                     {/* FAQ Section */}
                     <div className="lg:col-span-2">
                         <div className="flex items-center justify-between mb-10">
-                            <h2 className="text-2xl font-extrabold text-gray-900 flex items-center gap-3">
+                            <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white flex items-center gap-3">
                                 <CircleHelp className="text-orange-600" /> 
                                 {searchQuery ? `Hasil Pencarian (${filteredFaqs.length})` : 'Pertanyaan Populer'}
                             </h2>
@@ -168,27 +168,27 @@ export const HelpPage = () => {
 
                         {filteredFaqs.length > 0 ? (
                             <div className="space-y-4">
-                                {filteredFaqs.map((faq, i) => (
-                                    <details key={i} className="group bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all duration-300 open:ring-2 open:ring-orange-100">
+                                 {filteredFaqs.map((faq, i) => (
+                                    <details key={i} className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden transition-all duration-300 open:ring-2 open:ring-orange-100 dark:open:ring-orange-900/30">
                                         <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                                            <span className="font-bold text-gray-800 pr-4 group-open:text-orange-600 transition-colors">{faq.q}</span>
-                                            <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center group-open:bg-orange-50 group-open:text-orange-600 transition-all">
+                                            <span className="font-bold text-gray-800 dark:text-gray-200 pr-4 group-open:text-orange-600 dark:group-open:text-orange-400 transition-colors">{faq.q}</span>
+                                            <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center group-open:bg-orange-50 dark:group-open:bg-orange-900/40 group-open:text-orange-600 dark:group-open:text-orange-400 transition-all">
                                                 <ChevronDown size={18} className="transition-transform group-open:rotate-180" />
                                             </div>
                                         </summary>
-                                        <div className="px-6 pb-6 text-gray-600 text-[15px] leading-relaxed border-t border-gray-50 pt-5">
+                                        <div className="px-6 pb-6 text-gray-600 dark:text-gray-400 text-[15px] leading-relaxed border-t border-gray-50 dark:border-gray-800 pt-5 transition-colors">
                                             {faq.a}
                                         </div>
                                     </details>
                                 ))}
                             </div>
                         ) : (
-                            <div className="bg-gray-50 rounded-3xl p-12 text-center border-2 border-dashed border-gray-200">
-                                <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-                                    <Search size={24} className="text-gray-300" />
+                            <div className="bg-gray-50 dark:bg-gray-900 rounded-3xl p-12 text-center border-2 border-dashed border-gray-200 dark:border-gray-700 transition-colors">
+                                <div className="w-16 h-16 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                                    <Search size={24} className="text-gray-300 dark:text-gray-600" />
                                 </div>
-                                <h4 className="text-lg font-bold text-gray-900 mb-2">Pencarian Tidak Ditemukan</h4>
-                                <p className="text-gray-500 max-w-xs mx-auto">Kami tidak dapat menemukan jawaban untuk "{searchQuery}". Coba kata kunci lain.</p>
+                                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Pencarian Tidak Ditemukan</h4>
+                                <p className="text-gray-500 dark:text-gray-400 max-w-xs mx-auto">Kami tidak dapat menemukan jawaban untuk "{searchQuery}". Coba kata kunci lain.</p>
                             </div>
                         )}
 
@@ -244,16 +244,16 @@ export const HelpPage = () => {
                             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
                         </div>
 
-                        <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-                            <h4 className="font-bold text-gray-900 mb-4">Jam Operasional Studio</h4>
-                            <div className="space-y-2 text-sm text-gray-600">
+                        <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 transition-colors">
+                            <h4 className="font-bold text-gray-900 dark:text-white mb-4">Jam Operasional Studio</h4>
+                            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
                                 <div className="flex justify-between">
                                     <span>Senin - Jumat</span>
-                                    <span className="font-bold">09:00 - 20:00</span>
+                                    <span className="font-bold text-gray-900 dark:text-white transition-colors">09:00 - 20:00</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>Sabtu - Minggu</span>
-                                    <span className="font-bold">10:00 - 17:00</span>
+                                    <span className="font-bold text-gray-900 dark:text-white transition-colors">10:00 - 17:00</span>
                                 </div>
                             </div>
                         </div>

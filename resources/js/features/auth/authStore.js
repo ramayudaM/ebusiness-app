@@ -32,6 +32,12 @@ const useAuthStore = create(
         })
       },
 
+      updateUser: (updatedUser) => {
+        set((state) => ({
+          user: { ...state.user, ...updatedUser }
+        }))
+      },
+
       // Getters
       isAdmin: () => get().user?.role === 'admin',
       isCustomer: () => get().user?.role === 'customer',

@@ -227,40 +227,37 @@ export const CheckoutPage = () => {
     const grandTotal = subtotal + shippingCost;
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
             <Navbar />
             
-            <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-8 md:py-12">
-                <div className="flex items-center gap-4 mb-8">
-                    <Link to="/cart" className="p-2 hover:bg-white rounded-full transition-colors text-gray-500">
-                        <ArrowLeft size={20} />
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
+                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
+                    <Link to="/cart" className="hover:text-orange-600 flex items-center gap-1">
+                        <ArrowLeft size={14} /> Kembali ke Keranjang
                     </Link>
-                    <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Checkout</h1>
+                    <ChevronRight size={14} />
+                    <span className="text-gray-900 dark:text-white font-bold">Checkout</span>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                     {/* Left Column: Details */}
                     <div className="lg:col-span-2 space-y-6">
-                        
-                        {/* 1. Alamat Pengiriman */}
-                        <section className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                            <div className="p-6 border-b border-gray-50 flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center text-orange-600">
-                                        <MapPin size={20} />
-                                    </div>
-                                    <h2 className="text-xl font-bold text-gray-900">Alamat Pengiriman</h2>
+                            {/* Address Section */}
+                            <section className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
+                                <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between bg-gray-50/50 dark:bg-gray-950/50">
+                                    <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                                        <MapPin size={20} className="text-orange-600" /> Alamat Pengiriman
+                                    </h2>
+                                    <button 
+                                        onClick={() => {
+                                            setIsEditing(false);
+                                            setShowAddressForm(true);
+                                        }}
+                                        className="text-sm font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1"
+                                    >
+                                        <Plus size={16} /> Tambah Baru
+                                    </button>
                                 </div>
-                                <button 
-                                    onClick={() => {
-                                        setIsEditing(false);
-                                        setShowAddressForm(true);
-                                    }}
-                                    className="text-sm font-bold text-orange-600 hover:text-orange-700 flex items-center gap-1"
-                                >
-                                    <Plus size={16} /> Tambah Alamat
-                                </button>
-                            </div>
 
                             <div className="p-6 space-y-4">
                                 {addresses.length > 0 ? (
@@ -271,8 +268,8 @@ export const CheckoutPage = () => {
                                                 onClick={() => setSelectedAddressId(addr.id)}
                                                 className={`group p-4 rounded-xl border-2 cursor-pointer transition-all relative ${
                                                     selectedAddressId === addr.id 
-                                                    ? 'border-orange-600 bg-orange-50/30' 
-                                                    : 'border-gray-100 hover:border-gray-200'
+                                                    ? 'border-orange-600 bg-orange-50/30 dark:bg-orange-900/10' 
+                                                    : 'border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 bg-white dark:bg-gray-950'
                                                 }`}
                                             >
                                                 <div className="flex items-center justify-between mb-2">
@@ -282,23 +279,23 @@ export const CheckoutPage = () => {
                                                         <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <button 
                                                                 onClick={(e) => { e.stopPropagation(); handleEditAddress(addr); }}
-                                                                className="p-1.5 bg-white border border-gray-100 rounded-lg text-gray-400 hover:text-blue-600 hover:border-blue-100 shadow-sm"
+                                                                className="p-1.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg text-gray-400 hover:text-blue-600 hover:border-blue-100 shadow-sm"
                                                             >
                                                                 <Pencil size={14} />
                                                             </button>
                                                             <button 
                                                                 onClick={(e) => handleDeleteAddress(e, addr.id)}
-                                                                className="p-1.5 bg-white border border-gray-100 rounded-lg text-gray-400 hover:text-red-600 hover:border-red-100 shadow-sm"
+                                                                className="p-1.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg text-gray-400 hover:text-red-600 hover:border-red-100 shadow-sm"
                                                             >
                                                                 <Trash2 size={14} />
                                                             </button>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <p className="font-bold text-gray-900">{addr.receiver_name}</p>
-                                                <p className="text-sm text-gray-600 mt-1">{addr.phone_number}</p>
-                                                <p className="text-sm text-gray-500 mt-2 line-clamp-2">{addr.full_address}</p>
-                                                <p className="text-sm text-gray-500">{addr.city_name}, {addr.province_name} {addr.postal_code}</p>
+                                                <p className="font-bold text-gray-900 dark:text-white">{addr.receiver_name}</p>
+                                                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{addr.phone_number}</p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-500 mt-2 line-clamp-2">{addr.full_address}</p>
+                                                <p className="text-sm text-gray-500 dark:text-gray-500">{addr.city_name}, {addr.province_name} {addr.postal_code}</p>
                                             </div>
                                         ))}
                                     </div>
@@ -317,12 +314,12 @@ export const CheckoutPage = () => {
                         </section>
 
                         {/* 2. Pengiriman */}
-                        <section className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                            <div className="p-6 border-b border-gray-50 flex items-center gap-3">
-                                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
+                        <section className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+                            <div className="p-6 border-b border-gray-50 dark:border-gray-800 flex items-center gap-3 bg-gray-50/50 dark:bg-gray-950/50">
+                                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center text-blue-600 dark:text-blue-400 transition-colors">
                                     <Truck size={20} />
                                 </div>
-                                <h2 className="text-xl font-bold text-gray-900">Pilihan Pengiriman</h2>
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Pilihan Pengiriman</h2>
                             </div>
                             
                             <div className="p-6">
@@ -338,8 +335,8 @@ export const CheckoutPage = () => {
                                                  onClick={() => setSelectedService(service)}
                                                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center justify-between ${
                                                      selectedService?.service === service.service && selectedService?.courier === service.courier
-                                                     ? 'border-blue-600 bg-blue-50/30' 
-                                                     : 'border-gray-50 hover:border-gray-100'
+                                                     ? 'border-blue-600 bg-blue-50/30 dark:bg-blue-900/10' 
+                                                     : 'border-gray-50 dark:border-gray-800 hover:border-gray-100 dark:hover:border-gray-700 bg-white dark:bg-gray-950'
                                                  }`}
                                              >
                                                  <div>
@@ -364,22 +361,22 @@ export const CheckoutPage = () => {
                                                                  {service.courier}
                                                              </span>
                                                          )}
-                                                         <p className="font-bold text-gray-900">{service.service}</p>
+                                                         <p className="font-bold text-gray-900 dark:text-white">{service.service}</p>
                                                      </div>
-                                                     <p className="text-xs text-gray-500">{service.description} ({service.cost[0].etd} hari)</p>
+                                                     <p className="text-xs text-gray-500 dark:text-gray-400">{service.description} ({service.cost[0].etd} hari)</p>
                                                  </div>
-                                                 <p className="font-extrabold text-gray-900">{formatPrice(service.cost[0].value)}</p>
+                                                 <p className="font-extrabold text-gray-900 dark:text-white">{formatPrice(service.cost[0].value)}</p>
                                              </div>
                                          ))}
                                      </div>
                                  ) : selectedAddressId ? (
-                                     <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex gap-3 text-red-600">
-                                         <Info size={18} className="shrink-0 mt-0.5" />
-                                         <div>
-                                             <p className="text-sm font-bold">Tidak ada layanan pengiriman tersedia.</p>
-                                             <p className="text-xs mt-1">Coba gunakan alamat lain di kota-kota besar (seperti Jakarta, Surabaya, atau Bandung) atau pastikan berat produk valid.</p>
-                                         </div>
-                                     </div>
+                                      <div className="bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/50 rounded-xl p-4 flex gap-3 text-red-600 dark:text-red-400">
+                                          <Info size={18} className="shrink-0 mt-0.5" />
+                                          <div>
+                                              <p className="text-sm font-bold">Tidak ada layanan pengiriman tersedia.</p>
+                                              <p className="text-xs mt-1 text-red-500 dark:text-red-400/80">Coba gunakan alamat lain di kota-kota besar (seperti Jakarta, Surabaya, atau Bandung) atau pastikan berat produk valid.</p>
+                                          </div>
+                                      </div>
                                  ) : (
                                      <p className="text-sm text-gray-500 italic">Pilih alamat terlebih dahulu untuk melihat pilihan pengiriman.</p>
                                  )}
@@ -387,24 +384,24 @@ export const CheckoutPage = () => {
                         </section>
 
                         {/* 3. Produk Terpilih */}
-                        <section className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-                            <div className="p-6 border-b border-gray-50 flex items-center gap-3">
-                                <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+                        <section className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+                            <div className="p-6 border-b border-gray-50 dark:border-gray-800 flex items-center gap-3 bg-gray-50/50 dark:bg-gray-950/50">
+                                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center text-purple-600 dark:purple-400">
                                     <ShoppingCart size={20} />
                                 </div>
-                                <h2 className="text-xl font-bold text-gray-900">Rincian Produk</h2>
+                                <h2 className="text-xl font-bold text-gray-900 dark:text-white">Rincian Produk</h2>
                             </div>
                             <div className="p-6 space-y-4">
-                                {items.filter(i => i.isSelected).map((item) => (
+                                 {items.filter(i => i.isSelected).map((item) => (
                                     <div key={item.cartItemId} className="flex gap-4">
-                                        <div className="w-16 h-16 rounded-lg bg-gray-50 border border-gray-100 overflow-hidden shrink-0">
+                                        <div className="w-16 h-16 rounded-lg bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 overflow-hidden shrink-0">
                                             <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-bold text-gray-900 line-clamp-1">{item.name}</p>
-                                            <p className="text-xs text-gray-500 mt-0.5">{item.quantity} x {formatPrice(item.price)}</p>
+                                            <p className="font-bold text-gray-900 dark:text-white line-clamp-1">{item.name}</p>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{item.quantity} x {formatPrice(item.price)}</p>
                                         </div>
-                                        <p className="font-bold text-gray-900">{formatPrice(item.price * item.quantity)}</p>
+                                        <p className="font-bold text-gray-900 dark:text-white">{formatPrice(item.price * item.quantity)}</p>
                                     </div>
                                 ))}
                             </div>
@@ -413,27 +410,27 @@ export const CheckoutPage = () => {
 
                     {/* Right Column: Summary */}
                     <div className="lg:sticky lg:top-[100px] space-y-6">
-                        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-xl relative overflow-hidden">
+                        <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-xl relative overflow-hidden">
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-amber-500"></div>
                             
-                            <h3 className="text-xl font-extrabold text-gray-900 mb-6">Ringkasan Pesanan</h3>
+                            <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-6">Ringkasan Pesanan</h3>
                             
                             <div className="space-y-4 mb-8">
-                                <div className="flex justify-between text-gray-600">
+                                <div className="flex justify-between text-gray-600 dark:text-gray-400">
                                     <span className="text-sm">Total Harga ({getSelectedTotalItems()} produk)</span>
-                                    <span className="font-bold">{formatPrice(subtotal)}</span>
+                                    <span className="font-bold text-gray-900 dark:text-white">{formatPrice(subtotal)}</span>
                                 </div>
-                                <div className="flex justify-between text-gray-600">
+                                <div className="flex justify-between text-gray-600 dark:text-gray-400">
                                     <span className="text-sm">Total Ongkos Kirim</span>
-                                    <span className="font-bold">{formatPrice(shippingCost)}</span>
+                                    <span className="font-bold text-gray-900 dark:text-white">{formatPrice(shippingCost)}</span>
                                 </div>
                                 
-                                <div className="h-px bg-gray-100 my-4"></div>
+                                <div className="h-px bg-gray-100 dark:bg-gray-800 my-4"></div>
                                 
                                 <div className="flex justify-between items-end">
                                     <div>
-                                        <p className="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Pembayaran</p>
-                                        <p className="text-2xl font-black text-gray-950 mt-1">{formatPrice(grandTotal)}</p>
+                                        <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Total Pembayaran</p>
+                                        <p className="text-2xl font-black text-gray-950 dark:text-white mt-1">{formatPrice(grandTotal)}</p>
                                     </div>
                                 </div>
                             </div>
@@ -441,7 +438,7 @@ export const CheckoutPage = () => {
                             <button 
                                 onClick={handleProcessCheckout}
                                 disabled={isProcessing || !selectedAddressId || !selectedService}
-                                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-all transform active:scale-95 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed group shadow-lg shadow-orange-100"
+                                className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-all transform active:scale-95 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed group shadow-lg shadow-orange-100 dark:shadow-none"
                             >
                                 {isProcessing ? (
                                     <>
@@ -466,13 +463,13 @@ export const CheckoutPage = () => {
                         </div>
 
                         {/* Notes */}
-                        <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-                            <h4 className="text-sm font-bold text-gray-900 mb-3">Catatan Pesanan (Opsional)</h4>
+                        <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm mt-6">
+                            <h4 className="text-sm font-bold text-gray-900 dark:text-white mb-3">Catatan Pesanan (Opsional)</h4>
                             <textarea 
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
                                 placeholder="Tulis catatan untuk toko..."
-                                className="w-full bg-gray-50 border border-gray-100 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-all min-h-[100px] resize-none"
+                                className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-3 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 dark:text-white dark:placeholder-gray-500 transition-all min-h-[100px] resize-none"
                             />
                         </div>
                     </div>
@@ -482,23 +479,23 @@ export const CheckoutPage = () => {
             {/* Address Form Modal */}
             {showAddressForm && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
-                            <h3 className="text-xl font-bold text-gray-900">
+                    <div className="bg-white dark:bg-gray-900 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                        <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white">
                                 {isEditing ? 'Edit Alamat' : 'Tambah Alamat Baru'}
                             </h3>
-                            <button onClick={() => setShowAddressForm(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                            <button onClick={() => setShowAddressForm(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors text-gray-500 dark:text-gray-400">
                                 <X size={20} />
                             </button>
                         </div>
-                        <div className="p-6 max-h-[70vh] overflow-y-auto">
+                        <div className="p-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1 md:col-span-2">
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Label Alamat</label>
                                     <input 
                                         type="text" 
                                         placeholder="Contoh: Rumah, Kantor"
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none"
+                                        className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none dark:text-white dark:placeholder-gray-500"
                                         value={addressForm.label}
                                         onChange={(e) => setAddressForm({...addressForm, label: e.target.value})}
                                     />
@@ -507,7 +504,7 @@ export const CheckoutPage = () => {
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Nama Penerima</label>
                                     <input 
                                         type="text" 
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none"
+                                        className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none dark:text-white dark:placeholder-gray-500"
                                         value={addressForm.receiver_name}
                                         onChange={(e) => setAddressForm({...addressForm, receiver_name: e.target.value})}
                                     />
@@ -516,7 +513,7 @@ export const CheckoutPage = () => {
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Nomor Telepon</label>
                                     <input 
                                         type="text" 
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none"
+                                        className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none dark:text-white dark:placeholder-gray-500"
                                         value={addressForm.phone_number}
                                         onChange={(e) => setAddressForm({...addressForm, phone_number: e.target.value})}
                                     />
@@ -524,7 +521,7 @@ export const CheckoutPage = () => {
                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Provinsi</label>
                                     <select 
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none"
+                                        className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none dark:text-white dark:placeholder-gray-500"
                                         value={addressForm.province_id}
                                         onChange={(e) => {
                                             const prov = provinces.find(p => p.province_id == e.target.value);
@@ -536,10 +533,10 @@ export const CheckoutPage = () => {
                                         {provinces.map(p => <option key={p.province_id} value={p.province_id}>{p.province}</option>)}
                                     </select>
                                 </div>
-                                <div className="space-y-1">
+                                 <div className="space-y-1">
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Kota/Kabupaten</label>
                                     <select 
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none disabled:opacity-50"
+                                        className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none dark:text-white disabled:opacity-50"
                                         disabled={!addressForm.province_id || isLoadingCities}
                                         value={addressForm.city_id}
                                         onChange={(e) => {
@@ -559,7 +556,7 @@ export const CheckoutPage = () => {
                                 <div className="space-y-1 md:col-span-2">
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Alamat Lengkap</label>
                                     <textarea 
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none min-h-[100px]"
+                                        className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none dark:text-white min-h-[100px] transition-all"
                                         value={addressForm.full_address}
                                         onChange={(e) => setAddressForm({...addressForm, full_address: e.target.value})}
                                     />
@@ -568,7 +565,7 @@ export const CheckoutPage = () => {
                                     <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Kode Pos</label>
                                     <input 
                                         type="text" 
-                                        className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none"
+                                        className="w-full bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none dark:text-white dark:placeholder-gray-500"
                                         value={addressForm.postal_code}
                                         onChange={(e) => setAddressForm({...addressForm, postal_code: e.target.value})}
                                     />
@@ -581,20 +578,20 @@ export const CheckoutPage = () => {
                                         onChange={(e) => setAddressForm({...addressForm, is_default: e.target.checked})}
                                         className="accent-orange-600"
                                     />
-                                    <label htmlFor="is_default" className="text-sm font-medium text-gray-700 cursor-pointer">Jadikan Alamat Utama</label>
+                                    <label htmlFor="is_default" className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">Jadikan Alamat Utama</label>
                                 </div>
                             </div>
                         </div>
-                        <div className="p-6 bg-gray-50 flex gap-3">
+                        <div className="p-6 bg-gray-50 dark:bg-gray-950 flex gap-3 border-t dark:border-gray-800 transition-colors">
                             <button 
                                 onClick={() => setShowAddressForm(false)}
-                                className="flex-1 bg-white border border-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-100 transition-colors"
+                                className="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 font-bold py-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                             >
                                 Batal
                             </button>
                             <button 
                                 onClick={handleSaveAddress}
-                                className="flex-1 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition-colors"
+                                className="flex-1 bg-orange-600 text-white font-bold py-3 rounded-xl hover:bg-orange-700 transition-colors shadow-lg shadow-orange-100 dark:shadow-none"
                             >
                                 Simpan Alamat
                             </button>

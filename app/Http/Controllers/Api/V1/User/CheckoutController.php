@@ -163,10 +163,39 @@ class CheckoutController extends Controller
         });
     }
 
+    public function verify($orderNumber)
+    {
+        try {
+            $status = $this->midtrans->checkStatus($orderNumber);
+            $order = Order::where('order_number', $orderNumber)->firstOrFail();
+
+            $transactionStatus = $status->transaction_status;
+            
+            if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
+                $order->update(['payment_status' => 'paid', 'status' => 'PROCESSING']);
+            } else if ($transactionStatus == 'pending') {
+                $order->update(['payment_status' => 'unpaid']);
+            } else if ($transactionStatus == 'deny' || $transactionStatus == 'expire' || $transactionStatus == 'cancel') {
+                $order->update(['payment_status' => 'failed', 'status' => 'CANCELLED']);
+            }
+
+            return response()->json([
+                'success' => true,
+                'status' => $order->status,
+                'payment_status' => $order->payment_status
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function webhook(Request $request)
     {
         // Handle Midtrans notification
-        $serverKey = env('MIDTRANS_SERVER_KEY');
+        $serverKey = config('services.midtrans.server_key');
         $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
         
         if ($hashed !== $request->signature_key) {

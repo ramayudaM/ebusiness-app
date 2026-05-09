@@ -100,10 +100,12 @@ Route::prefix('v1')->group(function () {
         // CHECKOUT
         Route::post('/checkout/shipping-cost', [CheckoutController::class, 'calculateShipping']);
         Route::post('/checkout/process', [CheckoutController::class, 'process']);
+        Route::get('/checkout/verify/{orderNumber}', [CheckoutController::class, 'verify']);
 
         // ORDERS
         Route::get('/orders', [\App\Http\Controllers\Api\V1\User\OrderController::class, 'index']);
         Route::get('/orders/{id}', [\App\Http\Controllers\Api\V1\User\OrderController::class, 'show']);
+        Route::post('/orders/{id}/cancel', [\App\Http\Controllers\Api\V1\User\OrderController::class, 'cancel']);
 
     });
 

@@ -11,23 +11,23 @@ import { CircleAlert, ShieldCheck, Truck, Award, Music } from 'lucide-react';
 // SKELETON COMPONENTS
 const CategorySkeleton = () => (
     <div className="flex flex-col items-center">
-        <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gray-200 animate-pulse mb-3"></div>
-        <div className="h-3 w-16 bg-gray-200 animate-pulse rounded"></div>
+        <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gray-200 dark:bg-gray-800 animate-pulse mb-3"></div>
+        <div className="h-3 w-16 bg-gray-200 dark:bg-gray-800 animate-pulse rounded"></div>
     </div>
 );
 
 const ProductSkeleton = () => (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex flex-col h-full relative">
-        <div className="relative aspect-[4/3] bg-gray-200 animate-pulse"></div>
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden flex flex-col h-full relative">
+        <div className="relative aspect-[4/3] bg-gray-200 dark:bg-gray-800 animate-pulse"></div>
         <div className="p-4 flex flex-col flex-1 h-36">
-            <div className="h-3 bg-gray-200 animate-pulse rounded w-full mb-2"></div>
-            <div className="h-3 bg-gray-200 animate-pulse rounded w-3/4 mb-4"></div>
-            <div className="h-2 bg-gray-200 animate-pulse rounded w-1/4 mb-4"></div>
+            <div className="h-3 bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-full mb-2"></div>
+            <div className="h-3 bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-3/4 mb-4"></div>
+            <div className="h-2 bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-1/4 mb-4"></div>
             <div className="mt-auto flex flex-col gap-1">
-                <div className="h-3 bg-gray-200 animate-pulse rounded w-1/3"></div>
-                <div className="h-4 bg-gray-200 animate-pulse rounded w-1/2"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-1/3"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-1/2"></div>
             </div>
-            <div className="h-8 bg-gray-200 animate-pulse rounded w-full mt-4"></div>
+            <div className="h-8 bg-gray-200 dark:bg-gray-800 animate-pulse rounded w-full mt-4"></div>
         </div>
     </div>
 );
@@ -37,15 +37,15 @@ export const HomePage = () => {
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-50 flex flex-col">
+            <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
                 <Navbar />
                 <div className="flex-1 flex flex-col items-center justify-center p-4">
                     <CircleAlert size={48} className="text-red-500 mb-4" />
-                    <h2 className="text-xl font-bold mb-2 text-gray-900">Gagal Memuat Data</h2>
-                    <p className="text-gray-500 mb-6 text-center max-w-md">Terjadi kesalahan saat memuat halaman beranda. Silakan coba beberapa saat lagi.</p>
+                    <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">Gagal Memuat Data</h2>
+                    <p className="text-gray-500 dark:text-gray-400 mb-6 text-center max-w-md">Terjadi kesalahan saat memuat halaman beranda. Silakan coba beberapa saat lagi.</p>
                     <button 
                         onClick={() => refetch()}
-                        className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full transition-colors"
+                        className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full transition-colors shadow-lg shadow-orange-100 dark:shadow-none"
                     >
                         Coba Lagi
                     </button>
@@ -69,7 +69,7 @@ export const HomePage = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-gray-50 font-sans flex flex-col text-gray-900">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 font-sans flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
             <Navbar />
             
             <main className="flex-1 w-full overflow-hidden">
@@ -114,7 +114,7 @@ export const HomePage = () => {
                         ) : (
                             categories?.map((cat) => (
                                 <Link to={`/explore?category=${cat.slug}`} key={cat.id} className="flex flex-col items-center group cursor-pointer">
-                                    <div className="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full bg-white shadow-sm border border-gray-100 flex items-center justify-center p-3.5 mb-3 group-hover:shadow-md group-hover:border-orange-200 transition-all group-hover:-translate-y-1 text-gray-500 group-hover:text-orange-600">
+                                    <div className="w-14 h-14 md:w-[72px] md:h-[72px] rounded-full bg-white dark:bg-gray-900 shadow-sm border border-gray-100 dark:border-gray-800 flex items-center justify-center p-3.5 mb-3 group-hover:shadow-md group-hover:border-orange-200 dark:group-hover:border-orange-500/50 transition-all group-hover:-translate-y-1 text-gray-500 dark:text-gray-400 group-hover:text-orange-600 dark:group-hover:text-orange-400">
                                         {cat.icon_url ? (
                                             <img 
                                                 src={cat.icon_url} 
@@ -126,7 +126,7 @@ export const HomePage = () => {
                                             <CategoryIcon name={cat.name} className="w-6 h-6 md:w-8 md:h-8" />
                                         )}
                                     </div>
-                                    <span className="text-[11px] md:text-xs font-semibold text-gray-700 text-center group-hover:text-orange-600 leading-tight block truncate w-full px-1">{cat.name}</span>
+                                    <span className="text-[11px] md:text-xs font-semibold text-gray-700 dark:text-gray-300 text-center group-hover:text-orange-600 dark:group-hover:text-orange-400 leading-tight block truncate w-full px-1">{cat.name}</span>
                                 </Link>
                             ))
                         )}
@@ -158,12 +158,12 @@ export const HomePage = () => {
                                 desc: 'Menyediakan ribuan instrumen dan aksesori musik untuk semua tingkat keahlian.'
                             }
                         ].map((feature, idx) => (
-                            <div key={idx} className="bg-white p-6 md:p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow group flex flex-col items-center text-center">
-                                <div className="w-16 h-16 bg-orange-50 rounded-full flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
+                            <div key={idx} className="bg-white dark:bg-gray-900 p-6 md:p-8 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-all group flex flex-col items-center text-center">
+                                <div className="w-16 h-16 bg-orange-50 dark:bg-orange-900/20 rounded-full flex items-center justify-center mb-5 group-hover:scale-110 transition-transform duration-300">
                                     {feature.icon}
                                 </div>
-                                <h3 className="text-lg font-bold text-gray-900 mb-2">{feature.title}</h3>
-                                <p className="text-sm text-gray-500 leading-relaxed">{feature.desc}</p>
+                                <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">{feature.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -176,7 +176,7 @@ export const HomePage = () => {
                         
                         <div className="w-full relative flex items-center h-20">
                             {/* Left Fade */}
-                            <div className="absolute left-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none"></div>
+                            <div className="absolute left-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-r from-gray-50 dark:from-gray-950 to-transparent z-10 pointer-events-none transition-colors"></div>
                             
                             {/* Marquee Track */}
                             <div className="flex w-max animate-marquee hover-pause items-center">
@@ -191,7 +191,7 @@ export const HomePage = () => {
                                                 e.target.nextElementSibling.style.display = 'block';
                                             }}
                                         />
-                                        <span className="hidden text-xl md:text-2xl font-black text-gray-400 group-hover/logo:text-gray-800 tracking-tighter uppercase transition-colors">
+                                        <span className="hidden text-xl md:text-2xl font-black text-gray-400 group-hover/logo:text-gray-800 dark:group-hover/logo:text-white tracking-tighter uppercase transition-colors">
                                             {brand.name}
                                         </span>
                                     </div>
@@ -199,13 +199,15 @@ export const HomePage = () => {
                             </div>
                             
                             {/* Right Fade */}
-                            <div className="absolute right-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-l from-gray-50 to-transparent z-10 pointer-events-none"></div>
+                            <div className="absolute right-0 top-0 bottom-0 w-32 md:w-64 bg-gradient-to-l from-gray-50 dark:from-gray-950 to-transparent z-10 pointer-events-none transition-colors"></div>
                         </div>
                     </div>
-                </section>                {/* New Arrivals Section */}
+                </section>
+                
+                {/* New Arrivals Section */}
                 <section className="px-4 md:px-8 max-w-7xl mx-auto pb-20">
-                    <div className="flex justify-between items-end mb-6 pb-2 border-b-2 border-gray-100">
-                        <h2 className="text-xl md:text-2xl font-bold text-gray-900 tracking-tight">Koleksi Terbaru</h2>
+                    <div className="flex justify-between items-end mb-6 pb-2 border-b-2 border-gray-100 dark:border-gray-800 transition-colors">
+                        <h2 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Koleksi Terbaru</h2>
                         <Link to="/explore" className="text-sm font-bold text-orange-600 hover:text-orange-700 transition-colors">Lihat Semua &rarr;</Link>
                     </div>
                     
@@ -214,8 +216,8 @@ export const HomePage = () => {
                             {Array.from({ length: 8 }).map((_, i) => <ProductSkeleton key={`na-skel-${i}`} />)}
                         </div>
                     ) : new_arrivals?.length === 0 ? (
-                        <div className="bg-white border border-gray-200 rounded-lg p-12 text-center shadow-sm">
-                            <p className="text-gray-500 font-medium">Belum ada produk terbaru.</p>
+                        <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-12 text-center shadow-sm transition-colors">
+                            <p className="text-gray-500 dark:text-gray-400 font-medium">Belum ada produk terbaru.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-4 md:gap-5">

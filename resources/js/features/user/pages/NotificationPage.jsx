@@ -61,40 +61,40 @@ export const NotificationPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col transition-colors duration-300">
             <Navbar />
             
             <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-8 md:py-12">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                     <div>
-                        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Notifikasi</h1>
-                        <p className="text-gray-500 mt-1">Kelola semua pemberitahuan dan info terbaru Anda.</p>
+                        <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Notifikasi</h1>
+                        <p className="text-gray-500 dark:text-gray-400 mt-1">Kelola semua pemberitahuan dan info terbaru Anda.</p>
                     </div>
                     
                     <div className="flex items-center gap-3">
                         {notifications.length > 0 && (
                             <button 
                                 onClick={handleClearAll}
-                                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors"
+                                className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors"
                             >
                                 <Trash2 size={16} /> Hapus Semua
                             </button>
                         )}
                         <button 
                             onClick={markAllAsRead}
-                            className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-orange-600 hover:bg-orange-50 rounded-xl transition-colors"
+                            className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-orange-600 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 rounded-xl transition-colors"
                         >
                             <CircleCheckBig size={16} /> Tandai Semua Dibaca
                         </button>
                     </div>
                 </div>
 
-                {/* Filters */}
-                <div className="flex items-center gap-2 mb-6 p-1 bg-white rounded-xl border border-gray-100 w-fit shadow-sm">
+                 {/* Filters */}
+                <div className="flex items-center gap-2 mb-6 p-1 bg-white dark:bg-gray-900 rounded-xl border border-gray-100 dark:border-gray-800 w-fit shadow-sm">
                     <button 
                         onClick={() => setFilter('all')}
                         className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-all ${
-                            filter === 'all' ? 'bg-orange-600 text-white shadow-md shadow-orange-200' : 'text-gray-500 hover:text-gray-900'
+                            filter === 'all' ? 'bg-orange-600 text-white shadow-md shadow-orange-200 dark:shadow-none' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                         }`}
                     >
                         Semua
@@ -102,7 +102,7 @@ export const NotificationPage = () => {
                     <button 
                         onClick={() => setFilter('unread')}
                         className={`px-4 py-1.5 text-sm font-bold rounded-lg transition-all ${
-                            filter === 'unread' ? 'bg-orange-600 text-white shadow-md shadow-orange-200' : 'text-gray-500 hover:text-gray-900'
+                            filter === 'unread' ? 'bg-orange-600 text-white shadow-md shadow-orange-200 dark:shadow-none' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
                         }`}
                     >
                         Belum Dibaca
@@ -110,18 +110,18 @@ export const NotificationPage = () => {
                 </div>
 
                 {/* Notifications List */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-800 overflow-hidden">
                     {isLoading && notifications.length === 0 ? (
                         <div className="py-20 text-center">
                             <div className="animate-spin w-10 h-10 border-4 border-orange-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-                            <p className="text-gray-500 font-medium">Memuat notifikasi...</p>
+                            <p className="text-gray-500 dark:text-gray-400 font-medium">Memuat notifikasi...</p>
                         </div>
                     ) : filteredNotifications.length > 0 ? (
-                        <div className="divide-y divide-gray-50">
+                        <div className="divide-y divide-gray-50 dark:divide-gray-800">
                             {filteredNotifications.map((n) => (
                                 <div 
                                     key={n.id} 
-                                    className={`group p-5 md:p-6 transition-all hover:bg-gray-50 relative ${!n.read ? 'bg-orange-50/20' : ''}`}
+                                    className={`group p-5 md:p-6 transition-all hover:bg-gray-50 dark:hover:bg-gray-800/40 relative ${!n.read ? 'bg-orange-50/20 dark:bg-orange-950/20' : ''}`}
                                 >
                                     {!n.read && (
                                         <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-orange-600 shadow-[0_0_10px_rgba(234,88,12,0.3)]"></div>
@@ -134,7 +134,7 @@ export const NotificationPage = () => {
                                         
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-start justify-between gap-4 mb-1">
-                                                <h3 className={`text-base md:text-lg truncate pr-4 ${!n.read ? 'font-extrabold text-gray-900' : 'font-semibold text-gray-700'}`}>
+                                                <h3 className={`text-base md:text-lg truncate pr-4 ${!n.read ? 'font-extrabold text-gray-900 dark:text-white' : 'font-semibold text-gray-700 dark:text-gray-300'}`}>
                                                     {n.title}
                                                 </h3>
                                                 <div className="flex items-center gap-2 shrink-0">
@@ -149,7 +149,7 @@ export const NotificationPage = () => {
                                                     )}
                                                     <button 
                                                         onClick={() => handleDelete(n.id)}
-                                                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                                        className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                                                         title="Hapus"
                                                     >
                                                         <Trash2 size={18} />
@@ -157,12 +157,11 @@ export const NotificationPage = () => {
                                                 </div>
                                             </div>
                                             
-                                            <p className={`text-sm md:text-base leading-relaxed mb-3 ${!n.read ? 'text-gray-700 font-medium' : 'text-gray-500'}`}>
+                                            <p className={`text-sm md:text-base leading-relaxed mb-3 ${!n.read ? 'text-gray-700 dark:text-gray-200 font-medium' : 'text-gray-500 dark:text-gray-400'}`}>
                                                 {n.message}
                                             </p>
-                                            
                                             <div className="flex items-center gap-4">
-                                                <div className="flex items-center gap-1.5 text-xs text-gray-400 font-medium bg-gray-50 px-2 py-1 rounded-md">
+                                                <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 font-medium bg-gray-50 dark:bg-gray-800/60 px-2 py-1 rounded-md transition-colors">
                                                     <Clock size={14} />
                                                     {new Date(n.time).toLocaleString('id-ID', { 
                                                         day: 'numeric', 
@@ -173,7 +172,7 @@ export const NotificationPage = () => {
                                                     })}
                                                 </div>
                                                 {!n.read && (
-                                                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-orange-600 bg-orange-100 px-2 py-0.5 rounded-full"> Baru </span>
+                                                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/40 px-2 py-0.5 rounded-full"> Baru </span>
                                                 )}
                                             </div>
                                         </div>
@@ -183,11 +182,11 @@ export const NotificationPage = () => {
                         </div>
                     ) : (
                         <div className="py-24 px-6 text-center">
-                            <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Bell size={40} className="text-gray-200" />
+                            <div className="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6 transition-colors">
+                                <Bell size={40} className="text-gray-200 dark:text-gray-700" />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Tidak ada notifikasi</h3>
-                            <p className="text-gray-500 max-w-sm mx-auto">
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Tidak ada notifikasi</h3>
+                            <p className="text-gray-500 dark:text-gray-400 max-w-sm mx-auto">
                                 {filter === 'unread' 
                                     ? 'Hebat! Anda sudah membaca semua notifikasi terbaru.' 
                                     : 'Belum ada notifikasi baru untuk Anda saat ini.'}
