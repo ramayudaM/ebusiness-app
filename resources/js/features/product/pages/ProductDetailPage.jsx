@@ -10,7 +10,7 @@ import { ProductGallery } from '../components/ProductGallery';
 import { ProductVariationSelector } from '../components/ProductVariationSelector';
 import { ProductMedia } from '../components/ProductMedia';
 import { ProductSkeleton } from '../components/ProductSkeleton';
-import { Heart, Share2, AlertCircle, ShoppingCart, Minus, Plus, ChevronRight, Zap } from 'lucide-react';
+import { Heart, Share2, CircleAlert, ShoppingCart, Minus, Plus, ChevronRight, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const ProductDetailPage = () => {
@@ -117,7 +117,7 @@ export const ProductDetailPage = () => {
             <div className="min-h-screen bg-gray-50 flex flex-col">
                 <Navbar />
                 <div className="flex-1 flex flex-col items-center justify-center p-4">
-                    <AlertCircle size={48} className="text-red-500 mb-4" />
+                    <CircleAlert size={48} className="text-red-500 mb-4" />
                     <h2 className="text-xl font-bold mb-2 text-gray-900">Produk Tidak Ditemukan</h2>
                     <p className="text-gray-500 mb-6 text-center max-w-md">Maaf, produk yang Anda cari tidak ditemukan atau telah dihapus.</p>
                     <Link to="/explore" className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full transition-colors">

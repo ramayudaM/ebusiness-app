@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Layout } from '@/shared/components/Layout';
 import { 
     Search, 
-    HelpCircle, 
+    CircleHelp, 
     MessageCircle, 
     Phone, 
     Mail, 
@@ -161,7 +161,7 @@ export const HelpPage = () => {
                     <div className="lg:col-span-2">
                         <div className="flex items-center justify-between mb-10">
                             <h2 className="text-2xl font-extrabold text-gray-900 flex items-center gap-3">
-                                <HelpCircle className="text-orange-600" /> 
+                                <CircleHelp className="text-orange-600" /> 
                                 {searchQuery ? `Hasil Pencarian (${filteredFaqs.length})` : 'Pertanyaan Populer'}
                             </h2>
                         </div>

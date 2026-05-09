@@ -4,6 +4,10 @@ import { ProductDetailPage } from '../features/product/pages/ProductDetailPage';
 import { HelpPage } from '../features/static/pages/HelpPage';
 import { HelpArticlePage } from '../features/static/pages/HelpArticlePage';
 import { NotificationPage } from '../features/user/pages/NotificationPage';
+import { CartPage } from '../features/cart/pages/CartPage';
+import { CheckoutPage } from '../features/cart/pages/CheckoutPage';
+import { OrdersPage } from '../features/account/pages/OrdersPage';
+import { OrderDetailPage } from '../features/account/pages/OrderDetailPage';
 import { Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from '../features/auth/LoginPage'
 import RegisterPage from '../features/auth/RegisterPage'
@@ -12,6 +16,9 @@ import ProtectedRoute from '../shared/components/ProtectedRoute'
 import AdminLoginPage from '../features/admin/auth/AdminLoginPage'
 import AdminRoute from '../shared/components/AdminRoute'
 import AdminGuestRoute from '../shared/components/AdminGuestRoute'
+import { Navbar } from '../shared/components/Navbar'
+import { Footer } from '../shared/components/Footer'
+import { User, Heart } from 'lucide-react'
 
 export function AppRoutes() {
   return (
@@ -41,22 +48,43 @@ export function AppRoutes() {
         }
       />
 
-      <Route path="/cart" element={<div>Cart Page</div>} />
+      <Route
+        path="/cart"
+        element={
+          <ProtectedRoute>
+            <CartPage />
+          </ProtectedRoute>
+        }
+      />
 
-      {/* Protected Customer Routes */}
       <Route
         path="/checkout"
         element={
           <ProtectedRoute>
-            <div>Checkout Page</div>
+            <CheckoutPage />
           </ProtectedRoute>
         }
       />
+
+      {/* Legacy Redirects */}
+      <Route path="/orders" element={<Navigate to="/account/orders" replace />} />
+      <Route path="/profile" element={<Navigate to="/account/profile" replace />} />
+      <Route path="/wishlist" element={<Navigate to="/account/wishlist" replace />} />
+
+      {/* Protected Customer Routes */}
       <Route
         path="/account/orders"
         element={
           <ProtectedRoute>
-            <div>Order History</div>
+            <OrdersPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/account/orders/:id"
+        element={
+          <ProtectedRoute>
+            <OrderDetailPage />
           </ProtectedRoute>
         }
       />
@@ -69,13 +97,42 @@ export function AppRoutes() {
         }
       />
       <Route
-        path="/account/wishlist"
+        path="/account/profile"
         element={
           <ProtectedRoute>
-            <div>Wishlist</div>
+            <div className="min-h-screen bg-gray-50 flex flex-col">
+              <Navbar />
+              <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-12 text-center">
+                <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <User size={40} />
+                </div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-4">Profil Saya</h1>
+                <p className="text-gray-500">Halaman profil sedang dalam pengembangan.</p>
+              </div>
+              <Footer />
+            </div>
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/account/wishlist"
+        element={
+          <ProtectedRoute>
+            <div className="min-h-screen bg-gray-50 flex flex-col">
+              <Navbar />
+              <div className="flex-1 max-w-4xl mx-auto w-full px-4 py-12 text-center">
+                <div className="w-20 h-20 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Heart size={40} />
+                </div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-4">Wishlist Saya</h1>
+                <p className="text-gray-500">Halaman wishlist sedang dalam pengembangan.</p>
+              </div>
+              <Footer />
+            </div>
+          </ProtectedRoute>
+        }
+      />
+      <Route path="/track" element={<Navigate to="/account/orders" replace />} />
 
       {/* Admin Auth Routes */}
       <Route

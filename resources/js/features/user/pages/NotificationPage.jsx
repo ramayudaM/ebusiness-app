@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Navbar } from '@/shared/components/Navbar';
 import { Footer } from '@/shared/components/Footer';
 import { useNotificationStore } from '@/shared/stores/notificationStore';
-import { Bell, Trash2, CheckCircle, Clock, Filter, MoreVertical, ShoppingCart, Zap, Heart, Info, X } from 'lucide-react';
+import { Bell, Trash2, CircleCheckBig, Clock, Filter, MoreVertical, ShoppingCart, Zap, Heart, Info, X } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const NotificationPage = () => {
@@ -84,7 +84,7 @@ export const NotificationPage = () => {
                             onClick={markAllAsRead}
                             className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-orange-600 hover:bg-orange-50 rounded-xl transition-colors"
                         >
-                            <CheckCircle size={16} /> Tandai Semua Dibaca
+                            <CircleCheckBig size={16} /> Tandai Semua Dibaca
                         </button>
                     </div>
                 </div>
@@ -144,7 +144,7 @@ export const NotificationPage = () => {
                                                             className="p-2 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-all"
                                                             title="Tandai dibaca"
                                                         >
-                                                            <CheckCircle size={18} />
+                                                            <CircleCheckBig size={18} />
                                                         </button>
                                                     )}
                                                     <button 

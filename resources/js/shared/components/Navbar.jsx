@@ -256,13 +256,13 @@ export const Navbar = () => {
                                             <p className="text-xs text-gray-500 truncate mt-0.5">{user?.email}</p>
                                         </div>
                                         <div className="py-2">
-                                            <Link to="/profile" className="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
+                                            <Link to="/account/profile" className="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
                                                 <User size={18} /> Profil Saya
                                             </Link>
-                                            <Link to="/orders" className="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
+                                            <Link to="/account/orders" className="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
                                                 <Package size={18} /> Pesanan Saya
                                             </Link>
-                                            <Link to="/wishlist" className="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
+                                            <Link to="/account/wishlist" className="flex items-center gap-3 px-5 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-orange-600 transition-colors">
                                                 <Heart size={18} /> Wishlist 
                                                 {wishlistCount > 0 && (
                                                     <span className="ml-auto bg-gray-100 text-gray-600 text-[10px] px-1.5 py-0.5 rounded-full font-bold">
@@ -375,13 +375,13 @@ export const Navbar = () => {
                             {isAuthenticated && (
                                 <>
                                     <div className="h-px bg-gray-100 my-3 mx-4"></div>
-                                    <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
+                                    <Link to="/account/profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
                                         <User size={20} className="text-gray-400" /> Profil Saya
                                     </Link>
-                                    <Link to="/orders" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
+                                    <Link to="/account/orders" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
                                         <Package size={20} className="text-gray-400" /> Pesanan
                                     </Link>
-                                    <Link to="/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
+                                    <Link to="/account/wishlist" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 rounded-lg">
                                         <Heart size={20} className="text-gray-400" /> Wishlist
                                     </Link>
                                 </>

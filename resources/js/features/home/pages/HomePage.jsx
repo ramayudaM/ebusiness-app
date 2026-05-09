@@ -6,7 +6,7 @@ import { Footer } from '@/shared/components/Footer';
 import { ProductCard } from '@/shared/components/ProductCard';
 import { CategoryIcon } from '@/shared/components/CategoryIcon';
 import { useHomeData } from '../hooks/useHomeData';
-import { AlertCircle, ShieldCheck, Truck, Award, Music } from 'lucide-react';
+import { CircleAlert, ShieldCheck, Truck, Award, Music } from 'lucide-react';
 
 // SKELETON COMPONENTS
 const CategorySkeleton = () => (
@@ -40,7 +40,7 @@ export const HomePage = () => {
             <div className="min-h-screen bg-gray-50 flex flex-col">
                 <Navbar />
                 <div className="flex-1 flex flex-col items-center justify-center p-4">
-                    <AlertCircle size={48} className="text-red-500 mb-4" />
+                    <CircleAlert size={48} className="text-red-500 mb-4" />
                     <h2 className="text-xl font-bold mb-2 text-gray-900">Gagal Memuat Data</h2>
                     <p className="text-gray-500 mb-6 text-center max-w-md">Terjadi kesalahan saat memuat halaman beranda. Silakan coba beberapa saat lagi.</p>
                     <button 

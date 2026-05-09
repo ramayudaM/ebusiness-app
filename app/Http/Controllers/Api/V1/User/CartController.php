@@ -28,26 +28,35 @@ class CartController extends Controller
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $cartItem = CartItem::updateOrCreate(
-            [
-                'user_id' => Auth::id(),
-                'product_id' => $request->product_id,
-                'product_variation_id' => $request->product_variation_id,
-            ],
-            [
-                'quantity' => DB::raw("quantity + {$request->quantity}")
-            ]
-        );
-        
-        // Fix raw increment if recently created
-        if ($cartItem->wasRecentlyCreated) {
-            $cartItem->quantity = $request->quantity;
-            $cartItem->save();
+        $userId = Auth::id();
+        $productId = $request->product_id;
+        $variationId = $request->product_variation_id;
+
+        // Cek apakah item sudah ada di keranjang
+        $cartItem = CartItem::where('user_id', $userId)
+            ->where('product_id', $productId)
+            ->where('product_variation_id', $variationId)
+            ->first();
+
+        if ($cartItem) {
+            // Jika ada, tambahkan jumlahnya
+            $cartItem->increment('quantity', $request->quantity);
+        } else {
+            // Jika belum ada, buat baru
+            $cartItem = CartItem::create([
+                'user_id' => $userId,
+                'product_id' => $productId,
+                'product_variation_id' => $variationId,
+                'quantity' => $request->quantity,
+                'is_selected' => true,
+            ]);
         }
 
         // Generate Notification
-        $product = Product::find($request->product_id);
-        Auth::user()->notify(new \App\Notifications\ProductAddedToCart($product));
+        $product = Product::find($productId);
+        if (Auth::user()) {
+            Auth::user()->notify(new \App\Notifications\ProductAddedToCart($product));
+        }
 
         return response()->json([
             'message' => 'Produk berhasil ditambahkan ke keranjang',
@@ -58,15 +67,35 @@ class CartController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'nullable|integer|min:1',
+            'is_selected' => 'nullable|boolean',
         ]);
 
         $cartItem = CartItem::where('user_id', Auth::id())->findOrFail($id);
-        $cartItem->update(['quantity' => $request->quantity]);
+        
+        $updateData = [];
+        if ($request->has('quantity')) $updateData['quantity'] = $request->quantity;
+        if ($request->has('is_selected')) $updateData['is_selected'] = $request->is_selected;
+        
+        $cartItem->update($updateData);
 
         return response()->json([
-            'message' => 'Jumlah produk diperbarui',
+            'message' => 'Keranjang berhasil diperbarui',
             'item' => $cartItem->load(['product', 'variation'])
+        ]);
+    }
+
+    public function toggleAll(Request $request)
+    {
+        $request->validate([
+            'is_selected' => 'required|boolean',
+        ]);
+
+        CartItem::where('user_id', Auth::id())
+            ->update(['is_selected' => $request->is_selected]);
+
+        return response()->json([
+            'message' => 'Status semua produk diperbarui'
         ]);
     }
 

@@ -16,18 +16,18 @@ export const useCartStore = create(
         set({ isLoading: true });
         try {
           const response = await api.get('/cart');
-          // Map backend data to frontend structure
           const formattedItems = response.data.map(item => ({
             id: item.product_id,
-            cartItemId: item.id, // ID from database
+            cartItemId: item.id,
             name: item.product.name,
             price: item.variation ? (item.variation.price_sen || item.product.price_sen) : item.product.price_sen,
             image: item.product.primary_image_url,
             variation: item.variation,
             quantity: item.quantity,
+            isSelected: !!item.is_selected,
             slug: item.product.slug
           }));
-          set({ items: formattedItems, isLoading: false });
+          set({ items: [...formattedItems], isLoading: false });
         } catch (error) {
           console.error('Failed to fetch cart:', error);
           set({ isLoading: false });
@@ -41,8 +41,6 @@ export const useCartStore = create(
             product_variation_id: variation?.id || null,
             quantity: quantity
           });
-          
-          // Refresh local items from server
           await get().fetchItems();
           return response.data;
         } catch (error) {
@@ -74,6 +72,30 @@ export const useCartStore = create(
         }
       },
 
+      toggleSelection: async (cartItemId, isSelected) => {
+        try {
+          await api.put(`/cart/${cartItemId}`, { is_selected: isSelected });
+          set({ 
+            items: get().items.map(item => 
+              item.cartItemId === cartItemId ? { ...item, isSelected } : item
+            ) 
+          });
+        } catch (error) {
+          console.error('Failed to toggle selection:', error);
+        }
+      },
+
+      toggleAllSelection: async (isSelected) => {
+        try {
+          await api.post('/cart/toggle-all', { is_selected: isSelected });
+          set({ 
+            items: get().items.map(item => ({ ...item, isSelected })) 
+          });
+        } catch (error) {
+          console.error('Failed to toggle all selection:', error);
+        }
+      },
+
       clearCart: async () => {
         try {
           await api.delete('/cart');
@@ -85,11 +107,18 @@ export const useCartStore = create(
 
       // Getters
       getTotalItems: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
-      getTotalPrice: () => get().items.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+      
+      // Hitung total hanya untuk yang dipilih (isSelected)
+      getSelectedTotalItems: () => get().items
+        .filter(item => item.isSelected)
+        .reduce((sum, item) => sum + item.quantity, 0),
+
+      getSelectedTotalPrice: () => get().items
+        .filter(item => item.isSelected)
+        .reduce((sum, item) => sum + (item.price * item.quantity), 0),
     }),
     {
       name: 'cart-storage',
-      // We still use persist for offline access/speed, but we sync with server
     }
   )
 );

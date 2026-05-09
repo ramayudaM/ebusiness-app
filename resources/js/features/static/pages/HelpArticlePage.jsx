@@ -9,9 +9,9 @@ import {
     RotateCcw,
     Clock,
     MapPin,
-    AlertCircle,
+    CircleAlert,
     Info,
-    HelpCircle
+    CircleHelp
 } from 'lucide-react';
 
 export const HelpArticlePage = () => {
@@ -70,7 +70,7 @@ export const HelpArticlePage = () => {
                 <div className="space-y-6">
                     <p>Kepuasan Anda adalah prioritas kami. Jika instrumen yang diterima tidak sesuai atau mengalami kendala teknis, Anda dapat mengajukan retur.</p>
                     <div className="bg-orange-50 p-6 rounded-2xl border border-orange-100">
-                        <h4 className="font-bold text-orange-900 mb-3 flex items-center gap-2"><AlertCircle size={18} /> Aturan Emas Retur</h4>
+                        <h4 className="font-bold text-orange-900 mb-3 flex items-center gap-2"><CircleAlert size={18} /> Aturan Emas Retur</h4>
                         <p className="text-sm text-orange-800">Wajib melampirkan video unboxing tanpa terputus. Tanpa video ini, mohon maaf klaim tidak dapat diproses.</p>
                     </div>
                 </div>
@@ -177,7 +177,7 @@ export const HelpArticlePage = () => {
         },
         'masalah-transaksi': {
             title: 'Kendala Transaksi & Pembayaran',
-            icon: <AlertCircle className="text-red-500" />,
+            icon: <CircleAlert className="text-red-500" />,
             content: (
                 <div className="space-y-6">
                     <p>Jika transaksi Anda gagal atau status tidak berubah setelah pembayaran:</p>
@@ -287,7 +287,7 @@ export const HelpArticlePage = () => {
         },
         'faq': {
             title: 'Semua Pertanyaan (FAQ)',
-            icon: <HelpCircle className="text-orange-500" />,
+            icon: <CircleHelp className="text-orange-500" />,
             content: (
                 <div className="space-y-8">
                     <p>Temukan jawaban untuk pertanyaan yang paling sering diajukan oleh komunitas NadaKita.</p>
@@ -310,7 +310,7 @@ export const HelpArticlePage = () => {
 
     const article = articles[slug] || {
         title: 'Halaman Bantuan',
-        icon: <AlertCircle className="text-gray-400" />,
+        icon: <CircleAlert className="text-gray-400" />,
         content: (
             <div className="text-center py-20">
                 <p className="text-gray-500">Mohon maaf, artikel bantuan yang Anda cari belum tersedia atau sedang dalam pembaruan.</p>

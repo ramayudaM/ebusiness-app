@@ -12,6 +12,7 @@ class CartItem extends Model
         'product_id',
         'product_variation_id',
         'quantity',
+        'is_selected',
     ];
 
     public function user(): BelongsTo

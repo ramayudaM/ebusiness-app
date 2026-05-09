@@ -20,20 +20,20 @@ export const Footer = () => {
                 <div>
                     <h4 className="font-bold text-gray-900 mb-4">Belanja</h4>
                     <ul className="space-y-3">
-                        <li><Link to="/category/gitar-bass" className="hover:text-orange-600 transition-colors">Gitar & Bass</Link></li>
-                        <li><Link to="/category/piano" className="hover:text-orange-600 transition-colors">Piano & Keyboard</Link></li>
-                        <li><Link to="/category/recording" className="hover:text-orange-600 transition-colors">Recording & Audio</Link></li>
-                        <li><Link to="/promo" className="hover:text-orange-600 transition-colors">Promo Terbatas</Link></li>
+                        <li><Link to="/explore?category=gitar" className="hover:text-orange-600 transition-colors">Gitar</Link></li>
+                        <li><Link to="/explore?category=bass" className="hover:text-orange-600 transition-colors">Bass</Link></li>
+                        <li><Link to="/explore?category=keyboard-piano" className="hover:text-orange-600 transition-colors">Keyboard & Piano</Link></li>
+                        <li><Link to="/explore?category=drum-perkusi" className="hover:text-orange-600 transition-colors">Drum & Perkusi</Link></li>
                     </ul>
                 </div>
 
                 <div>
                     <h4 className="font-bold text-gray-900 mb-4">Layanan</h4>
                     <ul className="space-y-3">
-                        <li><Link to="/about" className="hover:text-orange-600 transition-colors">Tentang Kami</Link></li>
-                        <li><Link to="/return" className="hover:text-orange-600 transition-colors">Kebijakan Pengembalian</Link></li>
-                        <li><Link to="/track" className="hover:text-orange-600 transition-colors">Lacak Pesanan</Link></li>
-                        <li><Link to="/contact" className="hover:text-orange-600 transition-colors">Hubungi Ahli</Link></li>
+                        <li><Link to="/help" className="hover:text-orange-600 transition-colors">Tentang Kami</Link></li>
+                        <li><Link to="/help" className="hover:text-orange-600 transition-colors">Kebijakan Pengembalian</Link></li>
+                        <li><Link to="/account/orders" className="hover:text-orange-600 transition-colors">Lacak Pesanan</Link></li>
+                        <li><Link to="/help" className="hover:text-orange-600 transition-colors">Hubungi Ahli</Link></li>
                     </ul>
                 </div>
 
@@ -51,10 +51,10 @@ export const Footer = () => {
             </div>
 
             <div className="max-w-7xl mx-auto px-4 md:px-8 mt-12 pt-6 border-t flex flex-col md:flex-row justify-between items-center text-xs">
-                <p>&copy; 2024 NadaKita Digital Experience. Kurasi Instrumen Terpilih.</p>
+                <p>&copy; 2026 NadaKita.</p>
                 <div className="flex gap-6 mt-4 md:mt-0">
-                    <Link to="/terms" className="hover:text-orange-600 transition-colors">Syarat & Ketentuan</Link>
-                    <Link to="/privacy" className="hover:text-orange-600 transition-colors">Kebijakan Privasi</Link>
+                    <Link to="/help" className="hover:text-orange-600 transition-colors">Syarat & Ketentuan</Link>
+                    <Link to="/help" className="hover:text-orange-600 transition-colors">Kebijakan Privasi</Link>
                 </div>
             </div>
         </footer>
