@@ -70,6 +70,10 @@ Route::prefix('v1')->group(function () {
         Route::put('/user/profile', [UserController::class, 'updateProfile'])
             ->name('user.profile.update');
 
+        // POST /api/v1/user/avatar
+        Route::post('/user/avatar', [UserController::class, 'updateAvatar'])
+            ->name('user.avatar.update');
+
         // CART
         Route::get('/cart', [\App\Http\Controllers\Api\V1\User\CartController::class, 'index'])->name('cart.index');
         Route::post('/cart', [\App\Http\Controllers\Api\V1\User\CartController::class, 'store'])->name('cart.store');

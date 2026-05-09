@@ -67,6 +67,37 @@ export const ProfilePage = () => {
         postal_code: '',
         is_default: false
     });
+    const fileInputRef = React.useRef(null);
+    const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+
+    const handleAvatarChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validasi ukuran (max 2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error('Ukuran file maksimal 2MB');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        setIsUploadingAvatar(true);
+        try {
+            const response = await api.post('/user/avatar', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            updateUser(response.data.data);
+            toast.success('Foto profil berhasil diperbarui');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Gagal mengunggah foto profil');
+        } finally {
+            setIsUploadingAvatar(false);
+        }
+    };
 
     useEffect(() => {
         if (activeTab === 'addresses') {
@@ -169,15 +200,31 @@ export const ProfilePage = () => {
                             <div className="h-24 bg-gradient-to-r from-orange-500 to-amber-500"></div>
                             <div className="px-6 pb-8 -mt-12 text-center">
                                 <div className="relative inline-block mb-4">
-                                    <div className="w-24 h-24 rounded-full border-4 border-white dark:border-gray-900 bg-gray-100 dark:bg-gray-800 overflow-hidden mx-auto shadow-lg">
+                                    <div className={`w-24 h-24 rounded-full border-4 border-white dark:border-gray-900 bg-gray-100 dark:bg-gray-800 overflow-hidden mx-auto shadow-lg relative ${isUploadingAvatar ? 'opacity-50' : ''}`}>
                                         <img 
                                             src={user?.avatar || FALLBACK_AVATAR} 
                                             alt={user?.name} 
                                             className="w-full h-full object-cover"
                                             onError={(e) => e.target.src = FALLBACK_AVATAR}
                                         />
+                                        {isUploadingAvatar && (
+                                            <div className="absolute inset-0 flex items-center justify-center">
+                                                <Loader2 size={24} className="animate-spin text-orange-600" />
+                                            </div>
+                                        )}
                                     </div>
-                                    <button className="absolute bottom-0 right-0 p-1.5 bg-white dark:bg-gray-800 rounded-full shadow-md text-gray-500 hover:text-orange-600 border border-gray-100 dark:border-gray-700 transition-colors">
+                                    <input 
+                                        type="file" 
+                                        ref={fileInputRef} 
+                                        className="hidden" 
+                                        accept="image/*"
+                                        onChange={handleAvatarChange}
+                                    />
+                                    <button 
+                                        onClick={() => fileInputRef.current?.click()}
+                                        disabled={isUploadingAvatar}
+                                        className="absolute bottom-0 right-0 p-1.5 bg-white dark:bg-gray-800 rounded-full shadow-md text-gray-500 hover:text-orange-600 border border-gray-100 dark:border-gray-700 transition-colors disabled:opacity-50"
+                                    >
                                         <Camera size={16} />
                                     </button>
                                 </div>
@@ -189,31 +236,28 @@ export const ProfilePage = () => {
                                 </div>
                             </div>
                             
-                            <nav className="p-3 border-t border-gray-50 dark:border-gray-800">
-                                <button 
-                                    onClick={() => setActiveTab('profile')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                                        activeTab === 'profile' 
-                                        ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600' 
-                                        : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
-                                    }`}
-                                >
-                                    <User size={18} /> Informasi Profil
-                                </button>
-                                <button 
-                                    onClick={() => setActiveTab('addresses')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
-                                        activeTab === 'addresses' 
-                                        ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600' 
-                                        : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
-                                    }`}
-                                >
-                                    <MapPin size={18} /> Daftar Alamat
-                                </button>
-                                <button className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all opacity-50 cursor-not-allowed">
-                                    <Settings size={18} /> Keamanan
-                                </button>
-                            </nav>
+                                <nav className="p-3 border-t border-gray-50 dark:border-gray-800">
+                                    <button 
+                                        onClick={() => setActiveTab('profile')}
+                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === 'profile' 
+                                            ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600' 
+                                            : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                        }`}
+                                    >
+                                        <User size={18} /> Informasi Profil
+                                    </button>
+                                    <button 
+                                        onClick={() => setActiveTab('addresses')}
+                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
+                                            activeTab === 'addresses' 
+                                            ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600' 
+                                            : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                        }`}
+                                    >
+                                        <MapPin size={18} /> Daftar Alamat
+                                    </button>
+                                </nav>
                         </div>
                     </div>
 
