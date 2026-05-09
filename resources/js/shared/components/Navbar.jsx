@@ -12,6 +12,7 @@ export const Navbar = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { isAuthenticated, user, clearAuth } = useAuthStore();
+    const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
     
     // Store Hooks
     const cartCount = useCartStore(state => state.getTotalItems());
@@ -81,8 +82,22 @@ export const Navbar = () => {
         navigate(`/explore${trimmed ? `?search=${encodeURIComponent(trimmed)}` : ''}`);
     };
 
+    const clearWishlist = useWishlistStore(state => state.clearWishlist);
+    const resetCart = useCartStore(state => state.resetCart);
+    const resetNotifications = useNotificationStore(state => state.resetNotifications);
+
     const handleLogout = () => {
+        setIsLogoutModalOpen(true);
+        setIsProfileDropdownOpen(false);
+        setIsMobileMenuOpen(false);
+    };
+
+    const confirmLogout = () => {
         clearAuth();
+        clearWishlist();
+        resetCart();
+        resetNotifications();
+        setIsLogoutModalOpen(false);
         navigate('/');
     };
 
@@ -93,7 +108,46 @@ export const Navbar = () => {
     ];
 
     return (
-        <header className="bg-white dark:bg-gray-950 border-b dark:border-gray-800 sticky top-0 z-50 h-[72px] transition-colors duration-300">
+        <>
+            {/* Logout Confirmation Modal */}
+            {isLogoutModalOpen && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+                    {/* Backdrop */}
+                    <div 
+                        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+                        onClick={() => setIsLogoutModalOpen(false)}
+                    ></div>
+                    
+                    {/* Modal Content */}
+                    <div className="relative bg-white dark:bg-gray-900 w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden">
+                        <div className="p-8 text-center">
+                            <div className="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <LogOut size={32} className="text-red-600" />
+                            </div>
+                            <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-2">Konfirmasi Keluar</h3>
+                            <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                Apakah Anda yakin ingin keluar dari akun Anda?
+                            </p>
+                        </div>
+                        <div className="flex border-t border-gray-100 dark:border-gray-800">
+                            <button 
+                                onClick={() => setIsLogoutModalOpen(false)}
+                                className="flex-1 px-6 py-4 text-sm font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            >
+                                Batal
+                            </button>
+                            <button 
+                                onClick={confirmLogout}
+                                className="flex-1 px-6 py-4 text-sm font-extrabold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border-l border-gray-100 dark:border-gray-800"
+                            >
+                                Ya, Keluar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <header className="bg-white dark:bg-gray-950 border-b dark:border-gray-800 sticky top-0 z-50 h-[72px] transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 md:px-8 h-full flex items-center justify-between gap-4 md:gap-8">
                 {/* Logo */}
                 <div className="flex items-center shrink-0">
@@ -414,5 +468,6 @@ export const Navbar = () => {
                 </div>
             )}
         </header>
-    );
+    </>
+);
 };
