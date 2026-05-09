@@ -14,6 +14,8 @@ class ProductMedia extends Model
 
     public $timestamps = false;
 
+    protected $appends = ['media_url', 'media_type'];
+
     protected $fillable = [
         'product_id',
         'type',
@@ -26,5 +28,25 @@ class ProductMedia extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Get the full URL for the media.
+     */
+    public function getMediaUrlAttribute(): ?string
+    {
+        if (!$this->url) {
+            return null;
+        }
+
+        return asset('storage/' . $this->url);
+    }
+
+    /**
+     * Get the type of media.
+     */
+    public function getMediaTypeAttribute(): string
+    {
+        return $this->type;
     }
 }

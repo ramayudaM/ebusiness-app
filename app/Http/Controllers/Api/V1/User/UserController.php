@@ -25,10 +25,11 @@ class UserController extends Controller
         return response()->json([
             'success' => true,
             'data'    => [
-                'id'    => $user->id,
-                'name'  => $user->name,
-                'email' => $user->email,
-                'role'  => $user->role,
+                'id'     => $user->id,
+                'name'   => $user->name,
+                'email'  => $user->email,
+                'role'   => $user->role,
+                'avatar' => $user->avatar,
                 'profile' => $user->customerProfile ? [
                     'phone'       => $user->customerProfile->phone,
                     'address'     => $user->customerProfile->address,
@@ -55,10 +56,46 @@ class UserController extends Controller
             'success' => true,
             'message' => 'Profil berhasil diperbarui.',
             'data'    => [
-                'id'    => $user->id,
-                'name'  => $user->name,
-                'email' => $user->email,
-                'role'  => $user->role,
+                'id'     => $user->id,
+                'name'   => $user->name,
+                'email'  => $user->email,
+                'role'   => $user->role,
+                'avatar' => $user->avatar,
+                'profile' => $user->customerProfile ? [
+                    'phone'       => $user->customerProfile->phone,
+                    'address'     => $user->customerProfile->address,
+                    'city'        => $user->customerProfile->city,
+                    'province'    => $user->customerProfile->province,
+                    'postal_code' => $user->customerProfile->postal_code,
+                ] : null,
+            ],
+        ]);
+    }
+
+    /**
+     * POST /api/v1/user/avatar
+     * Update avatar user.
+     */
+    public function updateAvatar(Request $request): JsonResponse
+    {
+        $request->validate([
+            'avatar' => 'required|image|max:2048', // Max 2MB
+        ]);
+
+        $user = $this->authService->updateAvatar(
+            $request->user(),
+            $request->file('avatar')
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Foto profil berhasil diperbarui.',
+            'data'    => [
+                'id'     => $user->id,
+                'name'   => $user->name,
+                'email'  => $user->email,
+                'role'   => $user->role,
+                'avatar' => $user->avatar,
                 'profile' => $user->customerProfile ? [
                     'phone'       => $user->customerProfile->phone,
                     'address'     => $user->customerProfile->address,

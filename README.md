@@ -209,6 +209,7 @@ podman exec nadakita-app php artisan key:generate
 
 # Jalankan migrasi database
 podman exec nadakita-app php artisan migrate --seed
+podman exec nadakita-app php artisan migrate:fresh --seed
 
 # Buat symlink storage
 podman exec nadakita-app php artisan storage:link

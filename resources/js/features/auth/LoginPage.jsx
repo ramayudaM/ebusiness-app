@@ -52,12 +52,12 @@ const LoginPage = () => {
   const combinedErrors = { ...errors, ...localErrors }
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex flex-col items-center justify-center p-4 transition-colors duration-300">
       {/* Back Button */}
       <div className="w-full max-w-md mb-4">
         <Link
           to="/"
-          className="text-sm text-gray-600 flex items-center gap-1 uppercase font-bold tracking-wider"
+          className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1 uppercase font-bold tracking-wider hover:text-orange-600 transition-colors"
         >
           <svg
             width="18"
@@ -86,14 +86,14 @@ const LoginPage = () => {
             <path d="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17C6 19.21 7.79 21 10 21C12.21 21 14 19.21 14 17V7H18V3H12Z" />
           </svg>
         </div>
-        <span className="text-2xl font-black text-gray-800 tracking-tight">NadaKita</span>
+        <span className="text-2xl font-black text-gray-800 dark:text-white tracking-tight">NadaKita</span>
       </div>
 
       {/* Login Card */}
-      <div className="bg-white p-10 rounded-3xl shadow-2xl w-full max-w-md relative">
+      <div className="bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-2xl w-full max-w-md relative border border-gray-100 dark:border-gray-800">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Masuk ke Akun</h1>
-          <p className="text-sm text-gray-500 font-medium">Lanjutkan perjalanan musikmu</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Masuk ke Akun</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Lanjutkan perjalanan musikmu</p>
         </div>
 
         {globalError && (
@@ -126,9 +126,9 @@ const LoginPage = () => {
               value={formData.email}
               onChange={handleChange}
               noValidate
-              className={`w-full px-5 py-4 bg-gray-50 border-2 ${
-                combinedErrors.email ? 'border-red-500 bg-red-50' : 'border-transparent'
-              } rounded-2xl focus:bg-white focus:outline-none focus:border-orange-500 transition-all font-medium shadow-inner shadow-gray-200`}
+              className={`w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-2 ${
+                combinedErrors.email ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-transparent'
+              } rounded-2xl focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:border-orange-500 transition-all dark:text-white font-medium shadow-inner shadow-gray-200 dark:shadow-none`}
               placeholder="nama@email.com"
             />
             {combinedErrors.email && (
@@ -159,9 +159,9 @@ const LoginPage = () => {
                 value={formData.password}
                 onChange={handleChange}
                 noValidate
-                className={`w-full px-5 py-4 bg-gray-50 border-2 ${
-                  combinedErrors.password ? 'border-red-500 bg-red-50' : 'border-transparent'
-                } rounded-2xl focus:bg-white focus:outline-none focus:border-orange-500 transition-all font-medium shadow-inner shadow-gray-200`}
+                className={`w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-2 ${
+                  combinedErrors.password ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-transparent'
+                } rounded-2xl focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:border-orange-500 transition-all dark:text-white font-medium shadow-inner shadow-gray-200 dark:shadow-none`}
                 placeholder="••••••••"
               />
               <button
@@ -216,7 +216,7 @@ const LoginPage = () => {
             />
             <label
               htmlFor="remember"
-              className="text-sm text-gray-600 font-semibold select-none cursor-pointer"
+              className="text-sm text-gray-600 dark:text-gray-400 font-semibold select-none cursor-pointer"
             >
               Ingat saya
             </label>
@@ -227,7 +227,7 @@ const LoginPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-orange-200 relative overflow-hidden group"
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-orange-200 dark:shadow-none relative overflow-hidden group"
             >
               {loading ? (
                 <svg
@@ -260,8 +260,8 @@ const LoginPage = () => {
           </div>
         </form>
 
-        <div className="text-center text-sm border-t border-gray-100 pt-8">
-          <span className="text-gray-500 font-medium">Belum punya akun?</span>{' '}
+        <div className="text-center text-sm border-t border-gray-100 dark:border-gray-800 pt-8">
+          <span className="text-gray-500 dark:text-gray-400 font-medium">Belum punya akun?</span>{' '}
           <Link
             to="/register"
             className="text-orange-600 font-black hover:underline underline-offset-4 Decoration-2"

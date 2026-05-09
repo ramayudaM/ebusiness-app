@@ -70,7 +70,7 @@ const RegisterPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center p-4 transition-colors duration-300">
       {/* Header / Logo */}
       <div className="w-full max-w-md flex items-center justify-between mb-8">
         <div className="flex items-center gap-2">
@@ -85,9 +85,9 @@ const RegisterPage = () => {
               <path d="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17C6 19.21 7.79 21 10 21C12.21 21 14 19.21 14 17V7H18V3H12Z" />
             </svg>
           </div>
-          <span className="text-xl font-bold">NadaKita</span>
+          <span className="text-xl font-bold dark:text-white">NadaKita</span>
         </div>
-        <Link to="/login" className="text-sm text-gray-600 flex items-center gap-1">
+        <Link to="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 transition-colors flex items-center gap-1">
           <svg
             width="16"
             height="16"
@@ -103,10 +103,10 @@ const RegisterPage = () => {
       </div>
 
       {/* Register Card */}
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100">
+      <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100 dark:border-gray-800">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Daftar Akun Baru</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Daftar Akun Baru</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
             Bergabunglah dengan komunitas audio profesional kami.
           </p>
         </div>
@@ -135,9 +135,9 @@ const RegisterPage = () => {
                 value={formData.name}
                 onChange={handleChange}
                 noValidate
-                className={`w-full pl-10 pr-4 py-2 bg-gray-100 border-2 ${
-                  combinedErrors.name ? 'border-red-500 bg-red-50' : 'border-transparent'
-                } rounded-xl focus:bg-white focus:outline-none focus:border-orange-500 transition-all`}
+                className={`w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border-2 ${
+                  combinedErrors.name ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-transparent'
+                } rounded-xl focus:bg-white dark:focus:bg-gray-900 dark:text-white focus:outline-none focus:border-orange-500 transition-all`}
                 placeholder="Contoh: Andi Wijaya"
               />
             </div>
@@ -207,9 +207,9 @@ const RegisterPage = () => {
                 value={formData.password}
                 onChange={handleChange}
                 noValidate
-                className={`w-full pl-10 pr-10 py-2 bg-gray-100 border-2 ${
-                  combinedErrors.password ? 'border-red-500 bg-red-50' : 'border-transparent'
-                } rounded-xl focus:bg-white focus:outline-none focus:border-orange-500 transition-all`}
+                className={`w-full pl-10 pr-10 py-2 bg-gray-100 dark:bg-gray-800 border-2 ${
+                  combinedErrors.password ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-transparent'
+                } rounded-xl focus:bg-white dark:focus:bg-gray-900 dark:text-white focus:outline-none focus:border-orange-500 transition-all`}
                 placeholder="••••••••"
               />
               <button
@@ -267,9 +267,9 @@ const RegisterPage = () => {
                 }`}
               ></div>
             </div>
-            <p className="text-[10px] text-gray-400 mt-1 uppercase font-bold">
+            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 uppercase font-bold">
               Kekuatan:{' '}
-              <span className={passwordStrength.score > 0 ? 'text-gray-600' : ''}>
+              <span className={passwordStrength.score > 0 ? 'text-gray-600 dark:text-gray-300' : ''}>
                 {passwordStrength.label}
               </span>
             </p>
@@ -277,7 +277,7 @@ const RegisterPage = () => {
 
           {/* Confirm Password Field */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Konfirmasi Password*
             </label>
             <div className="relative">
@@ -325,13 +325,13 @@ const RegisterPage = () => {
               className="mt-1 w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500"
               required
             />
-            <label htmlFor="agree_terms" className="text-xs text-gray-500 leading-normal">
+            <label htmlFor="agree_terms" className="text-xs text-gray-500 dark:text-gray-400 leading-normal">
               Saya setuju dengan{' '}
-              <span className="text-orange-600 font-semibold cursor-pointer">
+              <span className="text-orange-600 font-semibold cursor-pointer hover:underline">
                 Syarat & Ketentuan
               </span>{' '}
               dan{' '}
-              <span className="text-orange-600 font-semibold cursor-pointer">
+              <span className="text-orange-600 font-semibold cursor-pointer hover:underline">
                 Kebijakan Privasi
               </span>{' '}
               NadaKita.
@@ -342,7 +342,7 @@ const RegisterPage = () => {
           <button
             type="submit"
             disabled={loading || !formData.agree_terms}
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-200"
+            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-200 dark:shadow-none"
           >
             {loading ? (
               <svg

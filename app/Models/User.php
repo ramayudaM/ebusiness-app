@@ -20,6 +20,14 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'avatar_path',
+    ];
+
+    /**
+     * The attributes that should be appended to the model's array form.
+     */
+    protected $appends = [
+        'avatar',
     ];
 
     /**
@@ -68,6 +76,23 @@ class User extends Authenticatable
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Get the user's avatar URL.
+     */
+    public function getAvatarAttribute(): string
+    {
+        $path = $this->avatar_path;
+        
+        if ($path && $path !== '0' && $path !== '') {
+            if (filter_var($path, FILTER_VALIDATE_URL)) {
+                return $path;
+            }
+            return \Illuminate\Support\Facades\Storage::disk('public')->url($path);
+        }
+        
+        return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&color=7F9CF5&background=EBF4FF';
     }
 }
 

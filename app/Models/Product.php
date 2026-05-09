@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Product extends Model
 {
     use HasFactory, SoftDeletes;
+    
+    protected $appends = ['primary_image_url'];
 
     protected $fillable = [
         'category_id',
@@ -61,5 +63,19 @@ class Product extends Model
     public function bundle(): HasOne
     {
         return $this->hasOne(Bundle::class);
+    }
+
+    /**
+     * Get the URL for the primary image.
+     */
+    public function getPrimaryImageUrlAttribute(): ?string
+    {
+        $primaryImage = $this->images->where('is_primary', true)->first();
+        
+        if (!$primaryImage) {
+            $primaryImage = $this->images->first();
+        }
+
+        return $primaryImage?->image_url;
     }
 }
