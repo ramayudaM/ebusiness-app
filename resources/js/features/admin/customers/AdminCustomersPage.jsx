@@ -1,454 +1,514 @@
+import { useEffect, useMemo, useState } from 'react'
 import AdminLayout from '../components/AdminLayout'
-import StatCard from '../components/StatCard'
-import SectionHeader from '../components/SectionHeader'
 import AdminIcon from '../components/AdminIcon'
+import { adminTheme as theme } from '../styles/adminTheme'
+import { adminCustomerService } from './adminCustomerService'
 
-const theme = {
-  primary: '#7F56D9',
-  primaryDark: '#53389E',
-  navy: '#101828',
-  dark: '#1D2939',
-  success: '#12B76A',
-  warning: '#F79009',
-  danger: '#F04438',
-  blue: '#2E90FA',
+function formatCurrency(value) {
+  const number = Number(value || 0)
+
+  return new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    maximumFractionDigits: 0,
+  })
+    .format(number)
+    .replace('Rp', 'Rp ')
 }
 
-function StatusBadge({ status }) {
-  const style = {
-    Aktif: 'bg-emerald-50 text-emerald-700 border-emerald-100',
-    Baru: 'bg-blue-50 text-blue-700 border-blue-100',
-    Loyal: 'bg-violet-50 text-violet-700 border-violet-100',
-    TidakAktif: 'bg-slate-50 text-slate-600 border-slate-200',
-  }
+function formatDate(value) {
+  if (!value) return '-'
+
+  return new Intl.DateTimeFormat('id-ID', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(value))
+}
+
+function getProfile(customer) {
+  return customer.customer_profile || customer.customerProfile || {}
+}
+
+function getCustomerCity(customer) {
+  const profile = getProfile(customer)
+
+  return (
+    profile.city ||
+    profile.address_city ||
+    profile.kota ||
+    customer.shipping_city ||
+    'Kota belum diisi'
+  )
+}
+
+function getCustomerPhone(customer) {
+  const profile = getProfile(customer)
+
+  return (
+    profile.phone ||
+    profile.phone_number ||
+    profile.no_hp ||
+    '-'
+  )
+}
+
+function CustomerStatusBadge({ customer }) {
+  const inactive = Boolean(customer.deleted_at)
 
   return (
     <span
-      className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${
-        style[status] || style.Aktif
+      className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ring-1 ${
+        inactive
+          ? 'bg-rose-50 text-rose-700 ring-rose-100'
+          : 'bg-emerald-50 text-emerald-700 ring-emerald-100'
       }`}
     >
-      {status === 'TidakAktif' ? 'Tidak Aktif' : status}
+      {inactive ? 'Nonaktif' : 'Aktif'}
     </span>
   )
 }
 
-function MiniProgress({ label, value, count, color }) {
+function MiniMetric({ label, value, tone }) {
+  const colors = {
+    orange: theme.primary,
+    green: theme.success,
+    blue: theme.blue,
+    red: theme.danger,
+  }
+
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between text-sm">
-        <span className="text-slate-600">{label}</span>
-        <span className="font-semibold text-slate-950">{count}</span>
+      <div className="mb-3 flex items-center gap-2">
+        <span
+          className="h-2 w-2 rounded-full"
+          style={{ backgroundColor: colors[tone] || theme.primary }}
+        />
+        <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-400">
+          {label}
+        </p>
       </div>
 
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-        <div
-          className="h-full rounded-full"
-          style={{ width: `${value}%`, backgroundColor: color }}
-        />
-      </div>
+      <p className="text-2xl font-black tracking-tight text-slate-950">
+        {value}
+      </p>
     </div>
   )
 }
 
-export default function AdminCustomersPage() {
-  const customers = [
-    {
-      id: 'CST-001',
-      name: 'Aulia Ramadhani',
-      email: 'aulia@email.com',
-      phone: '0812-3456-7890',
-      city: 'Jakarta',
-      orders: 8,
-      spent: 'Rp8.450.000',
-      lastOrder: '30 Apr 2026',
-      status: 'Loyal',
-    },
-    {
-      id: 'CST-002',
-      name: 'Rizky Ananda',
-      email: 'rizky@email.com',
-      phone: '0821-2222-7821',
-      city: 'Bandung',
-      orders: 5,
-      spent: 'Rp6.250.000',
-      lastOrder: '30 Apr 2026',
-      status: 'Aktif',
-    },
-    {
-      id: 'CST-003',
-      name: 'Nabila Putri',
-      email: 'nabila@email.com',
-      phone: '0857-8888-1200',
-      city: 'Surabaya',
-      orders: 2,
-      spent: 'Rp1.850.000',
-      lastOrder: '29 Apr 2026',
-      status: 'Baru',
-    },
-    {
-      id: 'CST-004',
-      name: 'Fajar Maulana',
-      email: 'fajar@email.com',
-      phone: '0813-9012-4400',
-      city: 'Yogyakarta',
-      orders: 3,
-      spent: 'Rp3.100.000',
-      lastOrder: '29 Apr 2026',
-      status: 'Aktif',
-    },
-    {
-      id: 'CST-005',
-      name: 'Kevin Arya',
-      email: 'kevin@email.com',
-      phone: '0896-1111-3456',
-      city: 'Medan',
-      orders: 1,
-      spent: 'Rp220.000',
-      lastOrder: '12 Apr 2026',
-      status: 'TidakAktif',
-    },
-  ]
+function CustomerRow({
+  customer,
+  onView,
+  onDeactivate,
+  onRestore,
+  updatingId,
+}) {
+  const inactive = Boolean(customer.deleted_at)
+  const ordersCount = Number(customer.orders_count || 0)
+  const totalSpent = Number(customer.total_spent_sen || 0)
 
-  const priorityCustomers = customers.filter(
-    (customer) => customer.status === 'Loyal' || customer.orders >= 5
+  return (
+    <tr className="group border-b border-slate-100 transition hover:bg-slate-50">
+      <td className="px-6 py-5">
+        <div className="flex items-center gap-4">
+          <div className="h-12 w-12 shrink-0 overflow-hidden rounded-2xl bg-slate-100 ring-1 ring-slate-100">
+            <img
+              src={customer.avatar}
+              alt={customer.name}
+              className="h-full w-full object-cover"
+            />
+          </div>
+
+          <div className="min-w-0">
+            <p className="max-w-[260px] truncate text-sm font-black text-slate-950">
+              {customer.name || 'Customer'}
+            </p>
+            <p className="mt-1 max-w-[280px] truncate text-xs font-medium text-slate-500">
+              {customer.email || '-'}
+            </p>
+          </div>
+        </div>
+      </td>
+
+      <td className="px-6 py-5">
+        <p className="text-sm font-bold text-slate-800">
+          {getCustomerPhone(customer)}
+        </p>
+        <p className="mt-1 text-xs font-medium text-slate-500">
+          {getCustomerCity(customer)}
+        </p>
+      </td>
+
+      <td className="px-6 py-5">
+        <p className="text-sm font-black text-slate-950">
+          {ordersCount}
+        </p>
+        <p className="mt-1 text-xs font-medium text-slate-500">
+          pesanan
+        </p>
+      </td>
+
+      <td className="whitespace-nowrap px-6 py-5 text-sm font-black text-slate-950">
+        {formatCurrency(totalSpent)}
+      </td>
+
+      <td className="px-6 py-5">
+        <CustomerStatusBadge customer={customer} />
+      </td>
+
+      <td className="px-6 py-5">
+        <p className="text-sm font-semibold text-slate-700">
+          {formatDate(customer.created_at)}
+        </p>
+      </td>
+
+      <td className="px-6 py-5">
+        <div className="flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => onView(customer)}
+            className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-600"
+            title="Lihat detail customer"
+          >
+            <AdminIcon name="eye" size={17} />
+          </button>
+
+          {inactive ? (
+            <button
+              type="button"
+              disabled={updatingId === customer.id}
+              onClick={() => onRestore(customer)}
+              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-100 bg-white text-emerald-600 transition hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-50"
+              title="Aktifkan customer"
+            >
+              <AdminIcon name="refresh" size={17} />
+            </button>
+          ) : (
+            <button
+              type="button"
+              disabled={updatingId === customer.id}
+              onClick={() => onDeactivate(customer)}
+              className="flex h-10 w-10 items-center justify-center rounded-2xl border border-rose-100 bg-white text-rose-500 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+              title="Nonaktifkan customer"
+            >
+              <AdminIcon name="trash" size={17} />
+            </button>
+          )}
+        </div>
+      </td>
+    </tr>
   )
+}
+
+export default function AdminCustomersPage() {
+  const [customers, setCustomers] = useState([])
+  const [meta, setMeta] = useState(null)
+
+  const [search, setSearch] = useState('')
+  const [status, setStatus] = useState('')
+  const [page, setPage] = useState(1)
+
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [updatingId, setUpdatingId] = useState(null)
+
+  const fetchCustomers = async () => {
+    setLoading(true)
+    setError('')
+
+    try {
+      const response = await adminCustomerService.getCustomers({
+        search,
+        status,
+        page,
+        per_page: 10,
+      })
+
+      setCustomers(response.data.data || [])
+      setMeta(response.data.meta || null)
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          'Data customer belum dapat dimuat. Pastikan sesi admin masih aktif.'
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    const delay = setTimeout(() => {
+      fetchCustomers()
+    }, 350)
+
+    return () => clearTimeout(delay)
+  }, [search, status, page])
+
+  useEffect(() => {
+    setPage(1)
+  }, [search, status])
+
+  const stats = useMemo(() => {
+    const total = meta?.total || customers.length
+    const active = customers.filter((customer) => !customer.deleted_at).length
+    const inactive = customers.filter((customer) => customer.deleted_at).length
+    const withOrders = customers.filter(
+      (customer) => Number(customer.orders_count || 0) > 0
+    ).length
+
+    return {
+      total,
+      active,
+      inactive,
+      withOrders,
+    }
+  }, [customers, meta])
+
+  const handleView = (customer) => {
+    window.location.href = `/admin/customers/${customer.id}`
+  }
+
+  const handleDeactivate = async (customer) => {
+    const confirmed = window.confirm(
+      `Nonaktifkan customer "${customer.name}"? Akun tidak dihapus permanen.`
+    )
+
+    if (!confirmed) return
+
+    setUpdatingId(customer.id)
+
+    try {
+      await adminCustomerService.deactivateCustomer(customer.id)
+      await fetchCustomers()
+    } catch (err) {
+      alert(
+        err.response?.data?.message ||
+          'Customer belum dapat dinonaktifkan.'
+      )
+    } finally {
+      setUpdatingId(null)
+    }
+  }
+
+  const handleRestore = async (customer) => {
+    setUpdatingId(customer.id)
+
+    try {
+      await adminCustomerService.restoreCustomer(customer.id)
+      await fetchCustomers()
+    } catch (err) {
+      alert(
+        err.response?.data?.message ||
+          'Customer belum dapat diaktifkan kembali.'
+      )
+    } finally {
+      setUpdatingId(null)
+    }
+  }
+
+  const canGoPrev = Number(meta?.current_page || 1) > 1
+  const canGoNext =
+    Number(meta?.current_page || 1) < Number(meta?.last_page || 1)
 
   return (
     <AdminLayout
       activeMenu="customers"
-      breadcrumb="Admin Panel / Customers"
+      breadcrumb="Admin / Customer"
       title="Manajemen Customer"
-      searchPlaceholder="Cari customer, email, kota..."
+      searchPlaceholder="Cari customer..."
     >
-      {/* HERO */}
-      <section
-        className="relative overflow-hidden rounded-[28px] p-6 text-white shadow-sm md:p-7"
-        style={{
-          background: `linear-gradient(135deg, ${theme.navy}, ${theme.dark} 55%, ${theme.primaryDark})`,
-        }}
-      >
-        <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-purple-400/20 blur-3xl" />
-
-        <div className="relative z-10 flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
+      <section className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm md:p-7">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-sm text-white/75">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
-              Data customer aktif
-            </div>
+            <p className="text-xs font-black uppercase tracking-[0.2em] text-orange-600">
+              Customer Management
+            </p>
 
-            <h2 className="max-w-3xl text-3xl font-bold leading-tight tracking-tight md:text-4xl">
-              Kelola customer dan nilai transaksi dengan lebih terstruktur.
+            <h2 className="mt-3 text-4xl font-black tracking-tight text-slate-950">
+              Customer
             </h2>
 
-            <p className="mt-3 max-w-2xl leading-relaxed text-white/65">
-              Pantau customer aktif, customer loyal, aktivitas pembelian, dan peluang
-              follow-up dari satu halaman yang ringkas.
+            <p className="mt-3 max-w-2xl text-sm font-medium leading-relaxed text-slate-500">
+              Kelola data customer, status akun, dan riwayat transaksi yang
+              terhubung dengan halaman customer.
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-3 xl:min-w-[360px]">
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
-              <p className="text-xs text-white/50">Customer Baru</p>
-              <h3 className="mt-1 text-xl font-bold">84</h3>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
-              <p className="text-xs text-white/50">Repeat Order</p>
-              <h3 className="mt-1 text-xl font-bold">42%</h3>
-            </div>
-
-            <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur">
-              <p className="text-xs text-white/50">Avg Spend</p>
-              <h3 className="mt-1 text-xl font-bold">Rp1.8jt</h3>
-            </div>
-          </div>
+          <button
+            type="button"
+            onClick={fetchCustomers}
+            className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-700 shadow-sm transition hover:bg-slate-50"
+          >
+            <AdminIcon name="refresh" size={18} />
+            Refresh
+          </button>
         </div>
-      </section>
 
-      {/* STATS */}
-      <section className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          title="Total Customer"
-          value="1.284"
-          note="Semua customer"
-          icon="customer"
-          color={theme.blue}
-        />
-
-        <StatCard
-          title="Customer Aktif"
-          value="936"
-          note="Aktif bulan ini"
-          icon="chart"
-          color={theme.success}
-        />
-
-        <StatCard
-          title="Customer Loyal"
-          value="214"
-          note="Repeat order tinggi"
-          icon="target"
-          color={theme.primary}
-        />
-
-        <StatCard
-          title="Tidak Aktif"
-          value="134"
-          note="Perlu follow-up"
-          icon="alert"
-          color={theme.warning}
-        />
-      </section>
-
-      {/* MAIN GRID */}
-      <section className="grid grid-cols-1 gap-6 2xl:grid-cols-[1.45fr_0.55fr]">
-        {/* LEFT */}
-        <div className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-          <SectionHeader
-            title="Daftar Customer"
-            description="Kelola data customer dan riwayat aktivitas pembelian."
-            action={
-              <button className="hidden items-center gap-2 rounded-2xl bg-violet-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-violet-700 md:inline-flex">
-                <AdminIcon name="filter" size={18} />
-                Filter
-              </button>
-            }
+        <div className="mt-7 grid grid-cols-2 gap-5 border-t border-slate-100 pt-6 lg:grid-cols-4">
+          <MiniMetric label="Total Customer" value={stats.total} tone="blue" />
+          <MiniMetric label="Aktif" value={stats.active} tone="green" />
+          <MiniMetric
+            label="Pernah Order"
+            value={stats.withOrders}
+            tone="orange"
           />
+          <MiniMetric label="Nonaktif" value={stats.inactive} tone="red" />
+        </div>
+      </section>
 
-          <div className="mb-5 grid grid-cols-1 gap-3 xl:grid-cols-[1fr_170px_170px]">
-            <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3">
-              <span className="text-slate-400">
-                <AdminIcon name="search" />
-              </span>
-              <input
-                type="text"
-                placeholder="Cari nama, email, atau kota..."
-                className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
-              />
-            </div>
-
-            <select className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none">
-              <option>Semua Status</option>
-              <option>Baru</option>
-              <option>Aktif</option>
-              <option>Loyal</option>
-              <option>Tidak Aktif</option>
-            </select>
-
-            <select className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none">
-              <option>Semua Kota</option>
-              <option>Jakarta</option>
-              <option>Bandung</option>
-              <option>Surabaya</option>
-              <option>Yogyakarta</option>
-            </select>
+      <section className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="grid grid-cols-1 gap-3 lg:grid-cols-[1fr_220px]">
+          <div className="flex items-center gap-3 rounded-2xl bg-slate-100 px-4 py-3">
+            <AdminIcon name="search" className="text-slate-500" />
+            <input
+              type="text"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Cari nama atau email customer..."
+              className="w-full border-0 bg-transparent text-sm font-semibold text-slate-700 outline-none ring-0 placeholder:text-slate-400 focus:border-0 focus:outline-none focus:ring-0"
+            />
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[940px]">
-              <thead>
-                <tr className="border-b border-slate-200 text-left">
-                  <th className="py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Customer
-                  </th>
-                  <th className="py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Kontak
-                  </th>
-                  <th className="py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Kota
-                  </th>
-                  <th className="py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Order
-                  </th>
-                  <th className="py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Belanja
-                  </th>
-                  <th className="py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Status
-                  </th>
-                  <th className="py-3 text-xs font-semibold uppercase tracking-wide text-slate-500">
-                    Aksi
-                  </th>
-                </tr>
-              </thead>
+          <select
+            value={status}
+            onChange={(event) => setStatus(event.target.value)}
+            className="rounded-2xl border-0 bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 outline-none ring-0 focus:ring-0"
+          >
+            <option value="">Semua Status</option>
+            <option value="active">Aktif</option>
+            <option value="inactive">Nonaktif</option>
+          </select>
+        </div>
+      </section>
 
-              <tbody>
-                {customers.map((customer) => (
-                  <tr
-                    key={customer.id}
-                    className="border-b border-slate-100 transition hover:bg-slate-50"
-                  >
-                    <td className="py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-violet-50 text-sm font-bold text-violet-700">
-                          {customer.name.charAt(0)}
-                        </div>
+      <section className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-sm">
+        <div className="flex flex-col gap-3 border-b border-slate-100 px-6 py-5 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h3 className="text-lg font-black text-slate-950">
+              Daftar Customer
+            </h3>
+            <p className="mt-1 text-sm font-medium text-slate-500">
+              Data customer yang terdaftar pada sistem NadaKita.
+            </p>
+          </div>
 
-                        <div>
-                          <p className="text-sm font-semibold text-slate-950">
-                            {customer.name}
-                          </p>
-                          <p className="text-xs text-slate-500">
-                            {customer.id} • Order terakhir {customer.lastOrder}
-                          </p>
-                        </div>
-                      </div>
-                    </td>
+          <p className="text-sm font-bold text-slate-500">
+            {meta?.total || customers.length} customer
+          </p>
+        </div>
 
-                    <td className="py-4">
-                      <p className="text-sm text-slate-700">{customer.email}</p>
-                      <p className="text-xs text-slate-500">{customer.phone}</p>
-                    </td>
+        {error && (
+          <div className="border-b border-rose-100 bg-rose-50 px-6 py-4 text-sm font-bold text-rose-700">
+            {error}
+          </div>
+        )}
 
-                    <td className="py-4 text-sm text-slate-700">
-                      {customer.city}
-                    </td>
+        {loading ? (
+          <div className="flex min-h-[360px] items-center justify-center">
+            <div className="text-center">
+              <div className="mx-auto h-11 w-11 animate-spin rounded-full border-4 border-slate-200 border-t-orange-600" />
+              <p className="mt-4 text-sm font-bold text-slate-500">
+                Memuat data customer...
+              </p>
+            </div>
+          </div>
+        ) : customers.length === 0 ? (
+          <div className="flex min-h-[360px] flex-col items-center justify-center p-8 text-center">
+            <div
+              className="mb-5 flex h-16 w-16 items-center justify-center rounded-[24px]"
+              style={{
+                backgroundColor: theme.primarySoft,
+                color: theme.primary,
+              }}
+            >
+              <AdminIcon name="customer" size={28} />
+            </div>
 
-                    <td className="py-4 text-sm font-semibold text-slate-950">
-                      {customer.orders}
-                    </td>
+            <h3 className="text-xl font-black text-slate-950">
+              Customer belum ditemukan
+            </h3>
 
-                    <td className="py-4 text-sm font-semibold text-slate-950">
-                      {customer.spent}
-                    </td>
-
-                    <td className="py-4">
-                      <StatusBadge status={customer.status} />
-                    </td>
-
-                    <td className="py-4">
-                      <div className="flex gap-2">
-                        <button className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition hover:bg-slate-50">
-                          <AdminIcon name="eye" size={17} />
-                        </button>
-
-                        <button className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-600 transition hover:bg-slate-50">
-                          <AdminIcon name="edit" size={17} />
-                        </button>
-                      </div>
-                    </td>
+            <p className="mt-2 max-w-md text-sm font-medium text-slate-500">
+              Data customer akan muncul setelah pengguna melakukan registrasi.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[1080px]">
+                <thead>
+                  <tr className="bg-slate-50 text-left">
+                    <th className="px-6 py-4 text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+                      Customer
+                    </th>
+                    <th className="px-6 py-4 text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+                      Kontak
+                    </th>
+                    <th className="px-6 py-4 text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+                      Order
+                    </th>
+                    <th className="px-6 py-4 text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+                      Total Belanja
+                    </th>
+                    <th className="px-6 py-4 text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+                      Bergabung
+                    </th>
+                    <th className="px-6 py-4 text-right text-xs font-black uppercase tracking-[0.14em] text-slate-400">
+                      Aksi
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                </thead>
 
-        {/* RIGHT */}
-        <div className="space-y-6">
-          <div className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-            <SectionHeader
-              title="Customer Prioritas"
-              description="Customer dengan repeat order atau nilai belanja tinggi."
-            />
+                <tbody>
+                  {customers.map((customer) => (
+                    <CustomerRow
+                      key={customer.id}
+                      customer={customer}
+                      onView={handleView}
+                      onDeactivate={handleDeactivate}
+                      onRestore={handleRestore}
+                      updatingId={updatingId}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-            <div className="space-y-4">
-              {priorityCustomers.map((customer) => (
-                <div
-                  key={customer.id}
-                  className="rounded-2xl border border-slate-100 bg-slate-50 p-4"
+            <div className="flex flex-col gap-4 border-t border-slate-100 px-6 py-5 md:flex-row md:items-center md:justify-between">
+              <p className="text-sm font-semibold text-slate-500">
+                Halaman {meta?.current_page || page} dari {meta?.last_page || 1}
+              </p>
+
+              <div className="flex items-center gap-2">
+                <button
+                  disabled={!canGoPrev}
+                  onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                  className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-500 disabled:cursor-not-allowed disabled:opacity-40"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-violet-50 text-sm font-bold text-violet-700">
-                      {customer.name.charAt(0)}
-                    </div>
+                  <AdminIcon name="chevronLeft" size={17} />
+                </button>
 
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-3">
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-slate-950">
-                            {customer.name}
-                          </p>
-                          <p className="mt-1 truncate text-xs text-slate-500">
-                            {customer.city} • {customer.email}
-                          </p>
-                        </div>
-
-                        <StatusBadge status={customer.status} />
-                      </div>
-
-                      <div className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-200 pt-3">
-                        <div>
-                          <p className="text-xs text-slate-500">Order</p>
-                          <p className="text-sm font-semibold text-slate-950">
-                            {customer.orders}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-slate-500">Belanja</p>
-                          <p className="text-sm font-semibold text-slate-950">
-                            {customer.spent}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-            <SectionHeader
-              title="Segmentasi Customer"
-              description="Gambaran status customer saat ini."
-            />
-
-            <div className="space-y-4">
-              <MiniProgress
-                label="Customer Baru"
-                count="84"
-                value={34}
-                color={theme.blue}
-              />
-              <MiniProgress
-                label="Customer Aktif"
-                count="936"
-                value={82}
-                color={theme.success}
-              />
-              <MiniProgress
-                label="Customer Loyal"
-                count="214"
-                value={58}
-                color={theme.primary}
-              />
-              <MiniProgress
-                label="Tidak Aktif"
-                count="134"
-                value={28}
-                color={theme.warning}
-              />
-            </div>
-          </div>
-
-          <div className="rounded-[30px] border border-slate-200 bg-white p-6 shadow-sm">
-            <SectionHeader
-              title="Catatan Admin"
-              description="Prioritas pengelolaan customer."
-            />
-
-            <div className="space-y-3">
-              {[
-                'Follow-up customer tidak aktif',
-                'Cek customer dengan repeat order tinggi',
-                'Update data kontak customer',
-              ].map((task) => (
-                <label
-                  key={task}
-                  className="flex gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4"
+                <button
+                  className="flex h-10 min-w-10 items-center justify-center rounded-2xl px-4 text-sm font-black text-white"
+                  style={{ backgroundColor: theme.primary }}
                 >
-                  <input type="checkbox" className="mt-1 accent-violet-600" />
-                  <span className="text-sm font-medium text-slate-700">
-                    {task}
-                  </span>
-                </label>
-              ))}
+                  {meta?.current_page || page}
+                </button>
+
+                <button
+                  disabled={!canGoNext}
+                  onClick={() => setPage((prev) => prev + 1)}
+                  className="flex h-10 w-10 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-500 disabled:cursor-not-allowed disabled:opacity-40"
+                >
+                  <AdminIcon name="chevronRight" size={17} />
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
       </section>
     </AdminLayout>
   )

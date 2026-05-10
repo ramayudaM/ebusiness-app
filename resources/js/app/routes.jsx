@@ -25,17 +25,18 @@ import AdminGuestRoute from '../shared/components/AdminGuestRoute'
 import AdminLoginPage from '../features/admin/auth/AdminLoginPage'
 import AdminDashboardPage from '../features/admin/dashboard/AdminDashboardPage'
 import AdminProductsPage from '../features/admin/products/AdminProductsPage'
-import AdminOrdersPage from '../features/admin/orders/AdminOrdersPage'
-import AdminCustomersPage from '../features/admin/customers/AdminCustomersPage'
-import AdminReportsPage from '../features/admin/reports/AdminReportsPage'
 import AdminProductFormPage from '../features/admin/products/AdminProductFormPage'
 import AdminCategoriesPage from '../features/admin/categories/AdminCategoriesPage'
+import AdminOrdersPage from '../features/admin/orders/AdminOrdersPage'
 import AdminOrderDetailPage from '../features/admin/orders/AdminOrderDetailPage'
+import AdminCustomersPage from '../features/admin/customers/AdminCustomersPage'
+import AdminCustomerDetailPage from '../features/admin/customers/AdminCustomerDetailPage'
+import AdminReportsPage from '../features/admin/reports/AdminReportsPage'
 
 export function AppRoutes() {
   return (
     <Routes>
-      {/* Public Customer Routes */}
+      {/* PUBLIC CUSTOMER ROUTES */}
       <Route path="/" element={<HomePage />} />
       <Route path="/explore" element={<ExplorePage />} />
       <Route path="/catalog" element={<Navigate to="/explore" replace />} />
@@ -43,7 +44,7 @@ export function AppRoutes() {
       <Route path="/help" element={<HelpPage />} />
       <Route path="/help/:slug" element={<HelpArticlePage />} />
 
-      {/* Auth Routes */}
+      {/* AUTH ROUTES */}
       <Route
         path="/login"
         element={
@@ -62,7 +63,7 @@ export function AppRoutes() {
         }
       />
 
-      {/* Cart & Checkout */}
+      {/* CART & CHECKOUT */}
       <Route
         path="/cart"
         element={
@@ -81,13 +82,13 @@ export function AppRoutes() {
         }
       />
 
-      {/* Legacy Redirects */}
+      {/* CUSTOMER LEGACY REDIRECTS */}
       <Route path="/orders" element={<Navigate to="/account/orders" replace />} />
       <Route path="/profile" element={<Navigate to="/account/profile" replace />} />
       <Route path="/wishlist" element={<Navigate to="/account/wishlist" replace />} />
       <Route path="/track" element={<Navigate to="/account/orders" replace />} />
 
-      {/* Protected Customer Routes */}
+      {/* CUSTOMER ACCOUNT ROUTES */}
       <Route
         path="/account/orders"
         element={
@@ -133,7 +134,7 @@ export function AppRoutes() {
         }
       />
 
-      {/* Admin Auth Routes */}
+      {/* ADMIN AUTH ROUTES */}
       <Route
         path="/admin/login"
         element={
@@ -145,7 +146,7 @@ export function AppRoutes() {
 
       <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
 
-      {/* Protected Admin Routes */}
+      {/* ADMIN DASHBOARD */}
       <Route
         path="/admin/dashboard"
         element={
@@ -155,15 +156,17 @@ export function AppRoutes() {
         }
       />
 
+      {/* ADMIN CATEGORIES */}
       <Route
-  path="/admin/categories"
-  element={
-    <AdminRoute>
-      <AdminCategoriesPage />
-    </AdminRoute>
-  }
-/>
+        path="/admin/categories"
+        element={
+          <AdminRoute>
+            <AdminCategoriesPage />
+          </AdminRoute>
+        }
+      />
 
+      {/* ADMIN PRODUCTS */}
       <Route
         path="/admin/products"
         element={
@@ -174,23 +177,24 @@ export function AppRoutes() {
       />
 
       <Route
-  path="/admin/products/create"
-  element={
-    <AdminRoute>
-      <AdminProductFormPage mode="create" />
-    </AdminRoute>
-  }
-/>
+        path="/admin/products/create"
+        element={
+          <AdminRoute>
+            <AdminProductFormPage mode="create" />
+          </AdminRoute>
+        }
+      />
 
-<Route
-  path="/admin/products/:id/edit"
-  element={
-    <AdminRoute>
-      <AdminProductFormPage mode="edit" />
-    </AdminRoute>
-  }
-/>
+      <Route
+        path="/admin/products/:id/edit"
+        element={
+          <AdminRoute>
+            <AdminProductFormPage mode="edit" />
+          </AdminRoute>
+        }
+      />
 
+      {/* ADMIN ORDERS */}
       <Route
         path="/admin/orders"
         element={
@@ -201,14 +205,15 @@ export function AppRoutes() {
       />
 
       <Route
-  path="/admin/orders/:id"
-  element={
-    <AdminRoute>
-      <AdminOrderDetailPage />
-    </AdminRoute>
-  }
-/>
+        path="/admin/orders/:id"
+        element={
+          <AdminRoute>
+            <AdminOrderDetailPage />
+          </AdminRoute>
+        }
+      />
 
+      {/* ADMIN CUSTOMERS */}
       <Route
         path="/admin/customers"
         element={
@@ -218,6 +223,16 @@ export function AppRoutes() {
         }
       />
 
+      <Route
+        path="/admin/customers/:id"
+        element={
+          <AdminRoute>
+            <AdminCustomerDetailPage />
+          </AdminRoute>
+        }
+      />
+
+      {/* ADMIN REPORTS */}
       <Route
         path="/admin/reports"
         element={
@@ -231,22 +246,22 @@ export function AppRoutes() {
       <Route
         path="*"
         element={
-          <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center text-center p-4 transition-colors duration-300">
-            <div className="text-9xl font-black text-gray-200 dark:text-gray-800 absolute -z-10 select-none">
+          <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4 text-center transition-colors duration-300 dark:bg-gray-950">
+            <div className="absolute -z-10 select-none text-9xl font-black text-gray-200 dark:text-gray-800">
               404
             </div>
 
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="mb-2 text-3xl font-bold text-gray-900 dark:text-white">
               Halaman Tidak Ditemukan
             </h1>
 
-            <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md">
+            <p className="mb-8 max-w-md text-gray-500 dark:text-gray-400">
               Maaf, halaman yang Anda cari tidak ada atau telah dipindahkan ke alamat lain.
             </p>
 
             <Link
               to="/"
-              className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-8 rounded-full transition-all"
+              className="rounded-full bg-orange-600 px-8 py-3 font-bold text-white transition-all hover:bg-orange-700"
             >
               Kembali ke Beranda
             </Link>

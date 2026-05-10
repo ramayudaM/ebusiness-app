@@ -132,6 +132,10 @@ Route::patch('/orders/{order}/tracking-number', [\App\Http\Controllers\Api\V1\Ad
 
 Route::post('/orders/{order}/notes', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'addInternalNote']);
 Route::post('/orders/{order}/notify', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'notifyCustomer']);
+Route::get('/customers', [\App\Http\Controllers\Api\V1\Admin\AdminCustomerController::class, 'index']);
+Route::get('/customers/{id}', [\App\Http\Controllers\Api\V1\Admin\AdminCustomerController::class, 'show']);
+Route::patch('/customers/{id}/deactivate', [\App\Http\Controllers\Api\V1\Admin\AdminCustomerController::class, 'deactivate']);
+Route::patch('/customers/{id}/restore', [\App\Http\Controllers\Api\V1\Admin\AdminCustomerController::class, 'restore']);
 });
 
 });
