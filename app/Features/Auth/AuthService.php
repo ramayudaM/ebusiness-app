@@ -127,4 +127,29 @@ class AuthService
         // Return user dengan profile terbaru
         return $user->fresh(['customerProfile']);
     }
+
+    /**
+     * Update avatar user.
+     *
+     * @param User $user
+     * @param \Illuminate\Http\UploadedFile $file
+     * @return User
+     */
+    public function updateAvatar(User $user, $file): User
+    {
+        $oldPath = $user->avatar_path;
+
+        // 1. Hapus avatar lama jika ada
+        if ($oldPath && \Illuminate\Support\Facades\Storage::disk('public')->exists($oldPath)) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($oldPath);
+        }
+
+        // 2. Simpan file baru
+        $path = $file->store('avatars', 'public');
+
+        $user->avatar_path = $path;
+        $user->save();
+
+        return $user->fresh(['customerProfile']);
+    }
 }

@@ -8,15 +8,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class CartItem extends Model
 {
     protected $fillable = [
-        'cart_id',
+        'user_id',
         'product_id',
-        'variation_id',
-        'qty',
+        'product_variation_id',
+        'quantity',
+        'is_selected',
     ];
 
-    public function cart(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Cart::class);
+        return $this->belongsTo(User::class);
     }
 
     public function product(): BelongsTo
@@ -26,6 +27,6 @@ class CartItem extends Model
 
     public function variation(): BelongsTo
     {
-        return $this->belongsTo(ProductVariation::class);
+        return $this->belongsTo(ProductVariation::class, 'product_variation_id');
     }
 }

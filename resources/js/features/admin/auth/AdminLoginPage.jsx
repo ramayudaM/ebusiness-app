@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, AlertTriangle, Shield } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, CircleAlert, AlertTriangle, Shield } from 'lucide-react';
 import useAdminAuth from './useAdminAuth';
 
 /**
@@ -89,7 +89,7 @@ const AdminLoginPage = () => {
               : 'bg-amber-500/10 border-amber-500/40'
           }`}>
             {serverErrorType === 'credentials'
-              ? <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              ? <CircleAlert className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
               : <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
             }
             <p className={`text-[13px] leading-snug ${
@@ -124,7 +124,7 @@ const AdminLoginPage = () => {
             {/* Error per field — STATE 3 */}
             {fieldErrors.email && (
               <p className="flex items-center gap-1 text-red-500 text-xs mt-1.5">
-                <AlertCircle className="w-3 h-3 shrink-0" />
+                <CircleAlert className="w-3 h-3 shrink-0" />
                 {fieldErrors.email}
               </p>
             )}
@@ -164,7 +164,7 @@ const AdminLoginPage = () => {
             </div>
             {fieldErrors.password && (
               <p className="flex items-center gap-1 text-red-500 text-xs mt-1.5">
-                <AlertCircle className="w-3 h-3 shrink-0" />
+                <CircleAlert className="w-3 h-3 shrink-0" />
                 {fieldErrors.password}
               </p>
             )}

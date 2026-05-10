@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Wishlist extends Model
 {
-    public $timestamps = false; // Based on migration having created_at but no updated_at
-
     protected $fillable = [
         'user_id',
         'product_id',

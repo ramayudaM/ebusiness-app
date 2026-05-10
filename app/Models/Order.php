@@ -29,6 +29,8 @@ class Order extends Model
         'shipping_etd_days',
         'subtotal_sen',
         'total_sen',
+        'payment_token',
+        'payment_status',
         'tracking_number',
         'tracking_url',
         'shipped_at',
