@@ -2,106 +2,192 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\ProductImage;
+use App\Models\ProductVariation;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        // 1. Products
-        DB::table('products')->insert([
-            ['id' => 1, 'category_id' => 8, 'name' => 'Yamaha FG800 Acoustic Guitar - Natural', 'slug' => 'yamaha-fg800-natural', 'description' => 'Yamaha FG800 adalah gitar akustik entry-level terbaik...', 'price_sen' => 3499000, 'weight_gram' => 2000, 'sku' => 'YAM-FG800-NAT', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.7, 'review_count' => 12, 'created_at' => now()->subDays(30), 'updated_at' => now()],
-            ['id' => 2, 'category_id' => 8, 'name' => 'Fender CD-60S Acoustic Guitar - Sunburst', 'slug' => 'fender-cd-60s-sunburst', 'description' => 'Fender CD-60S adalah gitar akustik...', 'price_sen' => 4299000, 'weight_gram' => 2100, 'sku' => 'FEN-CD60S-SB', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.5, 'review_count' => 8, 'created_at' => now()->subDays(28), 'updated_at' => now()],
-            ['id' => 6, 'category_id' => 9, 'name' => 'Fender Player Stratocaster - Sunburst', 'slug' => 'fender-player-strat-sunburst', 'description' => 'Fender Player Stratocaster adalah ikon...', 'price_sen' => 12999000, 'weight_gram' => 3500, 'sku' => 'FEN-PLAYER-STR-SB', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.9, 'review_count' => 15, 'created_at' => now()->subDays(35), 'updated_at' => now()],
-            ['id' => 7, 'category_id' => 9, 'name' => 'Gibson Les Paul Studio - Wine Red', 'slug' => 'gibson-les-paul-studio-wine', 'description' => 'Gibson Les Paul Studio adalah kombinasi...', 'price_sen' => 32999000, 'weight_gram' => 4000, 'sku' => 'GIB-LP-STUDIO-WR', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.7, 'review_count' => 7, 'created_at' => now()->subDays(32), 'updated_at' => now()],
-            ['id' => 8, 'category_id' => 9, 'name' => 'Ibanez RG550 - Desert Sun Yellow', 'slug' => 'ibanez-rg550-dsy', 'description' => 'Ibanez RG550 adalah superstrat legend...', 'price_sen' => 18499000, 'weight_gram' => 3200, 'sku' => 'IBZ-RG550-DSY', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.8, 'review_count' => 9, 'created_at' => now()->subDays(22), 'updated_at' => now()],
-            ['id' => 13, 'category_id' => 20, 'name' => 'Daddario EXL110 Light Gauge Electric Strings', 'slug' => 'daddario-exl110-electric', 'description' => 'Daddario EXL110 adalah set string...', 'price_sen' => 149000, 'weight_gram' => 100, 'sku' => 'DAD-EXL110', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.9, 'review_count' => 20, 'created_at' => now()->subDays(60), 'updated_at' => now()],
-            ['id' => 4, 'category_id' => 8, 'name' => 'Taylor BT1 Baby Taylor Acoustic Guitar', 'slug' => 'taylor-bt1-baby', 'description' => 'Taylor BT1...', 'price_sen' => 5450000, 'weight_gram' => 1600, 'sku' => 'TAY-BT1', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.8, 'review_count' => 4, 'created_at' => now()->subDays(20), 'updated_at' => now()],
-            ['id' => 5, 'category_id' => 8, 'name' => 'Martin LX1 Little Martin Acoustic Guitar', 'slug' => 'martin-lx1-little', 'description' => 'Martin LX1...', 'price_sen' => 6200000, 'weight_gram' => 1500, 'sku' => 'MAR-LX1', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.6, 'review_count' => 3, 'created_at' => now()->subDays(18), 'updated_at' => now()],
-            ['id' => 14, 'category_id' => 17, 'name' => 'Fender Champion 50 Guitar Amplifier', 'slug' => 'fender-champion-50', 'description' => 'Fender Champion 50...', 'price_sen' => 3499000, 'weight_gram' => 9000, 'sku' => 'FEN-CHAMP-50', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.4, 'review_count' => 3, 'created_at' => now()->subDays(20), 'updated_at' => now()],
-            ['id' => 15, 'category_id' => 22, 'name' => 'Boss TU-3 Chromatic Tuner', 'slug' => 'boss-tu-3-tuner', 'description' => 'Boss TU-3...', 'price_sen' => 1899000, 'weight_gram' => 600, 'sku' => 'BOSS-TU3', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.8, 'review_count' => 18, 'created_at' => now()->subDays(45), 'updated_at' => now()],
-            ['id' => 17, 'category_id' => 14, 'name' => 'Yamaha Stage Custom Birch 5-Piece Drum Kit - Jet Black', 'slug' => 'yamaha-stage-custom-jet-black', 'description' => 'Yamaha Stage Custom Birch...', 'price_sen' => 12999000, 'weight_gram' => 28000, 'sku' => 'YAM-SC-BIRCH-5-JB', 'is_bundle' => false, 'is_active' => true, 'average_rating' => 4.7, 'review_count' => 4, 'created_at' => now()->subDays(40), 'updated_at' => now()],
-            ['id' => 18, 'category_id' => 9, 'name' => 'Starter Pack Gitar Elektrik — Fender Strat + Accessories', 'slug' => 'starter-pack-fender-strat', 'description' => 'Paket lengkap...', 'price_sen' => 15999000, 'weight_gram' => 4500, 'sku' => 'BUN-FENDER-START', 'is_bundle' => true, 'is_active' => true, 'average_rating' => 0.0, 'review_count' => 0, 'created_at' => now()->subDays(10), 'updated_at' => now()],
-        ]);
-        DB::statement("SELECT setval('products_id_seq', (SELECT MAX(id) FROM products))");
+        $products = [
+            [
+                'category' => 'Gitar',
+                'name' => 'Yamaha F310 Acoustic Guitar',
+                'sku' => 'GTR-YMH-F310',
+                'price_sen' => 2350000,
+                'stock_qty' => 12,
+                'weight_gram' => 2500,
+                'description' => 'Gitar akustik populer untuk pemula dan intermediate dengan suara natural.',
+                'image_url' => 'https://images.unsplash.com/photo-1525201548942-d8732f6617a0?w=900',
+            ],
+            [
+                'category' => 'Gitar',
+                'name' => 'Cort AD810 Acoustic Guitar',
+                'sku' => 'GTR-CRT-AD810',
+                'price_sen' => 1900000,
+                'stock_qty' => 10,
+                'weight_gram' => 2500,
+                'description' => 'Gitar akustik dreadnought dengan tone hangat dan nyaman untuk latihan.',
+                'image_url' => 'https://images.unsplash.com/photo-1558098329-a11cff621064?w=900',
+            ],
+            [
+                'category' => 'Gitar',
+                'name' => 'Squier Sonic Stratocaster Electric Guitar',
+                'sku' => 'GTR-SQR-SONIC-ST',
+                'price_sen' => 3650000,
+                'stock_qty' => 6,
+                'weight_gram' => 3800,
+                'description' => 'Gitar elektrik bergaya Stratocaster untuk latihan, rekaman, dan panggung kecil.',
+                'image_url' => 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=900',
+            ],
+            [
+                'category' => 'Bass',
+                'name' => 'Ibanez GSR200 Electric Bass',
+                'sku' => 'BSS-IBZ-GSR200',
+                'price_sen' => 3600000,
+                'stock_qty' => 6,
+                'weight_gram' => 4200,
+                'description' => 'Bass elektrik nyaman untuk pemula hingga pemain intermediate.',
+                'image_url' => 'https://images.unsplash.com/photo-1516924962500-2b4b3b99ea02?w=900',
+            ],
+            [
+                'category' => 'Keyboard',
+                'name' => 'Roland GO:KEYS Keyboard',
+                'sku' => 'KEY-ROL-GOKEYS',
+                'price_sen' => 4700000,
+                'stock_qty' => 8,
+                'weight_gram' => 4500,
+                'description' => 'Keyboard portable modern untuk latihan, produksi musik, dan performa.',
+                'image_url' => 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=900',
+            ],
+            [
+                'category' => 'Keyboard',
+                'name' => 'Yamaha PSR-E373 Portable Keyboard',
+                'sku' => 'KEY-YMH-PSRE373',
+                'price_sen' => 3850000,
+                'stock_qty' => 7,
+                'weight_gram' => 4600,
+                'description' => 'Keyboard arranger portable dengan banyak voice dan style musik.',
+                'image_url' => 'https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=900',
+            ],
+            [
+                'category' => 'Microphone',
+                'name' => 'Shure SM58 Dynamic Microphone',
+                'sku' => 'MIC-SHR-SM58',
+                'price_sen' => 1450000,
+                'stock_qty' => 15,
+                'weight_gram' => 500,
+                'description' => 'Microphone dynamic legendaris untuk vokal live dan studio sederhana.',
+                'image_url' => 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=900',
+            ],
+            [
+                'category' => 'Microphone',
+                'name' => 'Audio Technica AT2020 Condenser Microphone',
+                'sku' => 'MIC-AT-2020',
+                'price_sen' => 1950000,
+                'stock_qty' => 9,
+                'weight_gram' => 650,
+                'description' => 'Microphone condenser untuk rekaman vocal, podcast, dan home studio.',
+                'image_url' => 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=900',
+            ],
+            [
+                'category' => 'Audio Interface',
+                'name' => 'Focusrite Scarlett Solo 3rd Gen',
+                'sku' => 'AUD-FCS-SOLO3',
+                'price_sen' => 2350000,
+                'stock_qty' => 9,
+                'weight_gram' => 800,
+                'description' => 'Audio interface USB compact untuk rekaman vokal dan instrumen.',
+                'image_url' => 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=900',
+            ],
+            [
+                'category' => 'Drum',
+                'name' => 'Pearl Roadshow Drum Set',
+                'sku' => 'DRM-PRL-RDS',
+                'price_sen' => 7900000,
+                'stock_qty' => 4,
+                'weight_gram' => 25000,
+                'description' => 'Drum set lengkap untuk latihan band, studio, dan panggung kecil.',
+                'image_url' => 'https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?w=900',
+            ],
+            [
+                'category' => 'Aksesoris',
+                'name' => 'Guitar Stand Universal',
+                'sku' => 'ACC-GTR-STAND',
+                'price_sen' => 175000,
+                'stock_qty' => 30,
+                'weight_gram' => 900,
+                'description' => 'Stand gitar universal yang kokoh untuk gitar akustik maupun elektrik.',
+                'image_url' => 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=900',
+            ],
+            [
+                'category' => 'Aksesoris',
+                'name' => 'Instrument Cable 3 Meter',
+                'sku' => 'ACC-CBL-3M',
+                'price_sen' => 85000,
+                'stock_qty' => 40,
+                'weight_gram' => 300,
+                'description' => 'Kabel instrumen 3 meter untuk gitar, bass, keyboard, dan audio gear.',
+                'image_url' => 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900',
+            ],
+        ];
 
-        // 2. Variations
-        DB::table('product_variations')->insert([
-            ['id' => 1, 'product_id' => 1, 'name' => 'Natural', 'sku' => 'YAM-FG800-NAT', 'price_sen' => null, 'stock_qty' => 8, 'is_active' => true],
-            ['id' => 2, 'product_id' => 1, 'name' => 'Black', 'sku' => 'YAM-FG800-BLK', 'price_sen' => null, 'stock_qty' => 5, 'is_active' => true],
-            ['id' => 4, 'product_id' => 2, 'name' => '3-Color Sunburst', 'sku' => 'FEN-CD60S-SB', 'price_sen' => null, 'stock_qty' => 4, 'is_active' => true],
-            ['id' => 6, 'product_id' => 6, 'name' => '3-Color Sunburst', 'sku' => 'FEN-PLAYER-STR-SB', 'price_sen' => null, 'stock_qty' => 3, 'is_active' => true],
-            ['id' => 9, 'product_id' => 8, 'name' => 'Desert Sun Yellow', 'sku' => 'IBZ-RG550-DSY', 'price_sen' => null, 'stock_qty' => 2, 'is_active' => true],
-        ]);
-        DB::statement("SELECT setval('product_variations_id_seq', (SELECT MAX(id) FROM product_variations))");
+        foreach ($products as $index => $item) {
+            $category = Category::firstOrCreate(
+                ['slug' => Str::slug($item['category'])],
+                [
+                    'name' => $item['category'],
+                    'description' => null,
+                    'parent_id' => null,
+                    'sort_order' => $index,
+                ]
+            );
 
-        // 3. Bundles
-        DB::table('bundles')->insert([
-            ['product_id' => 18, 'bundle_price_sen' => 13999000, 'created_at' => now(), 'updated_at' => now()],
-        ]);
+            $product = Product::updateOrCreate(
+                ['sku' => $item['sku']],
+                [
+                    'category_id' => $category->id,
+                    'name' => $item['name'],
+                    'slug' => Str::slug($item['name']) . '-' . strtolower(Str::slug($item['sku'])),
+                    'description' => $item['description'],
+                    'price_sen' => $item['price_sen'],
+                    'weight_gram' => $item['weight_gram'],
+                    'is_bundle' => false,
+                    'is_active' => true,
+                ]
+            );
 
-        // 4. Bundle Items
-        DB::table('bundle_items')->insert([
-            ['bundle_id' => 1, 'product_id' => 6, 'variation_id' => 6, 'qty' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['bundle_id' => 1, 'product_id' => 14, 'variation_id' => null, 'qty' => 1, 'created_at' => now(), 'updated_at' => now()],
-            ['bundle_id' => 1, 'product_id' => 13, 'variation_id' => null, 'qty' => 3, 'created_at' => now(), 'updated_at' => now()],
-        ]);
+            ProductVariation::updateOrCreate(
+                [
+                    'product_id' => $product->id,
+                    'name' => 'Default',
+                ],
+                [
+                    'sku' => $item['sku'] . '-DEFAULT',
+                    'price_sen' => null,
+                    'stock_qty' => $item['stock_qty'],
+                    'is_active' => true,
+                ]
+            );
 
-        // 5. Images
-        DB::table('product_images')->insert([
-            ['product_id' => 1, 'url' => 'products/yamaha-fg800/yamaha-fg800-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 1, 'url' => 'products/yamaha-fg800/yamaha-fg800-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-            ['product_id' => 1, 'url' => 'products/yamaha-fg800/yamaha-fg800-3.png', 'sort_order' => 2, 'is_primary' => false, 'created_at' => now()],
-            
-            ['product_id' => 2, 'url' => 'products/fender-cd-60s-sunburst/fender-cd60s-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 2, 'url' => 'products/fender-cd-60s-sunburst/fender-cd60s-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
+            $product->images()->where('is_primary', true)->update([
+                'is_primary' => false,
+            ]);
 
-            ['product_id' => 6, 'url' => 'products/fender-player-strat-sunburst/strat-sunburst-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 6, 'url' => 'products/fender-player-strat-sunburst/strat-sunburst-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-
-            ['product_id' => 7, 'url' => 'products/gibson-les-paul-studio-wine/gibson-les-paul-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 7, 'url' => 'products/gibson-les-paul-studio-wine/gibson-les-paul-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-
-            ['product_id' => 8, 'url' => 'products/ibanez-rg550-dsy/ibanez-rg550-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 8, 'url' => 'products/ibanez-rg550-dsy/ibanez-rg550-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-
-            ['product_id' => 13, 'url' => 'products/daddario-exl110-electric/daddario-strings-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 13, 'url' => 'products/daddario-exl110-electric/daddario-strings-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-
-            ['product_id' => 4, 'url' => 'products/taylor-bt1-baby/taylor-bt1-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 4, 'url' => 'products/taylor-bt1-baby/taylor-bt1-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-
-            ['product_id' => 5, 'url' => 'products/martin-lx1-little/martin-lx1-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 5, 'url' => 'products/martin-lx1-little/martin-lx1-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-
-            ['product_id' => 14, 'url' => 'products/fender-champion-50/fender-champion-50-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 14, 'url' => 'products/fender-champion-50/fender-champion-50-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-
-            ['product_id' => 15, 'url' => 'products/boss-tu-3-tuner/boss-tu3-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 15, 'url' => 'products/boss-tu-3-tuner/boss-tu3-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-
-            ['product_id' => 17, 'url' => 'products/yamaha-stage-custom-jet-black/yamaha-stage-custom-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 17, 'url' => 'products/yamaha-stage-custom-jet-black/yamaha-stage-custom-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-
-            ['product_id' => 18, 'url' => 'products/starter-pack-fender-strat/starter-pack-1.png', 'sort_order' => 0, 'is_primary' => true, 'created_at' => now()],
-            ['product_id' => 18, 'url' => 'products/starter-pack-fender-strat/starter-pack-2.png', 'sort_order' => 1, 'is_primary' => false, 'created_at' => now()],
-        ]);
-
-        // 6. Media
-        DB::table('product_media')->insert([
-            ['product_id' => 1, 'type' => 'audio', 'url' => 'products/yamaha-fg800/preview/fg800-strumming-demo.mp3', 'label' => 'Demo Strumming', 'duration_seconds' => 45, 'file_size_bytes' => 720000, 'created_at' => now()],
-            ['product_id' => 2, 'type' => 'audio', 'url' => 'products/fender-cd-60s-sunburst/preview/acoustic-demo.mp3', 'label' => 'Acoustic Sound', 'duration_seconds' => 30, 'file_size_bytes' => 500000, 'created_at' => now()],
-            ['product_id' => 4, 'type' => 'audio', 'url' => 'products/taylor-bt1-baby/preview/baby-taylor-demo.mp3', 'label' => 'Bright Tone Demo', 'duration_seconds' => 25, 'file_size_bytes' => 400000, 'created_at' => now()],
-            ['product_id' => 5, 'type' => 'audio', 'url' => 'products/martin-lx1-little/preview/martin-demo.mp3', 'label' => 'Warm Tone Demo', 'duration_seconds' => 28, 'file_size_bytes' => 450000, 'created_at' => now()],
-            ['product_id' => 6, 'type' => 'video', 'url' => 'products/fender-player-strat-sunburst/preview/strat-sound-demo.mp4', 'label' => 'Full Sound Demo', 'duration_seconds' => 300, 'file_size_bytes' => 60000000, 'created_at' => now()],
-            ['product_id' => 7, 'type' => 'audio', 'url' => 'products/gibson-les-paul-studio-wine/preview/electric-demo.mp3', 'label' => 'Crunch Demo', 'duration_seconds' => 40, 'file_size_bytes' => 600000, 'created_at' => now()],
-            ['product_id' => 8, 'type' => 'audio', 'url' => 'products/ibanez-rg550-dsy/preview/shred-demo.mp3', 'label' => 'High Gain Demo', 'duration_seconds' => 35, 'file_size_bytes' => 550000, 'created_at' => now()],
-            ['product_id' => 17, 'type' => 'audio', 'url' => 'products/yamaha-stage-custom-jet-black/preview/drum-demo.mp3', 'label' => 'Drum Kit Sample', 'duration_seconds' => 50, 'file_size_bytes' => 800000, 'created_at' => now()],
-            ['product_id' => 18, 'type' => 'audio', 'url' => 'products/starter-pack-fender-strat/preview/starter-demo.mp3', 'label' => 'Beginner Guide Audio', 'duration_seconds' => 60, 'file_size_bytes' => 900000, 'created_at' => now()],
-        ]);
+            ProductImage::updateOrCreate(
+                [
+                    'product_id' => $product->id,
+                    'url' => $item['image_url'],
+                ],
+                [
+                    'sort_order' => 0,
+                    'is_primary' => true,
+                ]
+            );
+        }
     }
 }
