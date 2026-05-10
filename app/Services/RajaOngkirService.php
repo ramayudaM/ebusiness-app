@@ -19,6 +19,11 @@ class RajaOngkirService
 
     public function getProvinces()
     {
+        $cache = RajaOngkirCache::where('cache_key', 'rajaongkir:provinces')->first();
+        if ($cache) {
+            return $cache->cache_value;
+        }
+
         $filePath = storage_path('app/rajaongkir_provinces.json');
         if (file_exists($filePath)) {
             $json = file_get_contents($filePath);
@@ -29,6 +34,11 @@ class RajaOngkirService
 
     public function getCities($provinceId)
     {
+        $cache = RajaOngkirCache::where('cache_key', "rajaongkir:cities:{$provinceId}")->first();
+        if ($cache) {
+            return $cache->cache_value;
+        }
+
         $filePath = storage_path('app/rajaongkir_cities.json');
         if (file_exists($filePath)) {
             $json = file_get_contents($filePath);
