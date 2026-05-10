@@ -1,23 +1,201 @@
-export default function AdminIcon({ name, size = 20 }) {
+export default function AdminIcon({ name, size = 20, className = '' }) {
   const icons = {
-    dashboard: <path d="M4 13h7V4H4v9ZM13 20h7V11h-7v9ZM4 20h7v-5H4v5ZM13 4v5h7V4h-7Z" />,
-    product: <path d="M21 8.5 12 3 3 8.5 12 14l9-5.5ZM3 8.5v7L12 21l9-5.5v-7M12 14v7" />,
-    order: <path d="M7 8h14l-2 8H8.5L7 4H4M9 20h.01M18 20h.01" />,
-    customer: <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM4.5 20c.9-3.1 3.8-5 7.5-5s6.6 1.9 7.5 5" />,
-    chart: <path d="M4 18v-7M10.5 18V6M17 18v-4M3 20h18" />,
-    search: <path d="M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14ZM20 20l-3.5-3.5" />,
-    bell: <path d="M6 9a6 6 0 1 1 12 0v3.5l1.5 3h-15l1.5-3V9ZM10 18c.4 1.2 1.1 2 2 2s1.6-.8 2-2" />,
-    revenue: <path d="M12 3v18M17 7.5c-.7-1-2-1.7-4-1.7-2.4 0-4 1.1-4 2.8 0 4.2 8 1.9 8 6.1 0 1.7-1.6 2.9-4.2 2.9-2.1 0-3.6-.7-4.6-1.9" />,
-    chevronLeft: <path d="M15 18 9 12l6-6" />,
+    dashboard: (
+      <>
+        <rect x="3" y="3" width="7" height="7" rx="1.5" />
+        <rect x="14" y="3" width="7" height="7" rx="1.5" />
+        <rect x="3" y="14" width="7" height="7" rx="1.5" />
+        <rect x="14" y="14" width="7" height="7" rx="1.5" />
+      </>
+    ),
+
+    order: (
+      <>
+        <path d="M6 6h15l-1.5 8.5a2 2 0 0 1-2 1.5H9a2 2 0 0 1-2-1.5L5 3H2" />
+        <circle cx="9" cy="20" r="1" />
+        <circle cx="18" cy="20" r="1" />
+      </>
+    ),
+
+    product: (
+      <>
+        <rect x="4" y="5" width="16" height="14" rx="2" />
+        <path d="M4 9h16" />
+        <path d="M8 13h4" />
+        <path d="M8 16h8" />
+      </>
+    ),
+
+    customer: (
+      <>
+        <path d="M16 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2" />
+        <circle cx="9.5" cy="7" r="4" />
+        <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+      </>
+    ),
+
+    chart: (
+      <>
+        <path d="M3 3v18h18" />
+        <path d="m7 15 4-4 3 3 5-7" />
+      </>
+    ),
+
+    category: (
+      <>
+        <path d="M12 3 3 9l9 6 9-6-9-6Z" />
+        <path d="m3 15 9 6 9-6" />
+        <path d="m3 12 9 6 9-6" />
+      </>
+    ),
+
+    refresh: (
+  <>
+    <path d="M21 12a9 9 0 0 1-15.5 6.2L3 16" />
+    <path d="M3 16v5h5" />
+    <path d="M3 12A9 9 0 0 1 18.5 5.8L21 8" />
+    <path d="M21 8V3h-5" />
+  </>
+),
+
+    review: (
+      <>
+        <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z" />
+        <path d="m9 10 2 2 4-4" />
+      </>
+    ),
+
+    search: (
+      <>
+        <circle cx="11" cy="11" r="7" />
+        <path d="m20 20-3.5-3.5" />
+      </>
+    ),
+
+    bell: (
+      <>
+        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8" />
+        <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+      </>
+    ),
+
+    plus: (
+      <>
+        <path d="M12 5v14" />
+        <path d="M5 12h14" />
+      </>
+    ),
+
+    edit: (
+      <>
+        <path d="M12 20h9" />
+        <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />
+      </>
+    ),
+
+    trash: (
+      <>
+        <path d="M3 6h18" />
+        <path d="M8 6V4h8v2" />
+        <path d="M19 6 18 20H6L5 6" />
+        <path d="M10 11v5" />
+        <path d="M14 11v5" />
+      </>
+    ),
+
+    check: (
+  <>
+    <path d="M20 6 9 17l-5-5" />
+  </>
+),
+
+    eye: (
+      <>
+        <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+        <circle cx="12" cy="12" r="3" />
+      </>
+    ),
+
+    filter: (
+      <>
+        <path d="M4 6h16" />
+        <path d="M7 12h10" />
+        <path d="M10 18h4" />
+      </>
+    ),
+
+    box: (
+      <>
+        <path d="M21 8 12 3 3 8l9 5 9-5Z" />
+        <path d="M3 8v8l9 5 9-5V8" />
+        <path d="M12 13v8" />
+      </>
+    ),
+
+    alert: (
+      <>
+        <path d="M12 9v4" />
+        <path d="M12 17h.01" />
+        <path d="M10.3 4.3 2.8 18a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z" />
+      </>
+    ),
+
+    target: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <circle cx="12" cy="12" r="5" />
+        <circle cx="12" cy="12" r="1" />
+      </>
+    ),
+
+    revenue: (
+      <>
+        <path d="M12 2v20" />
+        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" />
+      </>
+    ),
+
+    menu: (
+      <>
+        <path d="M4 6h16" />
+        <path d="M4 12h16" />
+        <path d="M4 18h16" />
+      </>
+    ),
+
+    x: (
+      <>
+        <path d="M18 6 6 18" />
+        <path d="m6 6 12 12" />
+      </>
+    ),
+
+    logout: (
+      <>
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+        <path d="M16 17l5-5-5-5" />
+        <path d="M21 12H9" />
+      </>
+    ),
+
+    chevronLeft: <path d="m15 18-6-6 6-6" />,
     chevronRight: <path d="m9 18 6-6-6-6" />,
-    target: <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18ZM12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM12 12l6-6" />,
-    plus: <path d="M12 5v14M5 12h14" />,
-    filter: <path d="M4 6h16M7 12h10M10 18h4" />,
-    edit: <path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5Z" />,
-    trash: <path d="M4 7h16M10 11v6M14 11v6M6 7l1 14h10l1-14M9 7V4h6v3" />,
-    eye: <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />,
-    box: <path d="M21 8.5 12 3 3 8.5M21 8.5 12 14M21 8.5v7L12 21M3 8.5 12 14M3 8.5v7L12 21M12 14v7" />,
-    alert: <path d="M12 9v4M12 17h.01M10.3 4.3 2.8 18a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0Z" />,
+    chevronDown: <path d="m6 9 6 6 6-6" />,
+
+    home: (
+      <>
+        <path d="m3 11 9-8 9 8" />
+        <path d="M5 10v10h14V10" />
+      </>
+    ),
+
+    settings: (
+      <>
+        <path d="M12 15.5A3.5 3.5 0 1 0 12 8a3.5 3.5 0 0 0 0 7.5Z" />
+        <path d="M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21a2 2 0 1 1-4 0v-.09A1.7 1.7 0 0 0 8.6 19.4a1.7 1.7 0 0 0-1.88.34l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H3a2 2 0 1 1 0-4h.09A1.7 1.7 0 0 0 4.6 8.6a1.7 1.7 0 0 0-.34-1.88l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V3a2 2 0 1 1 4 0v.09A1.7 1.7 0 0 0 15.4 4.6a1.7 1.7 0 0 0 1.88-.34l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.7 1.7 0 0 0 19.4 9c.18.38.49.68.9.83.22.08.45.13.7.13H21a2 2 0 1 1 0 4h-.09A1.7 1.7 0 0 0 19.4 15Z" />
+      </>
+    ),
   }
 
   return (
@@ -25,13 +203,15 @@ export default function AdminIcon({ name, size = 20 }) {
       width={size}
       height={size}
       viewBox="0 0 24 24"
+      className={className}
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      aria-hidden="true"
     >
-      {icons[name]}
+      {icons[name] || icons.dashboard}
     </svg>
   )
 }

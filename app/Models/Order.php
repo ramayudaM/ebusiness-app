@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
@@ -16,7 +17,10 @@ class Order extends Model
         'user_id',
         'guest_email',
         'guest_name',
+
         'status',
+        'payment_status',
+
         'shipping_name',
         'shipping_phone',
         'shipping_address',
@@ -27,14 +31,21 @@ class Order extends Model
         'shipping_service',
         'shipping_cost_sen',
         'shipping_etd_days',
+
         'subtotal_sen',
         'total_sen',
+
         'payment_token',
-        'payment_status',
+
         'tracking_number',
         'tracking_url',
+
+        'processed_at',
         'shipped_at',
         'delivered_at',
+        'completed_at',
+        'cancelled_at',
+        'paid_at',
         'expires_at',
     ];
 
@@ -42,8 +53,13 @@ class Order extends Model
         'shipping_cost_sen' => 'integer',
         'subtotal_sen' => 'integer',
         'total_sen' => 'integer',
+
+        'processed_at' => 'datetime',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'cancelled_at' => 'datetime',
+        'paid_at' => 'datetime',
         'expires_at' => 'datetime',
     ];
 
@@ -57,8 +73,13 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function payment(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function payment(): HasOne
     {
         return $this->hasOne(Payment::class);
+    }
+
+    public function internalNotes(): HasMany
+    {
+        return $this->hasMany(OrderInternalNote::class)->latest();
     }
 }

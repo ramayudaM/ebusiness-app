@@ -120,14 +120,18 @@ Route::prefix('v1')->group(function () {
     // ADMIN ROUTES — Membutuhkan Bearer token + role admin
     // ===================================================================
 Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
-
-    Route::get('/categories', [
-        \App\Http\Controllers\Api\V1\Admin\AdminProductController::class,
-        'categories'
-    ]);
-
+    Route::apiResource('/categories', \App\Http\Controllers\Api\V1\Admin\AdminCategoryController::class);
     Route::apiResource('/products', \App\Http\Controllers\Api\V1\Admin\AdminProductController::class);
+    Route::get('/orders', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'index']);
+Route::get('/orders/{order}', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'show']);
+Route::patch('/orders/{order}/status', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'updateStatus']);
+Route::patch('/orders/{order}/payment-status', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'updatePaymentStatus']);
+Route::patch('/orders/{order}/status', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'updateStatus']);
+Route::patch('/orders/{order}/payment-status', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'updatePaymentStatus']);
+Route::patch('/orders/{order}/tracking-number', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'updateTrackingNumber']);
 
+Route::post('/orders/{order}/notes', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'addInternalNote']);
+Route::post('/orders/{order}/notify', [\App\Http\Controllers\Api\V1\Admin\AdminOrderController::class, 'notifyCustomer']);
 });
 
 });

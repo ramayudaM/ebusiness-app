@@ -13,6 +13,12 @@ export const adminProductService = {
     })
   },
 
+  getProduct(id) {
+    return api.get(`/admin/products/${id}`, {
+      headers: getAdminHeaders(),
+    })
+  },
+
   getCategories() {
     return api.get('/admin/categories', {
       headers: getAdminHeaders(),
@@ -38,6 +44,12 @@ export const adminProductService = {
       },
     })
   },
+
+  getProduct(id) {
+  return api.get(`/admin/products/${id}`, {
+    headers: getAdminHeaders(),
+  })
+},
 
   deleteProduct(id) {
     return api.delete(`/admin/products/${id}`, {

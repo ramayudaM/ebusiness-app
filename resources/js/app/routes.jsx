@@ -28,6 +28,9 @@ import AdminProductsPage from '../features/admin/products/AdminProductsPage'
 import AdminOrdersPage from '../features/admin/orders/AdminOrdersPage'
 import AdminCustomersPage from '../features/admin/customers/AdminCustomersPage'
 import AdminReportsPage from '../features/admin/reports/AdminReportsPage'
+import AdminProductFormPage from '../features/admin/products/AdminProductFormPage'
+import AdminCategoriesPage from '../features/admin/categories/AdminCategoriesPage'
+import AdminOrderDetailPage from '../features/admin/orders/AdminOrderDetailPage'
 
 export function AppRoutes() {
   return (
@@ -153,6 +156,15 @@ export function AppRoutes() {
       />
 
       <Route
+  path="/admin/categories"
+  element={
+    <AdminRoute>
+      <AdminCategoriesPage />
+    </AdminRoute>
+  }
+/>
+
+      <Route
         path="/admin/products"
         element={
           <AdminRoute>
@@ -162,6 +174,24 @@ export function AppRoutes() {
       />
 
       <Route
+  path="/admin/products/create"
+  element={
+    <AdminRoute>
+      <AdminProductFormPage mode="create" />
+    </AdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/products/:id/edit"
+  element={
+    <AdminRoute>
+      <AdminProductFormPage mode="edit" />
+    </AdminRoute>
+  }
+/>
+
+      <Route
         path="/admin/orders"
         element={
           <AdminRoute>
@@ -169,6 +199,15 @@ export function AppRoutes() {
           </AdminRoute>
         }
       />
+
+      <Route
+  path="/admin/orders/:id"
+  element={
+    <AdminRoute>
+      <AdminOrderDetailPage />
+    </AdminRoute>
+  }
+/>
 
       <Route
         path="/admin/customers"
