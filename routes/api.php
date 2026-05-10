@@ -209,7 +209,15 @@ Route::prefix('v1')->group(function () {
         | Categories & Products
         |--------------------------------------------------------------------------
         */
+Route::post('/products/import', [
+    \App\Http\Controllers\Api\V1\Admin\AdminProductImportController::class,
+    'import',
+]);
 
+Route::get('/products/import/template', [
+    \App\Http\Controllers\Api\V1\Admin\AdminProductImportController::class,
+    'template',
+]);
         Route::apiResource('/categories', \App\Http\Controllers\Api\V1\Admin\AdminCategoryController::class);
         Route::apiResource('/products', \App\Http\Controllers\Api\V1\Admin\AdminProductController::class);
 

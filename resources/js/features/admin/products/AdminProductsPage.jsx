@@ -20,11 +20,12 @@ function getPrimaryImage(product) {
   const image =
     product.images?.find((item) => item.is_primary) || product.images?.[0]
 
-  if (!image?.url) {
+  if (!image?.url && !image?.image_url) {
     return null
   }
 
-  if (image.url.startsWith('http')) return image.url
+  if (image.image_url) return image.image_url
+  if (image.url?.startsWith('http')) return image.url
 
   return `/storage/${image.url}`
 }
@@ -113,6 +114,43 @@ function ProductInitial({ name }) {
     <div className="flex h-full w-full items-center justify-center bg-slate-100 text-sm font-black uppercase text-slate-400">
       {initial}
     </div>
+  )
+}
+
+function ImportResultBox({ result }) {
+  if (!result) return null
+
+  const summary = result.summary || {}
+  const errors = result.errors || []
+  const hasError = Number(summary.failed || 0) > 0 || result.success === false
+
+  return (
+    <section
+      className={`rounded-[24px] border px-5 py-4 text-sm font-bold ${
+        hasError
+          ? 'border-amber-100 bg-amber-50 text-amber-800'
+          : 'border-emerald-100 bg-emerald-50 text-emerald-700'
+      }`}
+    >
+      <p className="font-black">
+        {result.message || 'Import produk selesai.'}
+      </p>
+
+      <p className="mt-1 font-semibold">
+        Dibuat: {summary.created || 0}, diperbarui: {summary.updated || 0}, gagal:{' '}
+        {summary.failed || 0}.
+      </p>
+
+      {errors.length > 0 && (
+        <div className="mt-3 space-y-1 text-xs font-semibold">
+          {errors.slice(0, 5).map((error, index) => (
+            <p key={`${error.row}-${index}`}>
+              Baris {error.row}: {error.message}
+            </p>
+          ))}
+        </div>
+      )}
+    </section>
   )
 }
 
@@ -223,6 +261,9 @@ export default function AdminProductsPage() {
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [importing, setImporting] = useState(false)
+  const [importResult, setImportResult] = useState(null)
+  const [selectedImportFile, setSelectedImportFile] = useState(null)
 
   const fetchCategories = async () => {
     try {
@@ -309,133 +350,217 @@ export default function AdminProductsPage() {
     } catch (err) {
       alert(
         err.response?.data?.message ||
-          'Produk belum bisa dihapus karena masih terhubung dengan data lain.'
+          'Produk belum dapat dihapus. Coba lagi nanti.'
       )
     }
   }
 
+  const handleDownloadTemplate = async () => {
+    try {
+      const response = await adminProductService.downloadImportTemplate()
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+
+      link.href = url
+      link.setAttribute('download', 'template-import-produk-nadakita.csv')
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (err) {
+      alert('Template import belum dapat diunduh.')
+    }
+  }
+
+  const handleImportProducts = async () => {
+    if (!selectedImportFile) {
+      alert('Pilih file CSV atau Excel terlebih dahulu.')
+      return
+    }
+
+    const formData = new FormData()
+    formData.append('file', selectedImportFile)
+
+    setImporting(true)
+    setImportResult(null)
+
+    try {
+      const response = await adminProductService.importProducts(formData)
+      setImportResult(response.data)
+      setSelectedImportFile(null)
+      await fetchProducts()
+      alert('Import produk selesai.')
+    } catch (err) {
+      const message =
+        err.response?.data?.message ||
+        'Import produk gagal. Pastikan format file sesuai template.'
+
+      setImportResult(err.response?.data || null)
+      alert(message)
+    } finally {
+      setImporting(false)
+    }
+  }
+
   const canGoPrev = Number(meta?.current_page || 1) > 1
-  const canGoNext = Number(meta?.current_page || 1) < Number(meta?.last_page || 1)
+  const canGoNext =
+    Number(meta?.current_page || 1) < Number(meta?.last_page || 1)
 
   return (
     <AdminLayout
       activeMenu="products"
       breadcrumb="Admin / Produk"
       title="Manajemen Produk"
-      searchPlaceholder="Cari produk, SKU, kategori..."
+      searchPlaceholder="Cari produk..."
     >
-      {/* PAGE HEADER */}
-<section className="relative overflow-hidden rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm md:p-8">
-  <div className="absolute right-0 top-0 h-40 w-40 rounded-bl-[80px] bg-orange-50" />
-  <div className="absolute bottom-0 right-24 h-24 w-24 rounded-full bg-slate-100/80 blur-2xl" />
-
-  <div className="relative z-10 flex flex-col gap-8 xl:flex-row xl:items-end xl:justify-between">
-    <div>
-      <div className="mb-4 flex items-center gap-3">
-        <span
-          className="h-2.5 w-2.5 rounded-full"
-          style={{ backgroundColor: theme.primary }}
+      <section className="relative overflow-hidden rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm md:p-7">
+        <div
+          className="absolute -right-20 -top-24 h-64 w-64 rounded-full opacity-70 blur-3xl"
+          style={{ backgroundColor: theme.primarySoft }}
         />
-        <p className="text-xs font-black uppercase tracking-[0.22em] text-orange-600">
-          Inventory Control
-        </p>
-      </div>
+        <div className="relative z-10 flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
+          <div>
+            <div
+              className="mb-4 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-sm font-bold"
+              style={{ backgroundColor: theme.primarySoft, color: theme.primary }}
+            >
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{ backgroundColor: theme.primary }}
+              />
+              Admin Catalog Workspace
+            </div>
 
-      <h2 className="text-4xl font-black tracking-tight text-slate-950">
-        Katalog Produk
-      </h2>
+            <h2 className="max-w-3xl text-4xl font-black tracking-tight text-slate-950 md:text-5xl">
+              Kelola produk musik dengan lebih cepat dan rapi.
+            </h2>
 
-      <p className="mt-3 max-w-2xl text-sm font-medium leading-relaxed text-slate-500">
-        Kelola produk, harga, stok, dan status publikasi yang digunakan langsung
-        pada halaman customer NadaKita.
-      </p>
-    </div>
+            <p className="mt-3 max-w-2xl text-sm font-medium leading-relaxed text-slate-500">
+              Tambahkan produk secara manual, import CSV/Excel, atau gunakan seeder untuk mengisi katalog awal.
+            </p>
+          </div>
 
-    <div className="flex flex-wrap gap-3">
-      <a
-        href="/explore"
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-700 shadow-sm transition hover:bg-slate-50"
-      >
-        <AdminIcon name="eye" size={18} />
-        Preview Customer
-      </a>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href="/explore"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-700 shadow-sm transition hover:bg-slate-50"
+            >
+              <AdminIcon name="eye" size={18} />
+              Preview Customer
+            </a>
 
-      <button
-        type="button"
-        onClick={handleCreate}
-        className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5"
-        style={{
-          background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})`,
-          boxShadow: `0 12px 24px ${theme.primary}30`,
-        }}
-      >
-        <AdminIcon name="plus" size={18} />
-        Tambah Produk
-      </button>
-    </div>
-  </div>
+            <button
+              type="button"
+              onClick={handleDownloadTemplate}
+              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-700 shadow-sm transition hover:bg-slate-50"
+            >
+              <AdminIcon name="download" size={18} />
+              Template
+            </button>
 
-  <div className="relative z-10 mt-8 grid grid-cols-2 gap-4 border-t border-slate-100 pt-6 lg:grid-cols-4">
-    <MiniMetric label="Total SKU" value={stats.total} tone="blue" />
-<MiniMetric label="Tayang" value={stats.active} tone="green" />
-<MiniMetric label="Stok Rendah" value={stats.lowStock} tone="amber" />
-<MiniMetric label="Stok Kosong" value={stats.emptyStock} tone="red" />
-  </div>
-</section>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-2xl border border-orange-100 bg-orange-50 px-5 py-3 text-sm font-black text-orange-700 shadow-sm transition hover:bg-orange-100">
+              <AdminIcon name="upload" size={18} />
+              Pilih File
+              <input
+                type="file"
+                accept=".csv,.txt,.xlsx"
+                className="hidden"
+                onChange={(event) => setSelectedImportFile(event.target.files?.[0] || null)}
+              />
+            </label>
 
-{/* COMMAND BAR */}
-<section className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm">
-  <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
-    <div className="flex flex-1 items-center gap-3 rounded-2xl bg-slate-100 px-4 py-3">
-      <AdminIcon name="search" className="text-slate-500" />
-      <input
-        type="text"
-        value={search}
-        onChange={(event) => setSearch(event.target.value)}
-        placeholder="Cari produk berdasarkan nama, SKU, atau deskripsi..."
-        className="w-full border-0 bg-transparent text-sm font-semibold text-slate-700 outline-none ring-0 placeholder:text-slate-400 focus:border-0 focus:outline-none focus:ring-0"
-      />
-    </div>
+            <button
+              type="button"
+              disabled={!selectedImportFile || importing}
+              onClick={handleImportProducts}
+              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-black text-slate-700 shadow-sm transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <AdminIcon name="upload" size={18} />
+              {importing ? 'Mengimport...' : 'Import Produk'}
+            </button>
 
-    <div className="grid grid-cols-2 gap-3 xl:w-[420px]">
-      <select
-        value={categoryId}
-        onChange={(event) => setCategoryId(event.target.value)}
-        className="rounded-2xl border-0 bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 outline-none ring-0 focus:ring-0"
-      >
-        <option value="">Semua Kategori</option>
-        {categories.map((category) => (
-          <option key={category.id} value={category.id}>
-            {category.name}
-          </option>
-        ))}
-      </select>
+            <button
+              type="button"
+              onClick={handleCreate}
+              className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-black text-white shadow-sm transition hover:-translate-y-0.5"
+              style={{
+                background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})`,
+                boxShadow: `0 12px 24px ${theme.primary}30`,
+              }}
+            >
+              <AdminIcon name="plus" size={18} />
+              Tambah Produk
+            </button>
+          </div>
+        </div>
 
-      <select
-        value={status}
-        onChange={(event) => setStatus(event.target.value)}
-        className="rounded-2xl border-0 bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 outline-none ring-0 focus:ring-0"
-      >
-        <option value="">Semua Status</option>
-        <option value="active">Aktif</option>
-        <option value="inactive">Arsip</option>
-      </select>
-    </div>
-  </div>
-</section>
+        <div className="relative z-10 mt-8 grid grid-cols-2 gap-4 border-t border-slate-100 pt-6 lg:grid-cols-4">
+          <MiniMetric label="Total SKU" value={stats.total} tone="blue" />
+          <MiniMetric label="Tayang" value={stats.active} tone="green" />
+          <MiniMetric label="Stok Rendah" value={stats.lowStock} tone="amber" />
+          <MiniMetric label="Stok Kosong" value={stats.emptyStock} tone="red" />
+        </div>
+      </section>
 
-      {/* TABLE */}
+      {selectedImportFile && (
+        <section className="rounded-[24px] border border-orange-100 bg-orange-50 px-5 py-4 text-sm font-bold text-orange-700">
+          File siap diimport: {selectedImportFile.name}
+        </section>
+      )}
+
+      <ImportResultBox result={importResult} />
+
+      <section className="rounded-[28px] border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="flex flex-col gap-3 xl:flex-row xl:items-center">
+          <div className="flex flex-1 items-center gap-3 rounded-2xl bg-slate-100 px-4 py-3">
+            <AdminIcon name="search" className="text-slate-500" />
+            <input
+              type="text"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Cari produk berdasarkan nama, SKU, atau deskripsi..."
+              className="w-full border-0 bg-transparent text-sm font-semibold text-slate-700 outline-none ring-0 placeholder:text-slate-400 focus:border-0 focus:outline-none focus:ring-0"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 xl:w-[420px]">
+            <select
+              value={categoryId}
+              onChange={(event) => setCategoryId(event.target.value)}
+              className="rounded-2xl border-0 bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 outline-none ring-0 focus:ring-0"
+            >
+              <option value="">Semua Kategori</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={status}
+              onChange={(event) => setStatus(event.target.value)}
+              className="rounded-2xl border-0 bg-slate-100 px-4 py-3 text-sm font-bold text-slate-700 outline-none ring-0 focus:ring-0"
+            >
+              <option value="">Semua Status</option>
+              <option value="active">Aktif</option>
+              <option value="inactive">Arsip</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
       <section className="overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-sm">
         <div className="flex flex-col gap-3 border-b border-slate-100 px-6 py-5 md:flex-row md:items-center md:justify-between">
           <div>
-           <h3 className="text-lg font-black text-slate-950">
-  Inventaris Produk
-</h3>
-<p className="mt-1 text-sm font-medium text-slate-500">
-  Pantau stok, harga, dan status produk sebelum ditampilkan ke customer.
-</p>
+            <h3 className="text-lg font-black text-slate-950">
+              Inventaris Produk
+            </h3>
+            <p className="mt-1 text-sm font-medium text-slate-500">
+              Pantau stok, harga, dan status produk sebelum ditampilkan ke customer.
+            </p>
           </div>
 
           <p className="text-sm font-bold text-slate-500">
@@ -472,7 +597,7 @@ export default function AdminProductsPage() {
             </h3>
 
             <p className="mt-2 max-w-md text-sm font-medium text-slate-500">
-              Tambahkan produk pertama untuk mulai menampilkan katalog NadaKita.
+              Tambahkan produk manual, import CSV/Excel, atau jalankan seeder produk otomatis.
             </p>
 
             <button

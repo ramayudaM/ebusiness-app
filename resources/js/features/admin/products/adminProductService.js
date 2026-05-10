@@ -45,15 +45,25 @@ export const adminProductService = {
     })
   },
 
-  getProduct(id) {
-  return api.get(`/admin/products/${id}`, {
-    headers: getAdminHeaders(),
-  })
-},
-
   deleteProduct(id) {
     return api.delete(`/admin/products/${id}`, {
       headers: getAdminHeaders(),
+    })
+  },
+
+  importProducts(formData) {
+    return api.post('/admin/products/import', formData, {
+      headers: {
+        ...getAdminHeaders(),
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+  },
+
+  downloadImportTemplate() {
+    return api.get('/admin/products/import/template', {
+      headers: getAdminHeaders(),
+      responseType: 'blob',
     })
   },
 }
