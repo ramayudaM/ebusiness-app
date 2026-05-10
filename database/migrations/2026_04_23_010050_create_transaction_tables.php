@@ -53,13 +53,13 @@ return new class extends Migration
         DB::statement("
             CREATE TABLE IF NOT EXISTS cart_items (
                 id              BIGSERIAL PRIMARY KEY,
-                cart_id         BIGINT NOT NULL REFERENCES carts(id) ON DELETE CASCADE,
+                user_id         BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
                 product_id      BIGINT NOT NULL REFERENCES products(id) ON DELETE CASCADE,
-                variation_id    BIGINT REFERENCES product_variations(id) ON DELETE SET NULL,
-                qty             INTEGER NOT NULL DEFAULT 1 CHECK (qty > 0),
+                product_variation_id BIGINT REFERENCES product_variations(id) ON DELETE CASCADE,
+                quantity        INTEGER NOT NULL DEFAULT 1 CHECK (quantity > 0),
+                is_selected     BOOLEAN NOT NULL DEFAULT TRUE,
                 created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                CONSTRAINT cart_items_product_unique UNIQUE (cart_id, product_id, variation_id)
+                updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
             )
         ");
 
@@ -159,17 +159,17 @@ return new class extends Migration
 
         DB::statement("
             CREATE TABLE IF NOT EXISTS notifications (
-                id          BIGSERIAL PRIMARY KEY,
-                user_id     BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-                type        VARCHAR(50) NOT NULL,
-                title       VARCHAR(255) NOT NULL,
-                message     TEXT NOT NULL,
-                link_url    VARCHAR(500) DEFAULT NULL,
-                is_read     BOOLEAN NOT NULL DEFAULT FALSE,
-                created_at  TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                read_at     TIMESTAMPTZ DEFAULT NULL
+                id              UUID PRIMARY KEY,
+                type            VARCHAR(255) NOT NULL,
+                notifiable_type VARCHAR(255) NOT NULL,
+                notifiable_id   BIGINT NOT NULL,
+                data            TEXT NOT NULL,
+                read_at         TIMESTAMPTZ DEFAULT NULL,
+                created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+                updated_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
             )
         ");
+        DB::statement('CREATE INDEX IF NOT EXISTS idx_notifications_notifiable ON notifications (notifiable_type, notifiable_id)');
     }
 
     /**
