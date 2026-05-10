@@ -134,6 +134,16 @@ class ProductSeeder extends Seeder
                 'description' => 'Kabel instrumen 3 meter untuk gitar, bass, keyboard, dan audio gear.',
                 'image_url' => 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900',
             ],
+            [
+                'category' => 'Aksesoris',
+                'name' => 'Daddario EXL110 Strings',
+                'sku' => 'DAD-EXL110',
+                'price_sen' => 100000,
+                'stock_qty' => 50,
+                'weight_gram' => 100,
+                'description' => 'Senar gitar elektrik Daddario EXL110 Nickel Wound Regular Light.',
+                'image_url' => 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=900',
+            ],
         ];
 
         foreach ($products as $index => $item) {

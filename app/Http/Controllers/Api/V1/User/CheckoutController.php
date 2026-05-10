@@ -50,6 +50,8 @@ class CheckoutController extends Controller
         $couriers = $request->courier ? [$request->courier] : ['jne', 'pos', 'tiki'];
         $allServices = [];
 
+        \Illuminate\Support\Facades\Log::info("Calculating shipping for address {$address->id} (City: {$address->city_id}), Weight: {$totalWeight}g");
+
         foreach ($couriers as $courier) {
             $results = $this->rajaOngkir->calculateCost(
                 $address->city_id,
@@ -74,8 +76,12 @@ class CheckoutController extends Controller
                         ];
                     }
                 }
+            } else {
+                \Illuminate\Support\Facades\Log::warning("No shipping results for courier {$courier}");
             }
         }
+
+        \Illuminate\Support\Facades\Log::info("Total shipping services found: " . count($allServices));
 
         return response()->json($allServices);
     }
