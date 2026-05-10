@@ -32,6 +32,9 @@ import AdminOrderDetailPage from '../features/admin/orders/AdminOrderDetailPage'
 import AdminCustomersPage from '../features/admin/customers/AdminCustomersPage'
 import AdminCustomerDetailPage from '../features/admin/customers/AdminCustomerDetailPage'
 import AdminReportsPage from '../features/admin/reports/AdminReportsPage'
+import AdminReviewsPage from '../features/admin/reviews/AdminReviewsPage'
+import AdminNotificationsPage from '../features/admin/notifications/AdminNotificationsPage'
+import AdminSettingsPage from '../features/admin/settings/AdminSettingsPage'
 
 export function AppRoutes() {
   return (
@@ -231,6 +234,33 @@ export function AppRoutes() {
           </AdminRoute>
         }
       />
+
+      <Route
+  path="/admin/reviews"
+  element={
+    <AdminRoute>
+      <AdminReviewsPage />
+    </AdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/notifications"
+  element={
+    <AdminRoute>
+      <AdminNotificationsPage />
+    </AdminRoute>
+  }
+/>
+
+<Route
+  path="/admin/settings"
+  element={
+    <AdminRoute>
+      <AdminSettingsPage />
+    </AdminRoute>
+  }
+/>
 
       {/* ADMIN REPORTS */}
       <Route

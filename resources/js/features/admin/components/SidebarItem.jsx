@@ -7,6 +7,7 @@ export default function SidebarItem({
   active,
   collapsed,
   href = '#',
+  badge,
 }) {
   return (
     <a
@@ -22,7 +23,7 @@ export default function SidebarItem({
       onMouseEnter={(event) => {
         if (!active) {
           event.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.07)'
-          event.currentTarget.style.color = 'rgba(255,255,255,0.9)'
+          event.currentTarget.style.color = 'rgba(255,255,255,0.92)'
         }
       }}
       onMouseLeave={(event) => {
@@ -50,7 +51,23 @@ export default function SidebarItem({
         <AdminIcon name={icon} size={20} />
       </span>
 
-      {!collapsed && <span>{label}</span>}
+      {!collapsed && (
+        <>
+          <span className="min-w-0 flex-1 truncate">{label}</span>
+
+          {badge ? (
+            <span
+              className="rounded-full px-2 py-0.5 text-[10px] font-black"
+              style={{
+                backgroundColor: `${theme.primary}22`,
+                color: theme.primary,
+              }}
+            >
+              {badge}
+            </span>
+          ) : null}
+        </>
+      )}
     </a>
   )
 }
