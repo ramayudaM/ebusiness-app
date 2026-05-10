@@ -48,19 +48,5 @@ class InteractionSeeder extends Seeder
             ],
         ]);
 
-        // 4. RajaOngkir Cache
-        DB::table('raja_ongkir_cache')->insert([
-            [
-                'cache_key' => 'rajaongkir:provinces',
-                'cache_value' => json_encode([
-                    ['province_id' => '1', 'province' => 'Bali'],
-                    ['province_id' => '6', 'province' => 'DKI Jakarta'],
-                    ['province_id' => '9', 'province' => 'Jawa Barat'],
-                ]),
-                'expires_at' => now()->addMonth(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        ]);
     }
 }
