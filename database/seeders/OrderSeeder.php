@@ -19,9 +19,9 @@ class OrderSeeder extends Seeder
         ]);
 
         DB::table('cart_items')->insert([
-            ['cart_id' => 1, 'product_id' => 1, 'variation_id' => 1, 'qty' => 1, 'created_at' => now()->subMinutes(60), 'updated_at' => now()],
-            ['cart_id' => 1, 'product_id' => 13, 'variation_id' => null, 'qty' => 1, 'created_at' => now()->subMinutes(45), 'updated_at' => now()],
-            ['cart_id' => 2, 'product_id' => 6, 'variation_id' => 6, 'qty' => 1, 'created_at' => now()->subMinutes(25), 'updated_at' => now()],
+            ['user_id' => 2, 'product_id' => 1, 'product_variation_id' => 1, 'quantity' => 1, 'created_at' => now()->subMinutes(60), 'updated_at' => now()],
+            ['user_id' => 2, 'product_id' => 13, 'product_variation_id' => null, 'quantity' => 1, 'created_at' => now()->subMinutes(45), 'updated_at' => now()],
+            ['user_id' => 3, 'product_id' => 6, 'product_variation_id' => 6, 'quantity' => 1, 'created_at' => now()->subMinutes(25), 'updated_at' => now()],
         ]);
 
         // 2. Orders
