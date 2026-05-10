@@ -4,14 +4,30 @@ import api from '../../../lib/api'
 import useAuthStore from '../authStore'
 
 /**
- * Custom hook untuk semua operasi authentication.
- * Menggabungkan API call + state management + navigasi.
+ * Custom hook untuk seluruh proses authentication customer.
+ * Catatan:
+ * - Register hanya untuk customer.
+ * - Login bisa digunakan oleh customer dan admin.
+ * - Jika role admin, user diarahkan ke /admin/dashboard.
+ * - Jika role customer, user diarahkan ke halaman customer.
  */
 const useAuth = () => {
   const navigate = useNavigate()
   const { setAuth, clearAuth } = useAuthStore()
+
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState({})
+
+  const clearCustomerSession = () => {
+    clearAuth()
+    localStorage.removeItem('auth_token')
+    localStorage.removeItem('auth-storage')
+  }
+
+  const clearAdminSession = () => {
+    localStorage.removeItem('admin_token')
+    localStorage.removeItem('admin-auth-storage')
+  }
 
   /**
    * Register customer baru.
@@ -25,28 +41,35 @@ const useAuth = () => {
       const response = await api.post('/auth/register', formData)
       const { user, token } = response.data.data
 
-      // Simpan ke store
+      // Register hanya untuk customer, jadi bersihkan token admin bila ada.
+      clearAdminSession()
+
+      // Simpan auth customer ke Zustand/localStorage.
       setAuth(user, token)
 
-      // Redirect ke homepage setelah register
       navigate('/')
 
       return { success: true }
     } catch (error) {
       const responseErrors = error.response?.data?.errors || {}
-      const message = error.response?.data?.message || 'Terjadi kesalahan. Coba lagi.'
+      const message =
+        error.response?.data?.message || 'Terjadi kesalahan. Coba lagi.'
 
       setErrors(responseErrors)
-      return { success: false, message }
+
+      return {
+        success: false,
+        message,
+      }
     } finally {
       setLoading(false)
     }
   }
 
   /**
-   * Login dengan email dan password.
+   * Login customer/admin.
    * @param {Object} formData - { email, password, remember }
-   * @param {string} redirectTo - URL tujuan setelah login (default: '/')
+   * @param {string} redirectTo - URL tujuan setelah login customer
    */
   const login = async (formData, redirectTo = '/') => {
     setLoading(true)
@@ -56,30 +79,47 @@ const useAuth = () => {
       const response = await api.post('/auth/login', formData)
       const { user, token } = response.data.data
 
-      // Simpan ke store
+      if (user.role === 'admin') {
+        // Jika admin login lewat /login, bersihkan session customer.
+        clearCustomerSession()
+
+        // Simpan token admin.
+        localStorage.setItem('admin_token', token)
+
+        // Arahkan ke dashboard admin.
+        navigate('/admin/dashboard')
+
+        return { success: true }
+      }
+
+      // Jika customer login, bersihkan session admin agar tidak bentrok.
+      clearAdminSession()
+
+      // Simpan auth customer.
       setAuth(user, token)
 
-      // Redirect sesuai role
-      if (user.role === 'admin') {
-        navigate('/admin/dashboard')
-      } else {
-        navigate(redirectTo)
-      }
+      navigate(redirectTo)
 
       return { success: true }
     } catch (error) {
       const responseErrors = error.response?.data?.errors || {}
-      const message = error.response?.data?.message || 'Email atau password salah.'
+      const message =
+        error.response?.data?.message || 'Email atau password salah.'
 
       setErrors(responseErrors)
-      return { success: false, message }
+
+      return {
+        success: false,
+        message,
+      }
     } finally {
       setLoading(false)
     }
   }
 
   /**
-   * Logout user.
+   * Logout customer.
+   * Untuk logout admin sebaiknya dibuat terpisah di fitur admin auth.
    */
   const logout = async () => {
     setLoading(true)
@@ -87,10 +127,10 @@ const useAuth = () => {
     try {
       await api.post('/auth/logout')
     } catch (error) {
-      // Tetap lanjut logout meskipun API gagal
+      // Tetap logout dari frontend walaupun API gagal.
       console.error('Logout API error:', error)
     } finally {
-      clearAuth()
+      clearCustomerSession()
       setLoading(false)
       navigate('/login')
     }

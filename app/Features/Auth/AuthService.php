@@ -49,38 +49,38 @@ class AuthService
      * @return array ['user' => User, 'token' => string]
      * @throws ValidationException Jika kredensial salah
      */
-    public function login(string $email, string $password, bool $remember = false): array
-    {
-        // 1. Cari user berdasarkan email
-        $user = User::where('email', $email)->first();
+public function login(string $email, string $password, bool $remember = false): array
+{
+    $user = User::where('email', $email)->first();
 
-        // 2. Cek apakah user ada dan password cocok
-        //    PENTING: Jangan beri tahu ke user apakah email atau password yang salah
-        //    Gunakan pesan generik untuk keamanan
-        if (! $user || ! Hash::check($password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['Email atau password salah.'],
-            ]);
-        }
-
-        // 3. Cek apakah akun masih aktif (tidak soft-deleted)
-        if ($user->trashed()) {
-            throw ValidationException::withMessages([
-                'email' => ['Akun ini telah dinonaktifkan.'],
-            ]);
-        }
-
-        // 4. Hapus semua token lama (opsional: satu device satu token)
-        $user->tokens()->delete();
-
-        // 5. Buat token baru
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        return [
-            'user'  => $user,
-            'token' => $token,
-        ];
+    if (! $user || ! Hash::check($password, $user->password)) {
+        throw ValidationException::withMessages([
+            'email' => ['Email atau password salah.'],
+        ]);
     }
+
+    if ($user->trashed()) {
+        throw ValidationException::withMessages([
+            'email' => ['Akun ini telah dinonaktifkan.'],
+        ]);
+    }
+
+    $user->tokens()->delete();
+
+    if ($user->role === 'admin') {
+        $token = $user->createToken('admin_token', ['admin'])->plainTextToken;
+        $tokenType = 'admin_token';
+    } else {
+        $token = $user->createToken('auth_token', ['customer'])->plainTextToken;
+        $tokenType = 'auth_token';
+    }
+
+    return [
+        'user'       => $user,
+        'token'      => $token,
+        'token_type' => $tokenType,
+    ];
+}
 
     /**
      * Logout user — hapus semua token yang aktif.

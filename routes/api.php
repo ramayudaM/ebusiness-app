@@ -119,12 +119,16 @@ Route::prefix('v1')->group(function () {
     // ===================================================================
     // ADMIN ROUTES — Membutuhkan Bearer token + role admin
     // ===================================================================
-    Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'admin'])->prefix('admin')->group(function () {
 
-        // Tambahkan admin routes di sini pada langkah selanjutnya
-        // Contoh: Route::get('/dashboard', [AdminDashboardController::class, 'index']);
+    Route::get('/categories', [
+        \App\Http\Controllers\Api\V1\Admin\AdminProductController::class,
+        'categories'
+    ]);
 
-    });
+    Route::apiResource('/products', \App\Http\Controllers\Api\V1\Admin\AdminProductController::class);
+
+});
 
 });
 
