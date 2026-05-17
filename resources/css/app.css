@@ -11,12 +11,18 @@
   }
 
   body {
-    @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300;
+    background-color: #050505;
+    color: #ffffff;
+    @apply transition-colors duration-300;
   }
 
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-gray-100 dark:bg-gray-900; }
-  ::-webkit-scrollbar-thumb { @apply bg-gray-300 dark:bg-gray-700 rounded-full; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #050505; }
+  ::-webkit-scrollbar-thumb { 
+    @apply bg-zinc-800 rounded-full;
+    border: 1px solid #050505; 
+  }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-orange-600; }
 }
 
 @layer utilities {

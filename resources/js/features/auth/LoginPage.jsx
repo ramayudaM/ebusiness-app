@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import useAuth from './hooks/useAuth'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, Eye, EyeOff, Music, Headphones, ShieldCheck, Sparkles, ArrowRight } from 'lucide-react'
 
 const LoginPage = () => {
   const { login, loading, errors } = useAuth()
@@ -12,6 +14,34 @@ const LoginPage = () => {
   const [globalError, setGlobalError] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [localErrors, setLocalErrors] = useState({})
+  
+  // Interactive Promo Slide State
+  const [activeSlide, setActiveSlide] = useState(0)
+
+  const promoSlides = [
+    {
+      text: "NadaKita memberikan saya akses instan ke instrumen terbaik dunia. Layanan proteksi dan pengiriman sangat aman.",
+      author: "Andi Setiawan",
+      role: "Produser Musik",
+      tags: ["Premium Instrument", "Garansi Resmi"],
+      image: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?q=80&w=1200"
+    },
+    {
+      text: "Pengiriman logistik yang sangat profesional dan aman. Gitar impian saya sampai tanpa goresan sedikitpun.",
+      author: "Budi Cahyono",
+      role: "Gitaris Klasik",
+      tags: ["Logistik Terproteksi", "Layanan Prioritas"],
+      image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?q=80&w=1200"
+    }
+  ]
+
+  const nextSlide = () => {
+    setActiveSlide((prev) => (prev + 1) % promoSlides.length)
+  }
+
+  const prevSlide = () => {
+    setActiveSlide((prev) => (prev - 1 + promoSlides.length) % promoSlides.length)
+  }
 
   const validateEmail = (email) => {
     return String(email)
@@ -52,244 +82,281 @@ const LoginPage = () => {
   const combinedErrors = { ...errors, ...localErrors }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-950 flex flex-col items-center justify-center p-4 transition-colors duration-300">
-      {/* Back Button */}
-      <div className="w-full max-w-md mb-4">
-        <Link
-          to="/"
-          className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1 uppercase font-bold tracking-wider hover:text-orange-600 transition-colors"
-        >
-          <svg
-            width="18"
-            height="18"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-          >
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Beranda
-        </Link>
-      </div>
+    <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center p-4 md:p-8 relative overflow-hidden font-sans selection:bg-orange-500/30">
+      {/* Signature Global Ambient Glows */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-orange-600/5 blur-[150px] pointer-events-none z-0"></div>
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-orange-700/5 blur-[150px] pointer-events-none z-0"></div>
 
-      {/* Header / Logo */}
-      <div className="mb-8 text-center flex items-center gap-3">
-        <div className="bg-orange-600 p-2 rounded-xl shadow-lg">
-          <svg
-            width="28"
-            height="28"
-            viewBox="0 0 24 24"
-            fill="white"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17C6 19.21 7.79 21 10 21C12.21 21 14 19.21 14 17V7H18V3H12Z" />
-          </svg>
-        </div>
-        <span className="text-2xl font-black text-gray-800 dark:text-white tracking-tight">NadaKita</span>
-      </div>
-
-      {/* Login Card */}
-      <div className="bg-white dark:bg-gray-900 p-10 rounded-3xl shadow-2xl w-full max-w-md relative border border-gray-100 dark:border-gray-800">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Masuk ke Akun</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Lanjutkan perjalanan musikmu</p>
-        </div>
-
-        {globalError && (
-          <div className="mb-6 p-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl flex items-center gap-2 animate-shake">
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="12" />
-              <line x1="12" y1="16" x2="12.01" y2="16" />
-            </svg>
-            {globalError}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email Field */}
-          <div className="space-y-2">
-            <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">
-              Email*
-            </label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              noValidate
-              className={`w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-2 ${
-                combinedErrors.email ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-transparent'
-              } rounded-2xl focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:border-orange-500 transition-all dark:text-white font-medium shadow-inner shadow-gray-200 dark:shadow-none`}
-              placeholder="nama@email.com"
-            />
-            {combinedErrors.email && (
-              <p className="text-xs font-bold text-red-500 ml-1 animate-pulse">
-                {combinedErrors.email[0]}
-              </p>
-            )}
-          </div>
-
-          {/* Password Field */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center px-1">
-              <label className="text-xs font-black text-gray-400 uppercase tracking-widest">
-                Password*
-              </label>
+      {/* Unified Card Container (Style matches homepage dark theme) */}
+      <div className="w-full max-w-5xl bg-[#0A0A0A]/90 backdrop-blur-2xl border border-zinc-900 rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.85)] flex flex-col lg:flex-row relative z-10 overflow-hidden min-h-[640px] p-4 md:p-6 gap-6">
+        
+        {/* LEFT SIDE: Form & Branding (Structured exactly like reference image) */}
+        <div className="w-full lg:w-[54%] p-6 md:p-8 flex flex-col justify-between relative z-10">
+          
+          {/* Logo & Header Row */}
+          <div>
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-2.5">
+                <div className="bg-gradient-to-r from-orange-600 to-amber-500 p-2.5 rounded-2xl shadow-[0_0_20px_rgba(234,88,12,0.3)]">
+                  <Music size={18} className="text-white" />
+                </div>
+                <span className="text-lg font-black text-white tracking-tight">NadaKita</span>
+              </div>
               <Link
-                to="/forgot-password"
-                title="Lupa password?"
-                className="text-xs font-bold text-orange-600 hover:text-orange-700 transition-colors"
+                to="/"
+                className="flex items-center gap-1.5 text-zinc-400 hover:text-orange-500 transition-colors font-bold text-xs uppercase tracking-wider"
               >
-                Lupa password?
+                <ArrowLeft size={14} />
+                Kembali
               </Link>
             </div>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                noValidate
-                className={`w-full px-5 py-4 bg-gray-50 dark:bg-gray-800 border-2 ${
-                  combinedErrors.password ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-transparent'
-                } rounded-2xl focus:bg-white dark:focus:bg-gray-900 focus:outline-none focus:border-orange-500 transition-all dark:text-white font-medium shadow-inner shadow-gray-200 dark:shadow-none`}
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors"
-                title={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
-              >
-                {showPassword ? (
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                    <line x1="1" y1="1" x2="23" y2="23" />
-                  </svg>
-                ) : (
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
-                )}
-              </button>
-            </div>
-            {combinedErrors.password && (
-              <p className="text-xs font-bold text-red-500 ml-1 animate-pulse">
-                {combinedErrors.password[0]}
+
+            {/* Title Block */}
+            <div className="mb-6">
+              <h2 className="text-3xl font-black text-white tracking-tight mb-2 bg-clip-text text-transparent bg-gradient-to-b from-white to-zinc-400 leading-none">
+                Masuk ke Akun
+              </h2>
+              <p className="text-xs text-zinc-400 font-medium leading-relaxed">
+                Mulai menjelajah dan wujudkan impian audio profesional Anda hari ini.
               </p>
+            </div>
+
+            {/* Global Error Banner */}
+            {globalError && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-5 p-3.5 bg-red-950/20 border border-red-900/30 text-red-400 text-xs rounded-xl flex items-center gap-2.5"
+              >
+                <Sparkles size={16} className="shrink-0" />
+                <span className="font-semibold text-xs">{globalError}</span>
+              </motion.div>
             )}
-          </div>
 
-          {/* Remember Me */}
-          <div className="flex items-center gap-2 ml-1">
-            <input
-              type="checkbox"
-              name="remember"
-              id="remember"
-              checked={formData.remember}
-              onChange={handleChange}
-              className="w-4 h-4 text-orange-600 bg-gray-50 border-gray-300 rounded focus:ring-orange-500"
-            />
-            <label
-              htmlFor="remember"
-              className="text-sm text-gray-600 dark:text-gray-400 font-semibold select-none cursor-pointer"
-            >
-              Ingat saya
-            </label>
-          </div>
+            {/* Forms */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest ml-1 block">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  noValidate
+                  className={`w-full px-4 py-3.5 bg-zinc-900/40 border ${
+                    combinedErrors.email ? 'border-red-500/50 focus:border-red-500 bg-red-950/5' : 'border-zinc-800 focus:border-orange-500/50'
+                  } rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 placeholder-zinc-650 text-white font-medium transition-all text-xs md:text-sm`}
+                  placeholder="nama@email.com"
+                />
+                {combinedErrors.email && (
+                  <p className="text-[11px] font-semibold text-red-400 ml-1">
+                    {combinedErrors.email[0]}
+                  </p>
+                )}
+              </div>
 
-          {/* Submit Button */}
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-xl shadow-orange-200 dark:shadow-none relative overflow-hidden group"
-            >
-              {loading ? (
-                <svg
-                  className="animate-spin h-6 w-6 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
+              {/* Password */}
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center px-1">
+                  <label className="text-[10px] font-black text-zinc-400 uppercase tracking-widest block">
+                    Password
+                  </label>
+                  <Link
+                    to="/forgot-password"
+                    className="text-[10px] font-bold text-orange-400 hover:text-orange-350 transition-colors"
+                  >
+                    Lupa password?
+                  </Link>
+                </div>
+                <div className="relative">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    noValidate
+                    className={`w-full px-4 py-3.5 bg-zinc-900/40 border ${
+                      combinedErrors.password ? 'border-red-500/50 focus:border-red-500 bg-red-950/5' : 'border-zinc-800 focus:border-orange-500/50'
+                    } rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 placeholder-zinc-650 text-white font-medium transition-all text-xs md:text-sm pr-11`}
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-orange-450 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+                {combinedErrors.password && (
+                  <p className="text-[11px] font-semibold text-red-400 ml-1">
+                    {combinedErrors.password[0]}
+                  </p>
+                )}
+              </div>
+
+              {/* Remember checkbox */}
+              <div className="flex items-center gap-2 ml-1 py-0.5">
+                <input
+                  type="checkbox"
+                  name="remember"
+                  id="remember"
+                  checked={formData.remember}
+                  onChange={handleChange}
+                  className="w-4 h-4 rounded border-zinc-800 bg-zinc-900 text-orange-600 focus:ring-orange-500/30 focus:ring-offset-0 focus:ring-2 cursor-pointer"
+                />
+                <label
+                  htmlFor="remember"
+                  className="text-[11px] text-zinc-400 font-semibold select-none cursor-pointer hover:text-white transition-colors"
                 >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  ></circle>
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  ></path>
-                </svg>
-              ) : (
-                <>
-                  <span className="z-10 tracking-widest">MASUK</span>
-                  <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform skew-x-12 duration-500"></div>
-                </>
-              )}
-            </button>
-          </div>
-        </form>
+                  Ingat saya di perangkat ini
+                </label>
+              </div>
 
-        <div className="text-center text-sm border-t border-gray-100 dark:border-gray-800 pt-8">
-          <span className="text-gray-500 dark:text-gray-400 font-medium">Belum punya akun?</span>{' '}
-          <Link
-            to="/register"
-            className="text-orange-600 font-black hover:underline underline-offset-4 Decoration-2"
-          >
-            Daftar di sini
-          </Link>
+              {/* Action Submit */}
+              <div className="pt-2">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-black py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_4px_25px_rgba(234,88,12,0.25)] disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group tracking-wider text-xs md:text-sm"
+                >
+                  {loading ? (
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    <>
+                      <span className="z-10 tracking-widest uppercase">MASUK SEKARANG</span>
+                      <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform skew-x-12 duration-500"></div>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          {/* Bottom Switch Link */}
+          <div className="text-center text-xs border-t border-zinc-900/60 pt-4">
+            <span className="text-zinc-500 font-medium">Belum punya akun?</span>{' '}
+            <Link
+              to="/register"
+              className="text-orange-400 font-black hover:text-orange-350 hover:underline underline-offset-4 decoration-2 transition-colors ml-1"
+            >
+              Daftar di sini
+            </Link>
+          </div>
         </div>
 
-        {/* <div className="mt-6 flex items-center justify-center gap-4 text-[10px] font-black text-gray-300 tracking-widest uppercase ml-1">
-          <Link to="/tos" className="hover:text-gray-400 transition-colors">
-            Syarat
-          </Link>
-          <span>•</span>
-          <Link to="/privacy" className="hover:text-gray-400 transition-colors">
-            Privasi
-          </Link>
-          <span>•</span>
-          <Link to="/help" className="hover:text-gray-400 transition-colors">
-            Bantuan
-          </Link>
-        </div> */}
-      </div>
+        {/* RIGHT SIDE: Gorgeous Testimonial Card with Slider Controls (Recreated exactly like reference image) */}
+        <div className="w-full lg:w-[46%] rounded-[2rem] overflow-hidden relative flex flex-col justify-between p-8 shrink-0 min-h-[500px]">
+          
+          {/* Background Slide Image with Crossfade Animation */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeSlide}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 bg-cover bg-center mix-blend-luminosity opacity-[0.20]"
+              style={{ backgroundImage: `url('${promoSlides[activeSlide].image}')` }}
+            ></motion.div>
+          </AnimatePresence>
 
-      {/* <p className="mt-12 text-[11px] text-gray-400 font-medium italic text-center max-w-lg leading-relaxed px-4">
-        "Musik memberikan jiwa pada alam semesta, sayap pada pikiran, dan terbang pada imajinasi."
-      </p> */}
+          {/* Custom Linear Dark-Orange Background tint overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#050505]/95 via-[#0A0A0A]/90 to-orange-950/20 pointer-events-none z-0"></div>
+
+          {/* Top Row: Tags Pills */}
+          <div className="flex flex-wrap gap-2 relative z-10">
+            {promoSlides[activeSlide].tags.map((tag, index) => (
+              <span
+                key={index}
+                className="px-3.5 py-1.5 bg-zinc-900/60 border border-zinc-800 text-[10px] font-black uppercase tracking-wider text-zinc-300 rounded-full backdrop-blur-md"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+
+          {/* Bottom Row: Testimonial & Custom Rounded Arrow Notch Offset */}
+          <div className="relative z-10 flex flex-col gap-4">
+            
+            {/* Dark glassmorphic testimonial card */}
+            <motion.div
+              key={activeSlide}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="bg-black/60 backdrop-blur-xl border border-zinc-900 p-6 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] relative overflow-hidden"
+            >
+              {/* Poetic quote */}
+              <p className="text-zinc-200 text-sm md:text-base leading-relaxed font-medium italic mb-4">
+                &ldquo;{promoSlides[activeSlide].text}&rdquo;
+              </p>
+
+              {/* Quote Author */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-black text-white uppercase tracking-wider leading-tight">
+                    {promoSlides[activeSlide].author}
+                  </h4>
+                  <span className="text-[10px] text-zinc-500 font-bold">
+                    {promoSlides[activeSlide].role}
+                  </span>
+                </div>
+
+                {/* Inline Slider Arrow buttons inside bottom right testimonial block */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={prevSlide}
+                    type="button"
+                    className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                    title="Previous Slide"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={nextSlide}
+                    type="button"
+                    className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                    title="Next Slide"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
+        </div>
+
+      </div>
     </div>
   )
 }
 
-export default LoginPage
+export default LoginPage;

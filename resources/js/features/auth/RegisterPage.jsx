@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import useAuth from './hooks/useAuth'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ArrowLeft, Eye, EyeOff, Music, Headphones, ShieldCheck, Sparkles, User, Mail, Lock } from 'lucide-react'
 
 const RegisterPage = () => {
   const { register, loading, errors } = useAuth()
@@ -15,8 +17,37 @@ const RegisterPage = () => {
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
     label: 'Sangat Lemah',
-    color: 'bg-gray-200',
+    color: 'bg-zinc-800',
   })
+  const [localErrors, setLocalErrors] = useState({})
+
+  // Interactive Promo Slide State
+  const [activeSlide, setActiveSlide] = useState(0)
+
+  const promoSlides = [
+    {
+      text: "Menjadi member NadaKita memberikan saya diskon eksklusif dan rekomendasi instrumen berbasis AI. Sangat membantu musisi!",
+      author: "Rina Septiani",
+      role: "Pianis Profesional",
+      tags: ["Diskon Member", "Rekomendasi AI"],
+      image: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?q=80&w=1200"
+    },
+    {
+      text: "Dukungan konsultasi audio 24/7 sangat membantu saya menentukan spesifikasi mixer studio yang tepat. Luar biasa!",
+      author: "Dian Nugraha",
+      role: "Sound Engineer",
+      tags: ["Free Consultation", "Layanan Priority"],
+      image: "https://images.unsplash.com/photo-1516280440614-37939bbacd6a?q=80&w=1200"
+    }
+  ]
+
+  const nextSlide = () => {
+    setActiveSlide((prev) => (prev + 1) % promoSlides.length)
+  }
+
+  const prevSlide = () => {
+    setActiveSlide((prev) => (prev - 1 + promoSlides.length) % promoSlides.length)
+  }
 
   const checkPasswordStrength = (pass) => {
     let score = 0
@@ -52,7 +83,6 @@ const RegisterPage = () => {
     await register(formData)
   }
 
-  const [localErrors, setLocalErrors] = useState({})
   const combinedErrors = { ...errors, ...localErrors }
 
   const handleChange = (e) => {
@@ -70,328 +100,348 @@ const RegisterPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col items-center justify-center p-4 transition-colors duration-300">
-      {/* Header / Logo */}
-      <div className="w-full max-w-md flex items-center justify-between mb-8">
-        <div className="flex items-center gap-2">
-          <div className="bg-orange-600 p-2 rounded-lg">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="white"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M12 3V13.55C11.41 13.21 10.73 13 10 13C7.79 13 6 14.79 6 17C6 19.21 7.79 21 10 21C12.21 21 14 19.21 14 17V7H18V3H12Z" />
-            </svg>
-          </div>
-          <span className="text-xl font-bold dark:text-white">NadaKita</span>
-        </div>
-        <Link to="/login" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 transition-colors flex items-center gap-1">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-          >
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Masuk
-        </Link>
-      </div>
+    <div className="min-h-screen bg-[#050505] text-white flex items-center justify-center p-4 md:p-8 relative overflow-hidden font-sans selection:bg-orange-500/30">
+      {/* Signature Global Ambient Glows */}
+      <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-orange-600/5 blur-[150px] pointer-events-none z-0"></div>
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-orange-700/5 blur-[150px] pointer-events-none z-0"></div>
 
-      {/* Register Card */}
-      <div className="bg-white dark:bg-gray-900 p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-100 dark:border-gray-800">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Daftar Akun Baru</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            Bergabunglah dengan komunitas audio profesional kami.
-          </p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name Field */}
+      {/* Unified Card Container */}
+      <div className="w-full max-w-5xl bg-[#0A0A0A]/90 backdrop-blur-2xl border border-zinc-900 rounded-[2.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.85)] flex flex-col lg:flex-row relative z-10 overflow-hidden min-h-[640px] p-4 md:p-6 gap-6">
+        
+        {/* LEFT SIDE: Registration Form */}
+        <div className="w-full lg:w-[54%] p-4 md:p-6 flex flex-col justify-between relative z-10">
+          
+          {/* Logo & Header Row */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Nama Lengkap*</label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-              </span>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                noValidate
-                className={`w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border-2 ${
-                  combinedErrors.name ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-transparent'
-                } rounded-xl focus:bg-white dark:focus:bg-gray-900 dark:text-white focus:outline-none focus:border-orange-500 transition-all`}
-                placeholder="Contoh: Andi Wijaya"
-              />
-            </div>
-            {combinedErrors.name && (
-              <p className="text-[10px] font-bold text-red-500 mt-1 uppercase tracking-tighter">
-                {combinedErrors.name[0]}
-              </p>
-            )}
-          </div>
-
-          {/* Email Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email*</label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                  <polyline points="22,6 12,13 2,6" />
-                </svg>
-              </span>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                noValidate
-                className={`w-full pl-10 pr-4 py-2 bg-gray-100 border-2 ${
-                  combinedErrors.email ? 'border-red-500 bg-red-50' : 'border-transparent'
-                } rounded-xl focus:bg-white focus:outline-none focus:border-orange-500 transition-all`}
-                placeholder="name@example.com"
-              />
-            </div>
-            {combinedErrors.email && (
-              <p className="text-[10px] font-bold text-red-500 mt-1 uppercase tracking-tighter">
-                {combinedErrors.email[0]}
-              </p>
-            )}
-          </div>
-
-          {/* Password Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password*</label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                </svg>
-              </span>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                noValidate
-                className={`w-full pl-10 pr-10 py-2 bg-gray-100 dark:bg-gray-800 border-2 ${
-                  combinedErrors.password ? 'border-red-500 bg-red-50 dark:bg-red-900/20' : 'border-transparent'
-                } rounded-xl focus:bg-white dark:focus:bg-gray-900 dark:text-white focus:outline-none focus:border-orange-500 transition-all`}
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-orange-600 transition-colors"
-                title={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2.5">
+                <div className="bg-gradient-to-r from-orange-600 to-amber-500 p-2.5 rounded-2xl shadow-[0_0_20px_rgba(234,88,12,0.3)]">
+                  <Music size={18} className="text-white" />
+                </div>
+                <span className="text-lg font-black text-white tracking-tight">NadaKita</span>
+              </div>
+              <Link
+                to="/"
+                className="flex items-center gap-1.5 text-zinc-400 hover:text-orange-500 transition-colors font-bold text-xs uppercase tracking-wider"
               >
-                {showPassword ? (
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-                    <line x1="1" y1="1" x2="23" y2="23" />
-                  </svg>
-                ) : (
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                  >
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                    <circle cx="12" cy="12" r="3" />
-                  </svg>
+                <ArrowLeft size={14} />
+                Kembali
+              </Link>
+            </div>
+
+            {/* Title Block */}
+            <div className="mb-4">
+              <h2 className="text-2xl md:text-3xl font-black text-white tracking-tight mb-1.5 bg-clip-text text-transparent bg-gradient-to-b from-white to-zinc-400 leading-none">
+                Daftar Akun Baru
+              </h2>
+              <p className="text-xs text-zinc-400 font-medium">
+                Bergabunglah dengan ekosistem audio profesional kami.
+              </p>
+            </div>
+
+            {/* Registration Form */}
+            <form onSubmit={handleSubmit} className="space-y-3">
+              {/* Name */}
+              <div className="space-y-1">
+                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-1 block">
+                  Nama Lengkap
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-zinc-500">
+                    <User size={14} />
+                  </span>
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    noValidate
+                    className={`w-full pl-10 pr-4 py-2.5 bg-zinc-900/40 border ${
+                      combinedErrors.name ? 'border-red-500/50 focus:border-red-500 bg-red-950/5' : 'border-zinc-800 focus:border-orange-500/50'
+                    } rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 placeholder-zinc-650 text-white font-medium transition-all text-xs`}
+                    placeholder="Contoh: Andi Wijaya"
+                  />
+                </div>
+                {combinedErrors.name && (
+                  <p className="text-[11px] font-semibold text-red-400 ml-1">
+                    {combinedErrors.name[0]}
+                  </p>
                 )}
-              </button>
-            </div>
-            {combinedErrors.password && (
-              <p className="text-[10px] font-bold text-red-500 mt-1 uppercase tracking-tighter">
-                {combinedErrors.password[0]}
-              </p>
-            )}
-            <div className="flex gap-1 mt-2">
-              <div
-                className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                  passwordStrength.score >= 1 ? passwordStrength.color : 'bg-gray-200'
-                }`}
-              ></div>
-              <div
-                className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                  passwordStrength.score >= 3 ? passwordStrength.color : 'bg-gray-200'
-                }`}
-              ></div>
-              <div
-                className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                  passwordStrength.score >= 5 ? passwordStrength.color : 'bg-gray-200'
-                }`}
-              ></div>
-            </div>
-            <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-1 uppercase font-bold">
-              Kekuatan:{' '}
-              <span className={passwordStrength.score > 0 ? 'text-gray-600 dark:text-gray-300' : ''}>
-                {passwordStrength.label}
-              </span>
-            </p>
-          </div>
+              </div>
 
-          {/* Confirm Password Field */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Konfirmasi Password*
-            </label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
+              {/* Email */}
+              <div className="space-y-1">
+                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-1 block">
+                  Email
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-zinc-500">
+                    <Mail size={14} />
+                  </span>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    noValidate
+                    className={`w-full pl-10 pr-4 py-2.5 bg-zinc-900/40 border ${
+                      combinedErrors.email ? 'border-red-500/50 focus:border-red-500 bg-red-950/5' : 'border-zinc-800 focus:border-orange-500/50'
+                    } rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 placeholder-zinc-650 text-white font-medium transition-all text-xs`}
+                    placeholder="nama@email.com"
+                  />
+                </div>
+                {combinedErrors.email && (
+                  <p className="text-[11px] font-semibold text-red-400 ml-1">
+                    {combinedErrors.email[0]}
+                  </p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div className="space-y-1">
+                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-1 block">
+                  Password
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-zinc-500">
+                    <Lock size={14} />
+                  </span>
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    noValidate
+                    className={`w-full pl-10 pr-11 py-2.5 bg-zinc-900/40 border ${
+                      combinedErrors.password ? 'border-red-500/50 focus:border-red-500 bg-red-950/5' : 'border-zinc-800 focus:border-orange-500/50'
+                    } rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 placeholder-zinc-650 text-white font-medium transition-all text-xs`}
+                    placeholder="••••••••"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-orange-450 transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                  </button>
+                </div>
+                {combinedErrors.password && (
+                  <p className="text-[11px] font-semibold text-red-400 ml-1">
+                    {combinedErrors.password[0]}
+                  </p>
+                )}
+
+                {/* Password Strength Indicator */}
+                <div className="space-y-0.5 pt-0.5">
+                  <div className="flex gap-1">
+                    <div
+                      className={`h-0.5 flex-1 rounded-full transition-all duration-500 ${
+                        passwordStrength.score >= 1 ? passwordStrength.color : 'bg-zinc-850'
+                      }`}
+                    ></div>
+                    <div
+                      className={`h-0.5 flex-1 rounded-full transition-all duration-500 ${
+                        passwordStrength.score >= 3 ? passwordStrength.color : 'bg-zinc-850'
+                      }`}
+                    ></div>
+                    <div
+                      className={`h-0.5 flex-1 rounded-full transition-all duration-500 ${
+                        passwordStrength.score >= 5 ? passwordStrength.color : 'bg-zinc-850'
+                      }`}
+                    ></div>
+                  </div>
+                  <div className="flex justify-between text-[8px] uppercase tracking-wider text-zinc-500 font-extrabold px-0.5">
+                    <span>KEKUATAN PASSWORD</span>
+                    <span className={passwordStrength.score > 0 ? 'text-zinc-300' : ''}>
+                      {passwordStrength.label}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Confirm Password */}
+              <div className="space-y-1">
+                <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest ml-1 block">
+                  Konfirmasi Password
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center text-zinc-500">
+                    <Lock size={14} />
+                  </span>
+                  <input
+                    type="password"
+                    name="password_confirmation"
+                    value={formData.password_confirmation}
+                    onChange={handleChange}
+                    noValidate
+                    className={`w-full pl-10 pr-4 py-2.5 bg-zinc-900/40 border ${
+                      combinedErrors.password_confirmation ? 'border-red-500/50 focus:border-red-500 bg-red-950/5' : 'border-zinc-800 focus:border-orange-500/50'
+                    } rounded-xl focus:outline-none focus:ring-4 focus:ring-orange-500/10 placeholder-zinc-650 text-white font-medium transition-all text-xs`}
+                    placeholder="••••••••"
+                  />
+                </div>
+                {combinedErrors.password_confirmation && (
+                  <p className="text-[11px] font-semibold text-red-400 ml-1">
+                    {combinedErrors.password_confirmation[0]}
+                  </p>
+                )}
+              </div>
+
+              {/* Terms Checkbox */}
+              <div className="flex items-start gap-2 py-1 ml-1">
+                <input
+                  type="checkbox"
+                  name="agree_terms"
+                  id="agree_terms"
+                  checked={formData.agree_terms}
+                  onChange={handleChange}
+                  className="mt-0.5 w-3.5 h-3.5 rounded border-zinc-800 bg-zinc-900 text-orange-600 focus:ring-orange-500/30 focus:ring-offset-0 focus:ring-2 cursor-pointer"
+                  required
+                />
+                <label htmlFor="agree_terms" className="text-[9px] md:text-[10px] text-zinc-400 leading-normal font-medium">
+                  Saya menyetujui <span className="text-orange-400 font-bold hover:underline cursor-pointer">Syarat & Ketentuan</span> dan <span className="text-orange-400 font-bold hover:underline cursor-pointer">Kebijakan Privasi</span> NadaKita.
+                </label>
+              </div>
+
+              {/* Submit Button */}
+              <div className="pt-1">
+                <button
+                  type="submit"
+                  disabled={loading || !formData.agree_terms}
+                  className="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-black py-3.5 rounded-xl flex items-center justify-center gap-2 transition-all shadow-[0_4px_25px_rgba(234,88,12,0.25)] disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group tracking-wider text-xs md:text-sm"
                 >
-                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-              </span>
-              <input
-                type="password"
-                name="password_confirmation"
-                value={formData.password_confirmation}
-                onChange={handleChange}
-                noValidate
-                className={`w-full pl-10 pr-4 py-2 bg-gray-100 border-2 ${
-                  combinedErrors.password_confirmation
-                    ? 'border-red-500 bg-red-50'
-                    : 'border-transparent'
-                } rounded-xl focus:bg-white focus:outline-none focus:border-orange-500 transition-all`}
-                placeholder="••••••••"
-              />
-            </div>
-            {combinedErrors.password_confirmation && (
-              <p className="text-[10px] font-bold text-red-500 mt-1 uppercase tracking-tighter">
-                {combinedErrors.password_confirmation[0]}
-              </p>
-            )}
+                  {loading ? (
+                    <svg
+                      className="animate-spin h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                  ) : (
+                    <>
+                      <span className="z-10 tracking-widest uppercase">DAFTAR SEKARANG</span>
+                      <div className="absolute inset-0 bg-white/10 translate-x-full group-hover:translate-x-0 transition-transform skew-x-12 duration-500"></div>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
 
-          {/* Terms Checkbox */}
-          <div className="flex items-start gap-2 py-2">
-            <input
-              type="checkbox"
-              name="agree_terms"
-              id="agree_terms"
-              checked={formData.agree_terms}
-              onChange={handleChange}
-              className="mt-1 w-4 h-4 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500"
-              required
-            />
-            <label htmlFor="agree_terms" className="text-xs text-gray-500 dark:text-gray-400 leading-normal">
-              Saya setuju dengan{' '}
-              <span className="text-orange-600 font-semibold cursor-pointer hover:underline">
-                Syarat & Ketentuan
-              </span>{' '}
-              dan{' '}
-              <span className="text-orange-600 font-semibold cursor-pointer hover:underline">
-                Kebijakan Privasi
-              </span>{' '}
-              NadaKita.
-            </label>
+          {/* Bottom Switch Link */}
+          <div className="text-center text-xs border-t border-zinc-900/60 pt-4">
+            <span className="text-zinc-500 font-medium">Sudah punya akun?</span>{' '}
+            <Link
+              to="/login"
+              className="text-orange-400 font-black hover:text-orange-355 hover:underline underline-offset-4 decoration-2 transition-colors ml-1"
+            >
+              Masuk di sini
+            </Link>
           </div>
+        </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading || !formData.agree_terms}
-            className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-orange-200 dark:shadow-none"
-          >
-            {loading ? (
-              <svg
-                className="animate-spin h-5 w-5 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
+        {/* RIGHT SIDE: Testimonials slider card */}
+        <div className="w-full lg:w-[46%] rounded-[2rem] overflow-hidden relative flex flex-col justify-between p-8 shrink-0 min-h-[500px]">
+          
+          {/* Background Slide Image with Crossfade */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeSlide}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="absolute inset-0 bg-cover bg-center mix-blend-luminosity opacity-[0.20]"
+              style={{ backgroundImage: `url('${promoSlides[activeSlide].image}')` }}
+            ></motion.div>
+          </AnimatePresence>
+
+          {/* Custom Linear Dark-Orange Background tint overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[#050505]/95 via-[#0A0A0A]/90 to-orange-950/20 pointer-events-none z-0"></div>
+
+          {/* Top Row: Tags Pills */}
+          <div className="flex flex-wrap gap-2 relative z-10">
+            {promoSlides[activeSlide].tags.map((tag, index) => (
+              <span
+                key={index}
+                className="px-3.5 py-1.5 bg-zinc-900/60 border border-zinc-800 text-[10px] font-black uppercase tracking-wider text-zinc-300 rounded-full backdrop-blur-md"
               >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-            ) : (
-              <>
-                Daftar
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-              </>
-            )}
-          </button>
-        </form>
-      </div>
+                {tag}
+              </span>
+            ))}
+          </div>
 
-      {/* Footer */}
-      {/* <footer className="mt-8 text-[10px] text-gray-400 text-center max-w-sm uppercase tracking-widest leading-loose">
-        Pro Audio Ecosystem © 2024 NadaKita Digital Experience. All rights reserved. Secured by
-        End-to-End Encryption.
-      </footer> */}
+          {/* Bottom Row: Testimonial & Slide controls */}
+          <div className="relative z-10 flex flex-col gap-4">
+            
+            {/* Dark glassmorphic testimonial card */}
+            <motion.div
+              key={activeSlide}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="bg-black/60 backdrop-blur-xl border border-zinc-900 p-6 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] relative overflow-hidden"
+            >
+              {/* Quote */}
+              <p className="text-zinc-200 text-sm md:text-base leading-relaxed font-medium italic mb-4">
+                &ldquo;{promoSlides[activeSlide].text}&rdquo;
+              </p>
+
+              {/* Quote Author */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="text-xs font-black text-white uppercase tracking-wider leading-tight">
+                    {promoSlides[activeSlide].author}
+                  </h4>
+                  <span className="text-[10px] text-zinc-500 font-bold">
+                    {promoSlides[activeSlide].role}
+                  </span>
+                </div>
+
+                {/* Inline Slider Arrow buttons inside testimonial block */}
+                <div className="flex gap-2">
+                  <button
+                    onClick={prevSlide}
+                    type="button"
+                    className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                    title="Previous Slide"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <path d="M15 18l-6-6 6-6" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={nextSlide}
+                    type="button"
+                    className="w-8 h-8 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-white transition-colors cursor-pointer"
+                    title="Next Slide"
+                  >
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                      <path d="M9 18l6-6-6-6" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
+        </div>
+
+      </div>
     </div>
   )
 }

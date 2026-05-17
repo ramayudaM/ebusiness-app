@@ -97,22 +97,22 @@ export const HelpPage = () => {
     return (
         <Layout>
             {/* Hero Section */}
-            <div className="bg-gray-950 py-24 relative overflow-hidden">
-                <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
+            <div className="bg-[#050505] py-24 relative overflow-hidden">
+                <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl"></div>
+                <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-orange-600/5 rounded-full blur-3xl"></div>
                 
                 <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
+                    <h1 className="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">
                         Ada yang bisa kami bantu?
                     </h1>
                     <div className="relative max-w-2xl mx-auto">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={24} />
+                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-zinc-500" size={22} />
                         <input 
                             type="text"
                             placeholder="Cari kendala atau pertanyaan Anda..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl py-5 pl-14 pr-6 text-white placeholder-gray-400 outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-lg"
+                            className="w-full bg-zinc-900/40 backdrop-blur-md border border-zinc-800 rounded-2xl py-4.5 pl-14 pr-6 text-white placeholder-zinc-500 outline-none focus:ring-1 focus:ring-orange-500/30 focus:border-orange-500 transition-all text-base"
                         />
                     </div>
                 </div>
@@ -122,27 +122,27 @@ export const HelpPage = () => {
             <div className="max-w-7xl mx-auto px-4 md:px-8 -mt-12 mb-20 relative z-20">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {categories.map((cat, i) => (
-                        <div key={i} className="bg-white dark:bg-gray-900 rounded-3xl p-7 shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-800 hover:-translate-y-1 transition-all duration-300 flex flex-col">
-                            <Link to={`/help/${cat.slug}`} className="block group mb-6">
-                                <div className="w-14 h-14 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-6 text-2xl group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 group-hover:text-orange-600 transition-colors">
+                        <div key={i} className="bg-zinc-900/40 rounded-3xl p-7 shadow-2xl border border-zinc-800/80 backdrop-blur-md hover:border-orange-500/50 hover:shadow-[0_0_30px_rgba(234,88,12,0.15)] transition-all duration-500 flex flex-col group">
+                            <Link to={`/help/${cat.slug}`} className="block mb-6">
+                                <div className="w-14 h-14 bg-[#050505] border border-zinc-850 rounded-2xl flex items-center justify-center mb-6 text-2xl group-hover:bg-orange-500/10 group-hover:text-orange-500 transition-all">
                                     {cat.icon}
                                 </div>
-                                <h3 className="font-extrabold text-xl text-gray-900 dark:text-white mb-3 group-hover:text-orange-600 transition-colors">{cat.title}</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                                <h3 className="font-extrabold text-lg text-white mb-3 group-hover:text-orange-500 transition-colors">{cat.title}</h3>
+                                <p className="text-sm text-zinc-400 leading-relaxed font-medium">
                                     {cat.description}
                                 </p>
                             </Link>
                             
-                            <div className="mt-auto pt-6 border-t border-gray-100 dark:border-gray-800 transition-colors">
+                            <div className="mt-auto pt-6 border-t border-zinc-800/60 transition-colors">
                                 <ul className="space-y-4">
                                     {cat.links.map(link => (
                                         <li key={link.slug}>
                                             <Link 
                                                 to={`/help/${link.slug}`}
-                                                className="flex items-center justify-between w-full text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-orange-600 transition-colors"
+                                                className="flex items-center justify-between w-full text-sm font-bold text-zinc-300 hover:text-orange-500 transition-colors"
                                             >
                                                 {link.name}
-                                                <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                                                <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all text-orange-500" />
                                             </Link>
                                         </li>
                                     ))}
@@ -160,8 +160,8 @@ export const HelpPage = () => {
                     {/* FAQ Section */}
                     <div className="lg:col-span-2">
                         <div className="flex items-center justify-between mb-10">
-                            <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white flex items-center gap-3">
-                                <CircleHelp className="text-orange-600" /> 
+                            <h2 className="text-2xl font-black text-white flex items-center gap-3">
+                                <CircleHelp className="text-orange-500" /> 
                                 {searchQuery ? `Hasil Pencarian (${filteredFaqs.length})` : 'Pertanyaan Populer'}
                             </h2>
                         </div>
@@ -169,31 +169,31 @@ export const HelpPage = () => {
                         {filteredFaqs.length > 0 ? (
                             <div className="space-y-4">
                                  {filteredFaqs.map((faq, i) => (
-                                    <details key={i} className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden transition-all duration-300 open:ring-2 open:ring-orange-100 dark:open:ring-orange-900/30">
+                                    <details key={i} className="group bg-zinc-900/40 rounded-2xl border border-zinc-800/80 hover:border-zinc-700/85 shadow-sm overflow-hidden transition-all duration-300 open:border-orange-500/50">
                                         <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                                            <span className="font-bold text-gray-800 dark:text-gray-200 pr-4 group-open:text-orange-600 dark:group-open:text-orange-400 transition-colors">{faq.q}</span>
-                                            <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center group-open:bg-orange-50 dark:group-open:bg-orange-900/40 group-open:text-orange-600 dark:group-open:text-orange-400 transition-all">
+                                            <span className="font-bold text-zinc-200 pr-4 group-open:text-orange-500 transition-colors">{faq.q}</span>
+                                            <div className="w-8 h-8 rounded-full bg-[#050505] border border-zinc-800 flex items-center justify-center group-open:bg-orange-500/10 group-open:text-orange-500 transition-all">
                                                 <ChevronDown size={18} className="transition-transform group-open:rotate-180" />
                                             </div>
                                         </summary>
-                                        <div className="px-6 pb-6 text-gray-600 dark:text-gray-400 text-[15px] leading-relaxed border-t border-gray-50 dark:border-gray-800 pt-5 transition-colors">
+                                        <div className="px-6 pb-6 text-zinc-400 text-sm leading-relaxed border-t border-zinc-800/60 pt-5 transition-all">
                                             {faq.a}
                                         </div>
                                     </details>
                                 ))}
                             </div>
                         ) : (
-                            <div className="bg-gray-50 dark:bg-gray-900 rounded-3xl p-12 text-center border-2 border-dashed border-gray-200 dark:border-gray-700 transition-colors">
-                                <div className="w-16 h-16 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-                                    <Search size={24} className="text-gray-300 dark:text-gray-600" />
+                            <div className="bg-zinc-900/40 rounded-3xl p-12 text-center border border-zinc-800/80 backdrop-blur-sm transition-all">
+                                <div className="w-16 h-16 bg-[#050505] border border-zinc-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
+                                    <Search size={24} className="text-zinc-500" />
                                 </div>
-                                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Pencarian Tidak Ditemukan</h4>
-                                <p className="text-gray-500 dark:text-gray-400 max-w-xs mx-auto">Kami tidak dapat menemukan jawaban untuk "{searchQuery}". Coba kata kunci lain.</p>
+                                <h4 className="text-lg font-bold text-white mb-2">Pencarian Tidak Ditemukan</h4>
+                                <p className="text-zinc-450 max-w-xs mx-auto text-sm">Kami tidak dapat menemukan jawaban untuk "{searchQuery}". Coba kata kunci lain.</p>
                             </div>
                         )}
 
                         {!searchQuery && (
-                            <Link to="/help/faq" className="mt-10 inline-flex items-center gap-2 text-orange-600 font-bold hover:gap-3 transition-all">
+                            <Link to="/help/faq" className="mt-10 inline-flex items-center gap-2 text-orange-500 font-bold hover:gap-3 transition-all">
                                 Lihat semua FAQ <ArrowRight size={18} />
                             </Link>
                         )}
@@ -201,7 +201,7 @@ export const HelpPage = () => {
 
                     {/* Contact Sidebar */}
                     <div className="space-y-8">
-                        <div className="bg-orange-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl shadow-orange-500/20">
+                        <div className="bg-gradient-to-br from-orange-600 to-orange-700 rounded-3xl p-8 text-white relative overflow-hidden shadow-[0_0_50px_rgba(234,88,12,0.2)]">
                             <div className="relative z-10">
                                 <h3 className="text-xl font-extrabold mb-2">Masih Butuh Bantuan?</h3>
                                 <p className="text-orange-100 text-sm mb-8">Tim support kami siap membantu Anda 24/7.</p>
@@ -244,16 +244,16 @@ export const HelpPage = () => {
                             <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
                         </div>
 
-                        <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 transition-colors">
-                            <h4 className="font-bold text-gray-900 dark:text-white mb-4">Jam Operasional Studio</h4>
-                            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                        <div className="bg-zinc-900/40 rounded-2xl p-6 border border-zinc-800/80 backdrop-blur-sm transition-colors">
+                            <h4 className="font-bold text-white mb-4">Jam Operasional Studio</h4>
+                            <div className="space-y-3 text-sm text-zinc-400 font-medium">
                                 <div className="flex justify-between">
                                     <span>Senin - Jumat</span>
-                                    <span className="font-bold text-gray-900 dark:text-white transition-colors">09:00 - 20:00</span>
+                                    <span className="font-bold text-white transition-colors">09:00 - 20:00</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>Sabtu - Minggu</span>
-                                    <span className="font-bold text-gray-900 dark:text-white transition-colors">10:00 - 17:00</span>
+                                    <span className="font-bold text-white transition-colors">10:00 - 17:00</span>
                                 </div>
                             </div>
                         </div>

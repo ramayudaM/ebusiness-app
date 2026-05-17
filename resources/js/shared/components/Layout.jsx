@@ -5,13 +5,13 @@ import { Toaster } from 'sonner';
 
 export const Layout = ({ children }) => {
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col font-sans text-gray-900 dark:text-white border-x border-gray-100 dark:border-gray-800 max-w-[1920px] mx-auto transition-colors duration-300">
+        <div className="min-h-screen bg-[#050505] flex flex-col font-sans text-white border-x border-zinc-900 max-w-[1920px] mx-auto transition-colors duration-300">
             <Navbar />
-            <main className="flex-1 w-full">
+            <main className="flex-1 w-full pt-[72px]">
                 {children}
             </main>
             <Footer />
-            <Toaster position="bottom-right" richColors closeButton />
+            <Toaster position="bottom-right" theme="dark" richColors closeButton />
         </div>
     );
 };

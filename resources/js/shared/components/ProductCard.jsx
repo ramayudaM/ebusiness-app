@@ -49,9 +49,9 @@ export const ProductCard = ({ product }) => {
     return (
         <div 
             onClick={() => navigate(`/product/${product.id}`)}
-            className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg dark:hover:shadow-orange-900/10 transition-all duration-300 group flex flex-col h-full cursor-pointer relative"
+            className="bg-[#0A0A0A]/80 backdrop-blur-md border border-zinc-800/80 rounded-2xl overflow-hidden hover:border-orange-500/50 hover:shadow-[0_0_30px_rgba(234,88,12,0.15)] transition-all duration-500 group flex flex-col h-full cursor-pointer relative"
         >
-            <div className="relative aspect-[4/3] bg-gray-100 dark:bg-gray-800 overflow-hidden">
+            <div className="relative aspect-[4/3] bg-[#050505] overflow-hidden">
                 <ImageFallback 
                     src={product.primary_image_url} 
                     alt={product.name} 
@@ -65,7 +65,7 @@ export const ProductCard = ({ product }) => {
                     className={`absolute top-2 right-2 p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110 z-10 ${
                         isInWishlist 
                             ? 'bg-red-500 text-white' 
-                            : 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm text-gray-400 hover:text-red-500'
+                            : 'bg-zinc-900/80 backdrop-blur-sm text-zinc-500 border border-zinc-800 hover:text-red-500 hover:border-red-500/50'
                     }`}
                 >
                     <Heart size={16} className={isInWishlist ? 'fill-current' : ''} />
@@ -78,8 +78,8 @@ export const ProductCard = ({ product }) => {
                 )}
             </div>
 
-            <div className="p-4 flex flex-col flex-1">
-                <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm line-clamp-2 h-10 mb-2 group-hover:text-orange-600 transition-colors">
+            <div className="p-4 flex flex-col flex-1 relative z-10">
+                <h3 className="font-medium text-white text-sm line-clamp-2 h-10 mb-2 group-hover:text-orange-500 transition-colors">
                     {product.name}
                 </h3>
                 
@@ -92,15 +92,15 @@ export const ProductCard = ({ product }) => {
                 <div className="mt-auto">
                     {hasPromo ? (
                         <div className="flex flex-col gap-1">
-                            <span className="text-[11px] text-gray-400 line-through leading-none">
+                            <span className="text-[11px] text-zinc-500 line-through leading-none">
                                 {formatRupiah(product.price_sen)}
                             </span>
-                            <span className="text-base font-bold text-orange-600 leading-none">
+                            <span className="text-base font-bold text-orange-500 leading-none">
                                 {formatRupiah(product.promo_price_sen)}
                             </span>
                         </div>
                     ) : (
-                        <div className="text-base font-bold text-orange-600">
+                        <div className="text-base font-bold text-orange-500">
                             {formatRupiah(product.price_sen)}
                         </div>
                     )}
@@ -112,7 +112,7 @@ export const ProductCard = ({ product }) => {
                         e.preventDefault();
                         handleAddToCart();
                     }}
-                    className="mt-4 w-full flex items-center justify-center gap-2 bg-white dark:bg-gray-900 border border-orange-600 text-orange-600 py-1.5 px-3 rounded hover:bg-orange-50 dark:hover:bg-orange-950/30 transition-colors font-medium text-xs disabled:opacity-50"
+                    className="mt-4 w-full flex items-center justify-center gap-2 bg-zinc-900/50 border border-zinc-700 text-zinc-300 py-2 px-3 rounded-xl hover:text-white hover:bg-orange-500/10 hover:border-orange-500/50 transition-colors font-medium text-xs disabled:opacity-50"
                     disabled={!product.is_active}
                 >
                     <ShoppingCart size={14} />
