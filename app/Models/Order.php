@@ -51,12 +51,20 @@ class Order extends Model
         'expires_at',
 
         'customer_notes',
+
+        'promo_code',
+        'shipping_discount_sen',
+        'discount_sen',
+        'payable_total_sen',
     ];
 
     protected $casts = [
         'shipping_cost_sen' => 'integer',
         'subtotal_sen' => 'integer',
         'total_sen' => 'integer',
+        'shipping_discount_sen' => 'integer',
+        'discount_sen' => 'integer',
+        'payable_total_sen' => 'integer',
 
         'processed_at' => 'datetime',
         'shipped_at' => 'datetime',

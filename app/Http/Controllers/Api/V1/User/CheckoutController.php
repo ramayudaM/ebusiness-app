@@ -159,6 +159,7 @@ class CheckoutController extends Controller
             'service' => 'required|string',
             'shipping_cost' => 'required|numeric',
             'notes' => 'nullable|string',
+            'promo_code' => 'nullable|string|max:50',
         ]);
 
         $user = Auth::user();
@@ -213,7 +214,35 @@ class CheckoutController extends Controller
 
             $orderNumber = 'NK-' . strtoupper(Str::random(10));
             $shippingCost = (int) $request->shipping_cost;
-            $total = $subtotal + $shippingCost;
+            $normalTotal = $subtotal + $shippingCost;
+
+            // Process promo code
+            $promoCode = $request->promo_code ? trim(strtoupper($request->promo_code)) : null;
+            $shippingDiscountSen = 0;
+            $discountSen = 0;
+            $payableTotalSen = $normalTotal;
+
+            if ($promoCode) {
+                if ($promoCode === 'GRATISONGKIR') {
+                    $shippingDiscountSen = $shippingCost;
+                    $discountSen = $shippingCost;
+                    $payableTotalSen = $subtotal;
+                } elseif ($promoCode === 'TESTPAY1') {
+                    // Only valid in local environment and sandbox mode
+                    if (!app()->environment('local') || config('services.midtrans.is_production') === true) {
+                        return response()->json([
+                            'message' => 'Kode TESTPAY1 hanya tersedia pada mode pengujian Sandbox.'
+                        ], 422);
+                    }
+                    $shippingDiscountSen = 0;
+                    $discountSen = max(0, $normalTotal - 1);
+                    $payableTotalSen = 1;
+                } else {
+                    return response()->json([
+                        'message' => 'Kode promo tidak valid.'
+                    ], 422);
+                }
+            }
 
             // Create order with valid status enum
             $order = Order::create([
@@ -230,9 +259,13 @@ class CheckoutController extends Controller
                 'shipping_service' => $request->service,
                 'shipping_cost_sen' => $shippingCost,
                 'subtotal_sen' => $subtotal,
-                'total_sen' => $total,
+                'total_sen' => $normalTotal,
                 'customer_notes' => $request->notes,
                 'expires_at' => now()->addHours(24),
+                'promo_code' => $promoCode,
+                'shipping_discount_sen' => $shippingDiscountSen,
+                'discount_sen' => $discountSen,
+                'payable_total_sen' => $payableTotalSen,
             ]);
 
             // Create order items and reduce stock
@@ -273,7 +306,7 @@ class CheckoutController extends Controller
                 'midtrans_order_id' => $order->order_number,
                 'payment_type' => 'va',  // Default to VA, will be updated on webhook
                 'transaction_status' => 'pending',
-                'gross_amount_sen' => $total,
+                'gross_amount_sen' => $payableTotalSen,
                 'payment_url' => null,
                 'expires_at' => now()->addHours(24),
             ]);

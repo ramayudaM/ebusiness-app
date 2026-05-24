@@ -46,6 +46,7 @@ export const CheckoutPage = () => {
     const [isCalculatingShipping, setIsCalculatingShipping] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [notes, setNotes] = useState('');
+    const [promoCode, setPromoCode] = useState('');
     
     // Address Form State
     const [showAddressForm, setShowAddressForm] = useState(false);
@@ -183,7 +184,8 @@ export const CheckoutPage = () => {
                 courier: selectedService.courier,
                 service: selectedService.service,
                 shipping_cost: selectedService.cost[0].value,
-                notes: notes
+                notes: notes,
+                promo_code: promoCode.trim().toUpperCase() || null
             });
 
             const { snap_token } = response.data;
@@ -426,6 +428,40 @@ export const CheckoutPage = () => {
                             
                             <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-6">Ringkasan Pesanan</h3>
                             
+                            {/* Promo Code Section */}
+                            <div className="mb-6">
+                                <label className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 block">Kode Promo</label>
+                                <div className="flex gap-2">
+                                    <input
+                                        type="text"
+                                        value={promoCode}
+                                        onChange={(e) => setPromoCode(e.target.value)}
+                                        placeholder="Masukkan kode promo"
+                                        className="flex-1 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-orange-500/20 outline-none dark:text-white dark:placeholder-gray-500"
+                                    />
+                                    {promoCode ? (
+                                        <button
+                                            onClick={() => setPromoCode('')}
+                                            className="px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                                        >
+                                            Batal
+                                        </button>
+                                    ) : (
+                                        <button
+                                            onClick={() => {}}
+                                            className="px-4 py-3 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 transition-colors"
+                                        >
+                                            Gunakan
+                                        </button>
+                                    )}
+                                </div>
+                                {promoCode.trim().toUpperCase() === 'TESTPAY1' && (
+                                    <p className="text-xs text-orange-600 dark:text-orange-400 mt-2 font-medium">
+                                        Mode simulasi Sandbox — pembayaran uji Rp1.
+                                    </p>
+                                )}
+                            </div>
+
                             <div className="space-y-4 mb-8">
                                 <div className="flex justify-between text-gray-600 dark:text-gray-400">
                                     <span className="text-sm">Total Harga ({getSelectedTotalItems()} produk)</span>

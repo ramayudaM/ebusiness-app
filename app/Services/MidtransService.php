@@ -43,10 +43,27 @@ class MidtransService
             ];
         }
 
+        // Add discount item if promo is applied
+        if ($order->promo_code && $order->discount_sen > 0) {
+            $discountName = $order->promo_code === 'GRATISONGKIR' 
+                ? 'Diskon Gratis Ongkir' 
+                : 'Promo Testing Sandbox';
+            
+            $itemDetails[] = [
+                'id' => 'discount',
+                'price' => -(int) $order->discount_sen,
+                'quantity' => 1,
+                'name' => $discountName,
+            ];
+        }
+
+        // Use payable_total_sen if available, otherwise fallback to total_sen
+        $grossAmount = $order->payable_total_sen ?? $order->total_sen;
+
         $params = [
             'transaction_details' => [
                 'order_id' => $order->order_number,
-                'gross_amount' => (int) $order->total_sen,
+                'gross_amount' => (int) $grossAmount,
             ],
             'customer_details' => [
                 'first_name' => auth()->user()->name,
