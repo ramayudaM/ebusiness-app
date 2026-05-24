@@ -45,7 +45,7 @@ export const WishlistPage = () => {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
             <Navbar />
-            
+
             <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
                 <div className="flex items-center gap-2 mb-8">
                     <Link to="/explore" className="p-2 hover:bg-white dark:hover:bg-gray-800 rounded-full transition-colors text-gray-500 hover:text-gray-900 dark:hover:text-white">
@@ -67,13 +67,13 @@ export const WishlistPage = () => {
                             <div key={item.id} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden flex flex-col">
                                 {/* Image Container */}
                                 <div className="relative aspect-[4/3] overflow-hidden bg-gray-50 dark:bg-gray-800">
-                                    <ImageFallback 
-                                        src={item.image} 
-                                        alt={item.name} 
+                                    <ImageFallback
+                                        src={item.image}
+                                        alt={item.name}
                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                         fallbackType="instrument"
                                     />
-                                    <button 
+                                    <button
                                         onClick={() => handleRemove(item)}
                                         className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-gray-400 hover:text-red-600 rounded-full shadow-sm transition-all transform hover:scale-110"
                                         title="Hapus dari wishlist"
@@ -87,21 +87,21 @@ export const WishlistPage = () => {
                                     <Link to={`/product/${item.id}`} className="text-base font-bold text-gray-900 dark:text-white hover:text-orange-600 transition-colors line-clamp-2 mb-2 h-12">
                                         {item.name}
                                     </Link>
-                                    
+
                                     <div className="mt-auto">
                                         <p className="text-lg font-black text-orange-600 mb-4">
                                             {formatPrice(item.price)}
                                         </p>
-                                        
+
                                         <div className="flex gap-2">
-                                            <button 
+                                            <button
                                                 onClick={() => handleAddToCart(item)}
                                                 className="flex-1 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all"
                                             >
                                                 <ShoppingCart size={14} />
                                                 Detail & Beli
                                             </button>
-                                            <Link 
+                                            <Link
                                                 to={`/product/${item.id}`}
                                                 className="p-2.5 border border-gray-200 dark:border-gray-700 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
                                             >
@@ -122,8 +122,8 @@ export const WishlistPage = () => {
                         <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-10 text-lg">
                             Simpan instrumen favoritmu di sini agar tidak lupa saat ingin membelinya nanti.
                         </p>
-                        <Link 
-                            to="/explore" 
+                        <Link
+                            to="/explore"
                             className="inline-flex items-center gap-3 bg-orange-600 hover:bg-orange-700 text-white font-black px-10 py-4 rounded-full transition-all shadow-xl shadow-orange-100 dark:shadow-none hover:-translate-y-1"
                         >
                             Cari Instrumen

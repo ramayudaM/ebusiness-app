@@ -8,13 +8,13 @@ import { toast } from 'sonner';
 
 export const CartPage = () => {
     const navigate = useNavigate();
-    const { 
-        items, 
-        isLoading, 
-        fetchItems, 
-        updateQuantity, 
-        removeItem, 
-        toggleSelection, 
+    const {
+        items,
+        isLoading,
+        fetchItems,
+        updateQuantity,
+        removeItem,
+        toggleSelection,
         toggleAllSelection,
         getSelectedTotalPrice,
         getSelectedTotalItems
@@ -63,7 +63,7 @@ export const CartPage = () => {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
             <Navbar />
-            
+
             <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
                 <div className="flex items-center gap-2 mb-8">
                     <Link to="/explore" className="p-2 hover:bg-white dark:hover:bg-gray-800 rounded-full transition-colors text-gray-500 hover:text-gray-900 dark:hover:text-white">
@@ -82,10 +82,10 @@ export const CartPage = () => {
                             {/* Selection Header */}
                             <div className="bg-white dark:bg-gray-900 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between">
                                 <label className="flex items-center gap-3 cursor-pointer group">
-                                     <div className="relative flex items-center justify-center">
-                                        <input 
-                                            type="checkbox" 
-                                            checked={allSelected} 
+                                    <div className="relative flex items-center justify-center">
+                                        <input
+                                            type="checkbox"
+                                            checked={allSelected}
                                             onChange={handleToggleAll}
                                             className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 dark:border-gray-600 checked:bg-orange-600 checked:border-orange-600 transition-all bg-white dark:bg-gray-800"
                                         />
@@ -93,10 +93,10 @@ export const CartPage = () => {
                                     </div>
                                     <span className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Pilih Semua</span>
                                 </label>
-                                
+
                                 {selectedCount > 0 && (
-                                    <button 
-                                        onClick={() => {}} // Handle delete selected
+                                    <button
+                                        onClick={() => { }} // Handle delete selected
                                         className="text-sm font-bold text-red-600 hover:text-red-700 flex items-center gap-1.5"
                                     >
                                         Hapus Terpilih
@@ -110,10 +110,10 @@ export const CartPage = () => {
                                     <div key={item.cartItemId} className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow group">
                                         <div className="flex gap-4 md:gap-6">
                                             {/* Checkbox */}
-                                             <div className="flex items-center">
+                                            <div className="flex items-center">
                                                 <div className="relative flex items-center justify-center">
-                                                    <input 
-                                                        type="checkbox" 
+                                                    <input
+                                                        type="checkbox"
                                                         checked={item.isSelected}
                                                         onChange={(e) => toggleSelection(item.cartItemId, e.target.checked)}
                                                         className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 dark:border-gray-600 checked:bg-orange-600 checked:border-orange-600 transition-all bg-white dark:bg-gray-800"
@@ -124,9 +124,9 @@ export const CartPage = () => {
 
                                             {/* Product Image */}
                                             <div className="w-20 h-20 md:w-28 md:h-28 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800 shrink-0 border border-gray-100 dark:border-gray-800">
-                                                <img 
-                                                    src={item.image} 
-                                                    alt={item.name} 
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.name}
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                                 />
                                             </div>
@@ -135,7 +135,7 @@ export const CartPage = () => {
                                             <div className="flex-1 min-w-0 flex flex-col justify-between">
                                                 <div>
                                                     <Link to={`/product/${item.id}`} className="text-base md:text-lg font-bold text-gray-900 dark:text-white hover:text-orange-600 transition-colors line-clamp-1">
-                                                         {item.name}
+                                                        {item.name}
                                                     </Link>
                                                     {item.variation && (
                                                         <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -150,7 +150,7 @@ export const CartPage = () => {
                                                 <div className="flex items-center justify-between mt-4">
                                                     {/* Quantity Controls */}
                                                     <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-gray-950 rounded-lg border border-gray-100 dark:border-gray-800 w-fit">
-                                                        <button 
+                                                        <button
                                                             onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
                                                             disabled={item.quantity <= 1}
                                                             className="p-1 hover:bg-white dark:hover:bg-gray-800 rounded-md text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors shadow-sm"
@@ -160,7 +160,7 @@ export const CartPage = () => {
                                                         <span className="w-8 text-center text-sm font-bold text-gray-900 dark:text-white">
                                                             {item.quantity}
                                                         </span>
-                                                        <button 
+                                                        <button
                                                             onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
                                                             className="p-1 hover:bg-white dark:hover:bg-gray-800 rounded-md text-gray-500 dark:text-gray-400 transition-colors shadow-sm"
                                                         >
@@ -168,7 +168,7 @@ export const CartPage = () => {
                                                         </button>
                                                     </div>
 
-                                                     <button 
+                                                    <button
                                                         onClick={() => removeItem(item.cartItemId)}
                                                         className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
                                                         title="Hapus dari keranjang"
@@ -187,9 +187,9 @@ export const CartPage = () => {
                         <div className="lg:sticky lg:top-[100px]">
                             <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-xl overflow-hidden relative">
                                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-amber-500"></div>
-                                
+
                                 <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-6">Ringkasan Pesanan</h3>
-                                
+
                                 <div className="space-y-4 mb-8">
                                     <div className="flex justify-between text-gray-600 dark:text-gray-400">
                                         <span className="text-sm">Total Produk ({selectedCount})</span>
@@ -203,9 +203,9 @@ export const CartPage = () => {
                                         <span className="text-sm">Diskon</span>
                                         <span className="font-bold">- {formatPrice(0)}</span>
                                     </div>
-                                    
+
                                     <div className="h-px bg-gray-100 dark:bg-gray-800 my-4"></div>
-                                                                        <div className="flex justify-between items-end">
+                                    <div className="flex justify-between items-end">
                                         <div>
                                             <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Total Pembayaran</p>
                                             <p className="text-2xl font-black text-gray-900 dark:text-white mt-1">{formatPrice(totalPrice)}</p>
@@ -213,7 +213,7 @@ export const CartPage = () => {
                                     </div>
                                 </div>
 
-                                <button 
+                                <button
                                     onClick={handleCheckout}
                                     disabled={selectedCount === 0}
                                     className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-all transform active:scale-95 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed group shadow-lg shadow-orange-100 dark:shadow-none"
@@ -242,8 +242,8 @@ export const CartPage = () => {
                         <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-10 text-lg">
                             Sepertinya Anda belum memilih instrumen impian. Ayo jelajahi koleksi kami sekarang!
                         </p>
-                        <Link 
-                            to="/explore" 
+                        <Link
+                            to="/explore"
                             className="inline-flex items-center gap-3 bg-orange-600 hover:bg-orange-700 text-white font-black px-10 py-4 rounded-full transition-all shadow-xl shadow-orange-100 dark:shadow-none hover:-translate-y-1"
                         >
                             Mulai Belanja

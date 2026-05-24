@@ -208,7 +208,7 @@ export default function AdminIcon({ name, size = 20, className = '' }) {
       </>
     ),
 
-        sun: (
+    sun: (
       <>
         <circle cx="12" cy="12" r="4" />
         <path d="M12 2v2" />
@@ -243,20 +243,20 @@ export default function AdminIcon({ name, size = 20, className = '' }) {
     ),
 
     upload: (
-  <>
-    <path d="M12 3v12" />
-    <path d="m7 8 5-5 5 5" />
-    <path d="M5 21h14" />
-  </>
-),
+      <>
+        <path d="M12 3v12" />
+        <path d="m7 8 5-5 5 5" />
+        <path d="M5 21h14" />
+      </>
+    ),
 
-download: (
-  <>
-    <path d="M12 21V9" />
-    <path d="m7 16 5 5 5-5" />
-    <path d="M5 3h14" />
-  </>
-),
+    download: (
+      <>
+        <path d="M12 21V9" />
+        <path d="m7 16 5 5 5-5" />
+        <path d="M5 3h14" />
+      </>
+    ),
 
     chevronLeft: <path d="m15 18-6-6 6-6" />,
     chevronRight: <path d="m9 18 6-6-6-6" />,

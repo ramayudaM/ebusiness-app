@@ -161,7 +161,7 @@ export const OrdersPage = () => {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
             <Navbar />
-            
+
             <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
                     <Link to="/" className="hover:text-orange-600">Beranda</Link>
@@ -181,8 +181,8 @@ export const OrdersPage = () => {
                         </div>
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Belum ada pesanan</h2>
                         <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">Anda belum pernah melakukan pemesanan. Yuk telusuri produk kami dan mulai belanja!</p>
-                        <Link 
-                            to="/explore" 
+                        <Link
+                            to="/explore"
                             className="inline-flex items-center justify-center bg-gray-900 dark:bg-orange-600 text-white font-bold px-8 py-3 rounded-xl hover:bg-gray-800 dark:hover:bg-orange-700 transition-colors"
                         >
                             Mulai Belanja
@@ -199,10 +199,10 @@ export const OrdersPage = () => {
                             const StatusIcon = config.icon;
                             const firstItem = order.items && order.items[0];
                             const otherCount = order.items ? order.items.length - 1 : 0;
-                            
+
                             return (
-                                <div 
-                                    key={order.id} 
+                                <div
+                                    key={order.id}
                                     onClick={() => navigate(`/account/orders/${order.id}`)}
                                     className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden group"
                                 >
@@ -231,8 +231,8 @@ export const OrdersPage = () => {
                                             {firstItem && (
                                                 <div className="flex gap-4">
                                                     <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden shrink-0">
-                                                        <ImageFallback 
-                                                            src={getImageUrl(firstItem.product?.images?.[0]?.url)} 
+                                                        <ImageFallback
+                                                            src={getImageUrl(firstItem.product?.images?.[0]?.url)}
                                                             alt={firstItem.product_name_snapshot}
                                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                         />
@@ -252,7 +252,7 @@ export const OrdersPage = () => {
                                                 </div>
                                             )}
                                         </div>
-                                        
+
                                         <div className="w-full md:w-48 shrink-0 flex flex-col justify-center border-t md:border-t-0 md:border-l border-gray-100 dark:border-gray-800 pt-4 md:pt-0 md:pl-6">
                                             <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Total Belanja</p>
                                             <p className="text-xl font-black text-gray-900 dark:text-white">{formatPrice(order.total_sen)}</p>
@@ -261,7 +261,7 @@ export const OrdersPage = () => {
 
                                     {/* Footer */}
                                     <div className="px-6 py-4 bg-gray-50 dark:bg-gray-950/50 border-t border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-end gap-3 transition-colors">
-                                        <Link 
+                                        <Link
                                             to={`/account/orders/${order.id}`}
                                             className="px-6 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 font-bold text-sm rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
                                         >
@@ -269,7 +269,7 @@ export const OrdersPage = () => {
                                         </Link>
                                         {order.status === 'PENDING' && (
                                             <div className="flex gap-2">
-                                                <button 
+                                                <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleVerifyPayment(order.order_number);
@@ -278,7 +278,7 @@ export const OrdersPage = () => {
                                                 >
                                                     Cek Status
                                                 </button>
-                                                <button 
+                                                <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleCancelOrder(order.id);
@@ -287,7 +287,7 @@ export const OrdersPage = () => {
                                                 >
                                                     Batalkan Pesanan
                                                 </button>
-                                                <button 
+                                                <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handlePayNow(order);

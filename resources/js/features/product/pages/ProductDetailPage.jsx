@@ -288,11 +288,10 @@ export const ProductDetailPage = () => {
                                 </button>
                             </div>
 
-                            <button onClick={handleWishlist} className={`w-12 h-12 flex items-center justify-center shrink-0 rounded-lg border transition-colors ${
-                                isInWishlist 
-                                    ? 'bg-red-50 dark:bg-red-950/30 text-red-500 border-red-200 dark:border-red-900/50' 
+                            <button onClick={handleWishlist} className={`w-12 h-12 flex items-center justify-center shrink-0 rounded-lg border transition-colors ${isInWishlist
+                                    ? 'bg-red-50 dark:bg-red-950/30 text-red-500 border-red-200 dark:border-red-900/50'
                                     : 'border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-500 hover:border-red-200 dark:hover:border-red-900/50'
-                            }`}>
+                                }`}>
                                 <Heart size={24} className={isInWishlist ? 'fill-current' : ''} />
                             </button>
                             <button className="w-12 h-12 flex items-center justify-center shrink-0 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => {

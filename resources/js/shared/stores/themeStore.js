@@ -8,7 +8,7 @@ export const useThemeStore = create(
     persist(
         (set, get) => ({
             theme: 'light',
-            
+
             toggleTheme: () => {
                 const newTheme = get().theme === 'light' ? 'dark' : 'light';
                 set({ theme: newTheme });

@@ -13,9 +13,8 @@ export default function SidebarItem({
     <a
       href={href}
       title={collapsed ? label : ''}
-      className={`group relative flex items-center rounded-[18px] px-4 py-3 text-sm font-bold transition-all duration-300 ${
-        collapsed ? 'justify-center px-0' : 'gap-3'
-      }`}
+      className={`group relative flex items-center rounded-[18px] px-4 py-3 text-sm font-bold transition-all duration-300 ${collapsed ? 'justify-center px-0' : 'gap-3'
+        }`}
       style={{
         backgroundColor: active ? `${theme.primary}22` : 'transparent',
         color: active ? theme.primary : 'rgba(255,255,255,0.58)',
@@ -41,9 +40,8 @@ export default function SidebarItem({
       )}
 
       <span
-        className={`flex shrink-0 items-center justify-center ${
-          collapsed ? 'h-11 w-11 rounded-2xl' : ''
-        }`}
+        className={`flex shrink-0 items-center justify-center ${collapsed ? 'h-11 w-11 rounded-2xl' : ''
+          }`}
         style={{
           backgroundColor: collapsed && active ? `${theme.primary}22` : 'transparent',
         }}

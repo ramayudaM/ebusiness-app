@@ -8,10 +8,10 @@ import { QuickAddToCartModal } from '@/shared/components/QuickAddToCartModal';
 import { useWishlistStore } from '@/shared/stores/wishlistStore';
 import { useCartStore } from '@/shared/stores/cartStore';
 import { useRequireAuth } from '@/features/auth/hooks/useRequireAuth';
-import { 
-    getCartActionType, 
-    getFirstActiveVariation, 
-    isProductOutOfStock 
+import {
+    getCartActionType,
+    getFirstActiveVariation,
+    isProductOutOfStock
 } from '@/shared/utils/productHelpers';
 import api from '@/shared/utils/api';
 
@@ -88,7 +88,7 @@ export const ProductCard = ({ product }) => {
                     toast.success(`${productForAction.name} berhasil ditambahkan ke keranjang`);
                 } catch (error) {
                     toast.error(
-                        error.response?.data?.message || 
+                        error.response?.data?.message ||
                         'Gagal menambahkan produk ke keranjang'
                     );
                 }
@@ -102,7 +102,7 @@ export const ProductCard = ({ product }) => {
                     toast.success(`${productForAction.name} berhasil ditambahkan ke keranjang`);
                 } catch (error) {
                     toast.error(
-                        error.response?.data?.message || 
+                        error.response?.data?.message ||
                         'Gagal menambahkan produk ke keranjang'
                     );
                 }
@@ -128,7 +128,7 @@ export const ProductCard = ({ product }) => {
             toast.success(`${produk.name} berhasil ditambahkan ke keranjang`);
         } catch (error) {
             toast.error(
-                error.response?.data?.message || 
+                error.response?.data?.message ||
                 'Gagal menambahkan produk ke keranjang'
             );
             throw error; // Re-throw agar modal tetap buka
@@ -155,36 +155,35 @@ export const ProductCard = ({ product }) => {
     // Determine button state
     const actionType = getCartActionType(product);
     const isDisabled = isLoadingDetail || actionType === 'disabled';
-    const buttonLabel = actionType === 'disabled' 
-        ? 'Stok Habis' 
+    const buttonLabel = actionType === 'disabled'
+        ? 'Stok Habis'
         : (product.variations_count > 0 && actionType !== 'direct-add' ? 'Pilih Variasi' : '+ Keranjang');
 
     return (
         <>
-            <div 
+            <div
                 onClick={() => navigate(`/product/${product.id}`)}
                 className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg dark:hover:shadow-orange-900/10 transition-all duration-300 group flex flex-col h-full cursor-pointer relative"
             >
                 <div className="relative aspect-[4/3] bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                    <ImageFallback 
-                        src={product.primary_image_url} 
-                        alt={product.name} 
+                    <ImageFallback
+                        src={product.primary_image_url}
+                        alt={product.name}
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         fallbackType="instrument,guitar"
                     />
-                    
+
                     {/* Wishlist Button Overlay */}
-                    <button 
+                    <button
                         onClick={handleWishlist}
-                        className={`absolute top-2 right-2 p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110 z-10 ${
-                            isInWishlist 
-                                ? 'bg-red-500 text-white' 
-                                : 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm text-gray-400 hover:text-red-500'
-                        }`}
+                        className={`absolute top-2 right-2 p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110 z-10 ${isInWishlist
+                            ? 'bg-red-500 text-white'
+                            : 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm text-gray-400 hover:text-red-500'
+                            }`}
                     >
                         <Heart size={16} className={isInWishlist ? 'fill-current' : ''} />
                     </button>
-                    
+
                     {hasPromo && (
                         <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded">
                             PROMO
@@ -196,7 +195,7 @@ export const ProductCard = ({ product }) => {
                     <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm line-clamp-2 h-10 mb-2 group-hover:text-orange-600 transition-colors">
                         {product.name}
                     </h3>
-                    
+
                     <div className="flex items-center gap-1 mb-2">
                         <span className="text-yellow-400 text-sm leading-none">★</span>
                         <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">{product.average_rating ? Number(product.average_rating).toFixed(1) : '0.0'}</span>
@@ -220,17 +219,16 @@ export const ProductCard = ({ product }) => {
                         )}
                     </div>
 
-                    <button 
+                    <button
                         onClick={(e) => {
                             e.stopPropagation();
                             e.preventDefault();
                             handleAddToCart();
                         }}
-                        className={`mt-4 w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded font-medium text-xs transition-all ${
-                            isDisabled
-                                ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 border border-gray-200 dark:border-gray-700 cursor-not-allowed'
-                                : 'bg-white dark:bg-gray-900 border border-orange-600 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/30'
-                        }`}
+                        className={`mt-4 w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded font-medium text-xs transition-all ${isDisabled
+                            ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 border border-gray-200 dark:border-gray-700 cursor-not-allowed'
+                            : 'bg-white dark:bg-gray-900 border border-orange-600 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/30'
+                            }`}
                         disabled={isDisabled}
                     >
                         <ShoppingCart size={14} />

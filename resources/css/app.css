@@ -1,76 +1,136 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
-  html {
-    font-family: 'Inter', system-ui, sans-serif;
-    -webkit-font-smoothing: antialiased;
+  :root {
+    /* LIGHT — SATIN GALLERY */
+    --bg-primary: #E7DED2;
+    --bg-secondary: #CFD8D5;
+    --bg-tertiary: #FFFFFF;
+
+    --surface-primary: #FFFFFF;
+    --surface-secondary: rgba(255, 255, 255, 0.6);
+    --surface-glass: rgba(255, 255, 255, 0.3);
+    --surface-contrast: #0F1722;
+    --surface-hover: rgba(0, 0, 0, 0.03);
+    --surface-overlay: rgba(231, 222, 210, 0.8);
+
+    --text-primary: #1A202C;
+    --text-secondary: #4A5568;
+    --text-muted: #718096;
+    --text-inverse: #FFFFFF;
+
+    --primary: #2C3E50;
+    --primary-soft: rgba(44, 62, 80, 0.1);
+    --accent-brass: #B08D57;
+    --accent-brass-soft: rgba(176, 141, 87, 0.15);
+
+    --border-soft: rgba(0, 0, 0, 0.08);
+    --border-premium: rgba(0, 0, 0, 0.15);
+    --border-brass: rgba(176, 141, 87, 0.3);
+
+    --glow-warm: rgba(176, 141, 87, 0.2);
+    --glow-deep: rgba(44, 62, 80, 0.1);
+
+    --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.03);
+    --shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark {
+    /* DARK — NOCTURNE ATELIER */
+    --bg-primary: #08111A;
+    --bg-secondary: #0D1B2A;
+    --bg-tertiary: #04090E;
+
+    --surface-primary: #112133;
+    --surface-secondary: rgba(17, 33, 51, 0.6);
+    --surface-glass: rgba(17, 33, 51, 0.3);
+    --surface-contrast: #112133;
+    --surface-hover: rgba(255, 255, 255, 0.03);
+    --surface-overlay: rgba(8, 17, 26, 0.8);
+
+    --text-primary: #FFFFFF;
+    --text-secondary: #A0AEC0;
+    --text-muted: #718096;
+    --text-inverse: #FFFFFF;
+
+    --primary: #DCA86A;
+    --primary-soft: rgba(220, 168, 106, 0.1);
+    --accent-brass: #DCA86A;
+    --accent-brass-soft: rgba(220, 168, 106, 0.15);
+
+    --border-soft: rgba(255, 255, 255, 0.05);
+    --border-premium: rgba(255, 255, 255, 0.1);
+    --border-brass: rgba(220, 168, 106, 0.2);
+
+    --glow-warm: rgba(220, 168, 106, 0.1);
+    --glow-deep: rgba(0, 0, 0, 0.5);
+
+    --shadow-subtle: 0 4px 20px rgba(0, 0, 0, 0.3);
+    --shadow-elevated: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+
+  * {
+    @apply border-[color:var(--border-soft)];
   }
 
   body {
-    @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100 transition-colors duration-300;
+    @apply antialiased transition-colors duration-500 ease-out;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'Manrope', sans-serif;
   }
-
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-gray-100 dark:bg-gray-900; }
-  ::-webkit-scrollbar-thumb { @apply bg-gray-300 dark:bg-gray-700 rounded-full; }
 }
 
 @layer utilities {
-  .animate-marquee {
-    animation: marquee 30s linear infinite;
+  .font-display {
+    font-family: 'Instrument Serif', serif;
   }
-  .hover-pause:hover {
-    animation-play-state: paused;
+
+  .font-ui {
+    font-family: 'Manrope', sans-serif;
   }
-}
 
-@keyframes marquee {
-  0% { transform: translateX(0%); }
-  100% { transform: translateX(-50%); }
-}
+  .text-section-title {
+    @apply text-4xl md:text-5xl lg:text-6xl leading-[1.1] tracking-tight;
+  }
 
-@layer components {
+  .text-eyebrow {
+    @apply text-[10px] md:text-xs font-bold uppercase tracking-[0.25em];
+  }
+
   .container-page {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    @apply w-full max-w-7xl mx-auto px-6 md:px-12;
   }
 
-  .btn-primary {
-    @apply inline-flex items-center justify-center px-4 py-2
-           bg-primary-500 text-white font-medium rounded-lg
-           hover:bg-primary-600 active:bg-primary-700
-           disabled:opacity-50 disabled:cursor-not-allowed
-           transition-colors duration-200;
+  .btn-atelier-primary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-ui text-sm font-bold transition-all duration-300;
+    background: var(--primary);
+    color: var(--bg-primary);
   }
 
-  .btn-secondary {
-    @apply inline-flex items-center justify-center px-4 py-2
-           border border-gray-300 dark:border-gray-700 
-           bg-white dark:bg-gray-900 
-           text-gray-700 dark:text-gray-300 
-           font-medium rounded-lg
-           hover:bg-gray-50 dark:hover:bg-gray-800 
-           active:bg-gray-100 dark:active:bg-gray-700
-           disabled:opacity-50 disabled:cursor-not-allowed
-           transition-colors duration-200;
+  .btn-atelier-primary:hover {
+    box-shadow: 0 4px 20px var(--glow-warm);
+    transform: translateY(-2px);
   }
 
-  .input-field {
-    @apply block w-full rounded-lg border border-gray-300 dark:border-gray-700 
-           bg-white dark:bg-gray-900
-           px-3 py-2 text-gray-900 dark:text-white 
-           placeholder-gray-400 dark:placeholder-gray-500
-           focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500
-           disabled:bg-gray-50 dark:disabled:bg-gray-800 
-           disabled:text-gray-500 dark:disabled:text-gray-600;
+  .btn-atelier-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-ui text-sm font-bold transition-all duration-300;
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border-premium);
   }
 
-  .card {
-    @apply bg-white dark:bg-gray-900 
-           rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 
-           p-4;
+  .btn-atelier-secondary:hover {
+    background: var(--surface-hover);
   }
+}
+
+/* Base resets & animations */
+::selection {
+  background: var(--accent-brass);
+  color: #fff;
 }

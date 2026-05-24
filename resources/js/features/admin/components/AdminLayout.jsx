@@ -72,9 +72,8 @@ function AdminAvatar({ compact = false }) {
   return (
     <div className="flex items-center gap-3">
       <div
-        className={`relative flex shrink-0 items-center justify-center rounded-2xl font-black shadow-sm ${
-          compact ? 'h-10 w-10 text-sm' : 'h-11 w-11 text-base'
-        }`}
+        className={`relative flex shrink-0 items-center justify-center rounded-2xl font-black shadow-sm ${compact ? 'h-10 w-10 text-sm' : 'h-11 w-11 text-base'
+          }`}
         style={{
           background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})`,
           color: '#FFFFFF',
@@ -113,15 +112,13 @@ function SidebarContent({
   return (
     <div className="flex h-full flex-col">
       <div
-        className={`flex items-center ${
-          sidebarCollapsed ? 'justify-center' : 'justify-between'
-        }`}
+        className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'
+          }`}
       >
         <a
           href="/admin/dashboard"
-          className={`flex items-center gap-3 ${
-            sidebarCollapsed ? 'justify-center' : ''
-          }`}
+          className={`flex items-center gap-3 ${sidebarCollapsed ? 'justify-center' : ''
+            }`}
         >
           <div
             className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] font-black text-white shadow-lg"
@@ -318,9 +315,8 @@ export default function AdminLayout({
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-50 hidden h-screen flex-col border-r border-white/10 p-5 text-white shadow-2xl transition-all duration-300 xl:flex ${
-          sidebarCollapsed ? 'w-[96px]' : 'w-[292px]'
-        }`}
+        className={`fixed left-0 top-0 z-50 hidden h-screen flex-col border-r border-white/10 p-5 text-white shadow-2xl transition-all duration-300 xl:flex ${sidebarCollapsed ? 'w-[96px]' : 'w-[292px]'
+          }`}
         style={{
           background: `linear-gradient(180deg, ${theme.sidebar}, ${theme.navy})`,
         }}
@@ -334,9 +330,8 @@ export default function AdminLayout({
       </aside>
 
       <aside
-        className={`fixed left-0 top-0 z-50 h-screen w-[292px] border-r border-white/10 p-5 text-white shadow-2xl transition-transform duration-300 xl:hidden ${
-          mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed left-0 top-0 z-50 h-screen w-[292px] border-r border-white/10 p-5 text-white shadow-2xl transition-transform duration-300 xl:hidden ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
         style={{
           background: `linear-gradient(180deg, ${theme.sidebar}, ${theme.navy})`,
         }}
@@ -383,13 +378,12 @@ export default function AdminLayout({
                   {breadcrumbItems.map((item, index) => (
                     <div key={`${item}-${index}`} className="flex items-center gap-2">
                       <span
-                        className={`text-[11px] font-black uppercase tracking-[0.18em] ${
-                          index === breadcrumbItems.length - 1
+                        className={`text-[11px] font-black uppercase tracking-[0.18em] ${index === breadcrumbItems.length - 1
                             ? 'text-orange-600'
                             : isDark
                               ? 'text-slate-500'
                               : 'text-slate-400'
-                        }`}
+                          }`}
                       >
                         {item}
                       </span>

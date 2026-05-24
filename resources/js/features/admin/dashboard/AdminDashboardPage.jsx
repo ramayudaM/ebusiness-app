@@ -126,7 +126,7 @@ export default function AdminDashboardPage() {
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          'Data dashboard belum dapat dimuat. Pastikan sesi admin masih aktif.'
+        'Data dashboard belum dapat dimuat. Pastikan sesi admin masih aktif.'
       )
     } finally {
       setLoading(false)
@@ -634,11 +634,10 @@ export default function AdminDashboardPage() {
                           </div>
 
                           <span
-                            className={`shrink-0 rounded-full px-3 py-1 text-xs font-black ${
-                              Number(product.stock_qty || 0) <= 5
+                            className={`shrink-0 rounded-full px-3 py-1 text-xs font-black ${Number(product.stock_qty || 0) <= 5
                                 ? 'bg-rose-50 text-rose-700'
                                 : 'bg-amber-50 text-amber-700'
-                            }`}
+                              }`}
                           >
                             {product.stock_qty || 0}
                           </span>

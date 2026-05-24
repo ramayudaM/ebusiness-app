@@ -9,7 +9,7 @@ export default {
     extend: {
       colors: {
         primary: {
-          50:  '#fff7ed',
+          50: '#fff7ed',
           100: '#ffedd5',
           200: '#fed7aa',
           300: '#fdba74',
@@ -22,12 +22,14 @@ export default {
         },
         brand: {
           DEFAULT: '#f97316',
-          dark:    '#ea580c',
-          light:   '#fed7aa',
+          dark: '#ea580c',
+          light: '#fed7aa',
         }
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Manrope', ...defaultTheme.fontFamily.sans],
+        display: ['"Instrument Serif"', 'serif'],
+        ui: ['Manrope', 'sans-serif'],
       },
     },
   },

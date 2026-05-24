@@ -181,7 +181,7 @@ export const OrderDetailPage = () => {
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
             <Navbar />
-            
+
             <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
                 <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
                     <Link to="/" className="hover:text-orange-600">Beranda</Link>
@@ -212,19 +212,19 @@ export const OrderDetailPage = () => {
                             </div>
                         </div>
                         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                            <button 
+                            <button
                                 onClick={handleVerifyPayment}
                                 className="px-8 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 font-bold rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                             >
                                 Cek Status
                             </button>
-                            <button 
+                            <button
                                 onClick={handleCancelOrder}
                                 className="px-8 py-3 bg-white dark:bg-gray-900 border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400 font-bold rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
                             >
                                 Batalkan Pesanan
                             </button>
-                            <button 
+                            <button
                                 onClick={handlePayNow}
                                 className="px-8 py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-orange-100 dark:shadow-none whitespace-nowrap"
                             >
@@ -266,11 +266,11 @@ export const OrderDetailPage = () => {
                                 {order.items?.map((item) => (
                                     <div key={item.id} className="flex gap-4">
                                         <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 overflow-hidden shrink-0">
-                                                <ImageFallback 
-                                                    src={getImageUrl(item.product?.images?.[0]?.url)} 
-                                                    alt={item.product_name_snapshot}
-                                                    className="w-full h-full object-cover"
-                                                />
+                                            <ImageFallback
+                                                src={getImageUrl(item.product?.images?.[0]?.url)}
+                                                alt={item.product_name_snapshot}
+                                                className="w-full h-full object-cover"
+                                            />
                                         </div>
                                         <div className="flex-1 min-w-0 flex flex-col justify-center">
                                             <h4 className="font-bold text-gray-900 dark:text-white line-clamp-2">{item.product_name_snapshot}</h4>
