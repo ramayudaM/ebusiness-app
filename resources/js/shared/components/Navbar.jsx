@@ -110,8 +110,8 @@ export const Navbar = () => {
     };
 
     const navLinks = [
-        { name: 'Koleksi', path: '/explore' },
         { name: 'Atelier', path: '/' },
+        { name: 'Koleksi', path: '/explore' },
         { name: 'Layanan', path: '/help' },
     ];
 
@@ -171,19 +171,19 @@ export const Navbar = () => {
                 }`}>
                     
                     {/* Logo */}
-                    <div className="flex items-center shrink-0">
+                    <div className="flex items-center shrink-0 w-1/4">
                         <Link to="/" className="text-xl md:text-2xl font-display font-black text-[var(--text-primary)] tracking-wide hover:text-[var(--primary)] transition-colors">
                             NadaKita.
                         </Link>
                     </div>
 
                     {/* Desktop Navigation Links */}
-                    <div className="hidden lg:flex items-center gap-10 shrink-0 absolute left-1/2 -translate-x-1/2">
+                    <div className="hidden lg:flex flex-1 items-center justify-center gap-10">
                         {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 to={link.path}
-                                className={`text-[10px] font-bold uppercase tracking-[0.2em] transition-all relative group ${
+                                className={`text-[10px] font-bold uppercase tracking-[0.2em] transition-all relative group shrink-0 ${
                                     location.pathname === link.path 
                                         ? 'text-[var(--text-primary)]' 
                                         : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
@@ -198,9 +198,9 @@ export const Navbar = () => {
                     </div>
 
                     {/* Right Actions */}
-                    <div className="flex items-center gap-2 md:gap-6 shrink-0">
+                    <div className="flex items-center justify-end gap-2 md:gap-4 lg:gap-6 shrink-0 lg:flex-1">
                         {/* Premium Compact Search (Desktop) */}
-                        <div className="hidden md:block w-48 lg:w-64">
+                        <div className="hidden md:block w-64 lg:w-96 xl:w-[28rem]">
                             <form onSubmit={handleSearch} className="relative w-full">
                                 <div className="relative group w-full overflow-hidden rounded-full p-px transition-all duration-300 focus-within:shadow-[0_0_20px_var(--glow-warm)]">
                                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[var(--primary)]/30 to-transparent translate-x-[-100%] group-focus-within:translate-x-[100%] transition-transform duration-1000 ease-in-out"></div>
@@ -356,7 +356,7 @@ export const Navbar = () => {
                                                 </div>
                                                 <div className="py-2">
                                                     <Link to="/account/profile" className="flex items-center gap-4 px-6 py-3 text-xs font-bold text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)] transition-colors">
-                                                        <User size={16} /> Identitas Diri
+                                                        <User size={16} /> Profil Saya
                                                     </Link>
                                                     <Link to="/account/orders" className="flex items-center gap-4 px-6 py-3 text-xs font-bold text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] hover:text-[var(--primary)] transition-colors">
                                                         <Package size={16} /> Histori Transaksi
@@ -500,7 +500,7 @@ export const Navbar = () => {
                                     <>
                                         <div className="h-px bg-[var(--border-premium)] my-4 mx-6"></div>
                                         <Link to="/account/profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 px-6 py-4 text-sm font-bold text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] rounded-xl transition-colors">
-                                            <User size={18} className="text-[var(--primary)]" /> Identitas Diri
+                                            <User size={18} className="text-[var(--primary)]" /> Profil Saya
                                         </Link>
                                         <Link to="/account/orders" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center gap-4 px-6 py-4 text-sm font-bold text-[var(--text-secondary)] hover:bg-[var(--surface-hover)] rounded-xl transition-colors">
                                             <Package size={18} className="text-[var(--primary)]" /> Histori Transaksi

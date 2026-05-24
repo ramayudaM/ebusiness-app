@@ -50,10 +50,11 @@ export const CartPage = () => {
 
     if (isLoading && items.length === 0) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col transition-colors duration-300">
+            <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col transition-colors duration-500">
                 <Navbar />
-                <div className="flex-1 flex items-center justify-center">
-                    <div className="animate-spin w-10 h-10 border-4 border-orange-600 border-t-transparent rounded-full"></div>
+                <div className="flex-1 flex items-center justify-center relative overflow-hidden">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[var(--primary)]/5 rounded-full blur-[80px] pointer-events-none"></div>
+                    <div className="animate-spin w-12 h-12 border-4 border-[var(--primary)] border-t-transparent rounded-full relative z-10"></div>
                 </div>
                 <Footer />
             </div>
@@ -61,43 +62,45 @@ export const CartPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
+        <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col text-[var(--text-primary)] transition-colors duration-500">
             <Navbar />
 
-            <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
-                <div className="flex items-center gap-2 mb-8">
-                    <Link to="/explore" className="p-2 hover:bg-white dark:hover:bg-gray-800 rounded-full transition-colors text-gray-500 hover:text-gray-900 dark:hover:text-white">
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 pt-28 pb-12 relative">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-[var(--primary)]/5 rounded-full blur-[100px] pointer-events-none"></div>
+                
+                <div className="flex items-center gap-4 mb-10 relative z-10">
+                    <Link to="/explore" className="w-12 h-12 flex items-center justify-center bg-[var(--surface-primary)] border border-[var(--border-premium)] hover:border-[var(--primary)] rounded-full transition-all text-[var(--text-secondary)] hover:text-[var(--primary)] shadow-[var(--shadow-subtle)]">
                         <ArrowLeft size={20} />
                     </Link>
-                    <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Keranjang Belanja</h1>
-                    <span className="ml-2 bg-orange-100 dark:bg-orange-900/30 text-orange-600 text-sm font-bold px-3 py-1 rounded-full">
-                        {items.length} Produk
+                    <h1 className="text-3xl md:text-4xl font-display font-bold text-[var(--text-primary)] tracking-tight">Koleksi Terpilih</h1>
+                    <span className="ml-2 bg-[var(--primary)]/10 border border-[var(--primary)]/20 text-[var(--primary)] text-xs font-black uppercase tracking-widest px-3 py-1.5 rounded-full">
+                        {items.length} Karya
                     </span>
                 </div>
 
                 {items.length > 0 ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start relative z-10">
                         {/* Cart Items List */}
-                        <div className="lg:col-span-2 space-y-4">
+                        <div className="lg:col-span-2 space-y-6">
                             {/* Selection Header */}
-                            <div className="bg-white dark:bg-gray-900 p-4 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex items-center justify-between">
-                                <label className="flex items-center gap-3 cursor-pointer group">
-                                    <div className="relative flex items-center justify-center">
+                            <div className="bg-[var(--surface-primary)] p-5 rounded-[1.5rem] border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] flex items-center justify-between">
+                                <label className="flex items-center gap-4 cursor-pointer group">
+                                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors ${allSelected ? 'bg-[var(--primary)] border-[var(--primary)]' : 'border-[var(--text-muted)] group-hover:border-[var(--primary)]/50'}`}>
                                         <input
                                             type="checkbox"
                                             checked={allSelected}
                                             onChange={handleToggleAll}
-                                            className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 dark:border-gray-600 checked:bg-orange-600 checked:border-orange-600 transition-all bg-white dark:bg-gray-800"
+                                            className="hidden"
                                         />
-                                        <ShieldCheck className="absolute h-3.5 w-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
+                                        {allSelected && <ShieldCheck size={14} className="text-[var(--bg-primary)]" />}
                                     </div>
-                                    <span className="text-sm font-bold text-gray-700 dark:text-gray-300 group-hover:text-gray-900 dark:group-hover:text-white transition-colors">Pilih Semua</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] group-hover:text-[var(--primary)] transition-colors">Pilih Semua Karya</span>
                                 </label>
 
                                 {selectedCount > 0 && (
                                     <button
                                         onClick={() => { }} // Handle delete selected
-                                        className="text-sm font-bold text-red-600 hover:text-red-700 flex items-center gap-1.5"
+                                        className="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-400 flex items-center gap-2"
                                     >
                                         Hapus Terpilih
                                     </button>
@@ -107,62 +110,62 @@ export const CartPage = () => {
                             {/* Products */}
                             <div className="space-y-4">
                                 {items.map((item) => (
-                                    <div key={item.cartItemId} className="bg-white dark:bg-gray-900 p-4 md:p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-shadow group">
-                                        <div className="flex gap-4 md:gap-6">
+                                    <div key={item.cartItemId} className="bg-[var(--surface-primary)] p-5 md:p-6 rounded-[2rem] border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] hover:border-[var(--primary)]/30 hover:shadow-xl transition-all duration-300 group">
+                                        <div className="flex gap-5 md:gap-8 items-center">
                                             {/* Checkbox */}
-                                            <div className="flex items-center">
-                                                <div className="relative flex items-center justify-center">
+                                            <div className="flex items-center shrink-0">
+                                                <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors cursor-pointer ${item.isSelected ? 'bg-[var(--primary)] border-[var(--primary)]' : 'border-[var(--text-muted)] hover:border-[var(--primary)]/50'}`}>
                                                     <input
                                                         type="checkbox"
                                                         checked={item.isSelected}
                                                         onChange={(e) => toggleSelection(item.cartItemId, e.target.checked)}
-                                                        className="peer h-5 w-5 cursor-pointer appearance-none rounded border border-gray-300 dark:border-gray-600 checked:bg-orange-600 checked:border-orange-600 transition-all bg-white dark:bg-gray-800"
+                                                        className="hidden"
                                                     />
-                                                    <ShieldCheck className="absolute h-3.5 w-3.5 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
+                                                    {item.isSelected && <ShieldCheck size={14} className="text-[var(--bg-primary)]" />}
                                                 </div>
                                             </div>
 
                                             {/* Product Image */}
-                                            <div className="w-20 h-20 md:w-28 md:h-28 rounded-xl overflow-hidden bg-gray-50 dark:bg-gray-800 shrink-0 border border-gray-100 dark:border-gray-800">
+                                            <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden bg-[var(--bg-primary)] border border-[var(--border-soft)] shrink-0 relative">
                                                 <img
                                                     src={item.image}
                                                     alt={item.name}
-                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                                 />
                                             </div>
 
                                             {/* Product Info */}
-                                            <div className="flex-1 min-w-0 flex flex-col justify-between">
+                                            <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch py-1">
                                                 <div>
-                                                    <Link to={`/product/${item.id}`} className="text-base md:text-lg font-bold text-gray-900 dark:text-white hover:text-orange-600 transition-colors line-clamp-1">
+                                                    <Link to={`/product/${item.id}`} className="text-lg md:text-xl font-display font-bold text-[var(--text-primary)] hover:text-[var(--primary)] transition-colors line-clamp-1">
                                                         {item.name}
                                                     </Link>
                                                     {item.variation && (
-                                                        <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1">
-                                                            Variasi: <span className="font-semibold text-gray-700 dark:text-gray-300">{item.variation.name}</span>
+                                                        <p className="text-[10px] uppercase tracking-widest font-bold text-[var(--text-muted)] mt-2">
+                                                            Varian: <span className="text-[var(--text-secondary)]">{item.variation.name}</span>
                                                         </p>
                                                     )}
-                                                    <p className="text-lg font-extrabold text-orange-600 dark:text-orange-500 mt-2">
+                                                    <p className="text-xl font-black text-[var(--primary)] mt-3">
                                                         {formatPrice(item.price)}
                                                     </p>
                                                 </div>
 
-                                                <div className="flex items-center justify-between mt-4">
+                                                <div className="flex items-center justify-between mt-auto pt-4">
                                                     {/* Quantity Controls */}
-                                                    <div className="flex items-center gap-1 p-1 bg-gray-50 dark:bg-gray-950 rounded-lg border border-gray-100 dark:border-gray-800 w-fit">
+                                                    <div className="flex items-center gap-2 p-1.5 bg-[var(--bg-primary)] rounded-xl border border-[var(--border-soft)] w-fit">
                                                         <button
                                                             onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
                                                             disabled={item.quantity <= 1}
-                                                            className="p-1 hover:bg-white dark:hover:bg-gray-800 rounded-md text-gray-500 dark:text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors shadow-sm"
+                                                            className="w-8 h-8 flex items-center justify-center hover:bg-[var(--surface-primary)] rounded-lg text-[var(--text-secondary)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors shadow-sm"
                                                         >
                                                             <Minus size={14} />
                                                         </button>
-                                                        <span className="w-8 text-center text-sm font-bold text-gray-900 dark:text-white">
+                                                        <span className="w-8 text-center text-sm font-black text-[var(--text-primary)]">
                                                             {item.quantity}
                                                         </span>
                                                         <button
                                                             onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
-                                                            className="p-1 hover:bg-white dark:hover:bg-gray-800 rounded-md text-gray-500 dark:text-gray-400 transition-colors shadow-sm"
+                                                            className="w-8 h-8 flex items-center justify-center hover:bg-[var(--surface-primary)] rounded-lg text-[var(--text-secondary)] transition-colors shadow-sm"
                                                         >
                                                             <Plus size={14} />
                                                         </button>
@@ -170,10 +173,10 @@ export const CartPage = () => {
 
                                                     <button
                                                         onClick={() => removeItem(item.cartItemId)}
-                                                        className="p-2 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-all"
-                                                        title="Hapus dari keranjang"
+                                                        className="w-10 h-10 flex items-center justify-center text-[var(--text-muted)] hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                                                        title="Hapus mahakarya ini"
                                                     >
-                                                        <Trash2 size={20} />
+                                                        <Trash2 size={18} />
                                                     </button>
                                                 </div>
                                             </div>
@@ -184,31 +187,32 @@ export const CartPage = () => {
                         </div>
 
                         {/* Order Summary Sidebar */}
-                        <div className="lg:sticky lg:top-[100px]">
-                            <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-xl overflow-hidden relative">
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-amber-500"></div>
+                        <div className="lg:sticky lg:top-32">
+                            <div className="bg-[var(--surface-primary)] p-8 rounded-[2rem] border border-[var(--border-premium)] shadow-[var(--shadow-elevated)] overflow-hidden relative">
+                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--primary)] to-amber-500"></div>
 
-                                <h3 className="text-xl font-extrabold text-gray-900 dark:text-white mb-6">Ringkasan Pesanan</h3>
+                                <h3 className="font-display font-bold text-2xl text-[var(--text-primary)] mb-8">Ringkasan</h3>
 
-                                <div className="space-y-4 mb-8">
-                                    <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                                        <span className="text-sm">Total Produk ({selectedCount})</span>
-                                        <span className="font-bold text-gray-900 dark:text-white">{formatPrice(totalPrice)}</span>
+                                <div className="space-y-5 mb-10">
+                                    <div className="flex justify-between text-[var(--text-secondary)]">
+                                        <span className="text-sm font-medium">Mahakarya Terpilih ({selectedCount})</span>
+                                        <span className="font-bold text-[var(--text-primary)]">{formatPrice(totalPrice)}</span>
                                     </div>
-                                    <div className="flex justify-between text-gray-600 dark:text-gray-400">
-                                        <span className="text-sm">Biaya Pengiriman</span>
-                                        <span className="text-xs font-medium text-gray-400 italic">Dihitung saat checkout</span>
+                                    <div className="flex justify-between text-[var(--text-secondary)]">
+                                        <span className="text-sm font-medium">Pengiriman Eksekutif</span>
+                                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] italic">Kalkulasi di Checkout</span>
                                     </div>
-                                    <div className="flex justify-between text-green-600">
-                                        <span className="text-sm">Diskon</span>
+                                    <div className="flex justify-between text-green-500">
+                                        <span className="text-sm font-medium">Privilese Diskon</span>
                                         <span className="font-bold">- {formatPrice(0)}</span>
                                     </div>
 
-                                    <div className="h-px bg-gray-100 dark:bg-gray-800 my-4"></div>
+                                    <div className="h-px bg-[var(--border-premium)] my-6"></div>
+                                    
                                     <div className="flex justify-between items-end">
                                         <div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Total Pembayaran</p>
-                                            <p className="text-2xl font-black text-gray-900 dark:text-white mt-1">{formatPrice(totalPrice)}</p>
+                                            <p className="text-[10px] text-[var(--text-muted)] font-black uppercase tracking-widest">Total Investasi</p>
+                                            <p className="font-display text-3xl font-bold text-[var(--primary)] mt-1 tracking-tight">{formatPrice(totalPrice)}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -216,38 +220,45 @@ export const CartPage = () => {
                                 <button
                                     onClick={handleCheckout}
                                     disabled={selectedCount === 0}
-                                    className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-all transform active:scale-95 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed group shadow-lg shadow-orange-100 dark:shadow-none"
+                                    className="w-full btn-atelier-primary disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-center gap-3"
                                 >
-                                    Checkout Sekarang
-                                    <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                    Lanjutkan Checkout
+                                    <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                                 </button>
 
-                                <div className="mt-6 flex flex-col gap-3">
-                                    <div className="flex items-center gap-2 text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest">
-                                        <ShieldCheck size={14} className="text-green-500" /> Transaksi Aman & Terenkripsi
+                                <div className="mt-8 flex flex-col gap-4">
+                                    <div className="flex items-center gap-3 text-[10px] text-[var(--text-secondary)] font-black uppercase tracking-widest">
+                                        <div className="w-8 h-8 rounded-full bg-green-500/10 border border-green-500/20 flex items-center justify-center shrink-0">
+                                            <ShieldCheck size={14} className="text-green-500" /> 
+                                        </div>
+                                        <span>Transaksi Aman Terenkripsi</span>
                                     </div>
-                                    <div className="flex items-center gap-2 text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest">
-                                        <Truck size={14} className="text-blue-500" /> Pengiriman Seluruh Indonesia
+                                    <div className="flex items-center gap-3 text-[10px] text-[var(--text-secondary)] font-black uppercase tracking-widest">
+                                        <div className="w-8 h-8 rounded-full bg-blue-500/10 border border-blue-500/20 flex items-center justify-center shrink-0">
+                                            <Truck size={14} className="text-blue-500" /> 
+                                        </div>
+                                        <span>Pengiriman Eksekutif Seluruh Indonesia</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 ) : (
-                    <div className="bg-white dark:bg-gray-900 rounded-3xl p-12 md:p-20 text-center border border-gray-100 dark:border-gray-800 shadow-sm">
-                        <div className="w-32 h-32 bg-orange-50 dark:bg-orange-900/20 rounded-full flex items-center justify-center mx-auto mb-8 animate-bounce duration-1000">
-                            <ShoppingCart size={48} className="text-orange-500" />
+                    <div className="bg-[var(--surface-primary)] rounded-[2rem] py-24 px-8 text-center border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] relative overflow-hidden z-10">
+                        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10 pointer-events-none"></div>
+                        <div className="w-32 h-32 bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-full flex items-center justify-center mx-auto mb-8 relative z-10">
+                            <ShoppingCart size={40} className="text-[var(--primary)]" />
                         </div>
-                        <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white mb-4">Wah, Keranjangmu Kosong!</h2>
-                        <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-10 text-lg">
-                            Sepertinya Anda belum memilih instrumen impian. Ayo jelajahi koleksi kami sekarang!
+                        <h2 className="font-display text-3xl font-bold text-[var(--text-primary)] mb-4 relative z-10">Ruang Kurasi Kosong</h2>
+                        <p className="text-[var(--text-secondary)] font-medium max-w-md mx-auto mb-10 text-lg relative z-10">
+                            Sepertinya Anda belum memilih mahakarya apa pun. Mulai eksplorasi dan temukan instrumen yang tepat.
                         </p>
                         <Link
                             to="/explore"
-                            className="inline-flex items-center gap-3 bg-orange-600 hover:bg-orange-700 text-white font-black px-10 py-4 rounded-full transition-all shadow-xl shadow-orange-100 dark:shadow-none hover:-translate-y-1"
+                            className="inline-flex items-center gap-3 btn-atelier-primary px-10 py-5 relative z-10 group"
                         >
-                            Mulai Belanja
-                            <ChevronRight size={20} />
+                            Eksplorasi Mahakarya
+                            <ChevronRight size={18} className="group-hover:translate-x-1 transition-transform" />
                         </Link>
                     </div>
                 )}

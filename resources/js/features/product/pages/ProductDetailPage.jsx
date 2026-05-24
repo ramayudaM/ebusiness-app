@@ -130,13 +130,13 @@ export const ProductDetailPage = () => {
 
     if (error || !product) {
         return (
-            <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+            <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col font-ui text-[var(--text-primary)]">
                 <Navbar />
                 <div className="flex-1 flex flex-col items-center justify-center p-4">
                     <CircleAlert size={48} className="text-red-500 mb-4" />
-                    <h2 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">Produk Tidak Ditemukan</h2>
-                    <p className="text-gray-500 dark:text-gray-400 mb-6 text-center max-w-md">Maaf, produk yang Anda cari tidak ditemukan atau telah dihapus.</p>
-                    <Link to="/explore" className="bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 px-6 rounded-full transition-colors">
+                    <h2 className="text-xl font-bold mb-2 text-[var(--text-primary)]">Produk Tidak Ditemukan</h2>
+                    <p className="text-[var(--text-secondary)] mb-6 text-center max-w-md">Maaf, produk yang Anda cari tidak ditemukan atau telah dihapus.</p>
+                    <Link to="/explore" className="btn-atelier-primary px-8 py-4">
                         Kembali Eksplorasi
                     </Link>
                 </div>
@@ -163,25 +163,26 @@ export const ProductDetailPage = () => {
         : false;
 
     return (
-        <div className="min-h-screen bg-white dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white pb-24 md:pb-0 transition-colors duration-300">
+        <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col text-[var(--text-primary)] pb-24 md:pb-0 transition-colors duration-500">
             <Navbar />
 
-            <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 pt-32 pb-16 relative">
+                <div className="absolute top-20 right-0 w-[500px] h-[500px] bg-[var(--primary)]/5 rounded-full blur-[120px] pointer-events-none"></div>
                 {/* Breadcrumbs */}
-                <nav className="flex items-center text-sm text-gray-500 mb-6 whitespace-nowrap overflow-x-auto pb-2 scrollbar-hide">
-                    <Link to="/" className="hover:text-orange-600">Beranda</Link>
+                <nav className="flex items-center text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-10 whitespace-nowrap overflow-x-auto pb-2 custom-scrollbar">
+                    <Link to="/" className="hover:text-[var(--primary)] transition-colors">Beranda</Link>
                     <ChevronRight size={14} className="mx-2 flex-shrink-0" />
-                    <Link to="/explore" className="hover:text-orange-600">Eksplorasi</Link>
+                    <Link to="/explore" className="hover:text-[var(--primary)] transition-colors">Eksplorasi</Link>
                     <ChevronRight size={14} className="mx-2 flex-shrink-0" />
                     {product.category && (
                         <>
-                            <Link to={`/explore?category=${product.category.slug}`} className="hover:text-orange-600">
+                            <Link to={`/explore?category=${product.category.slug}`} className="hover:text-[var(--primary)] transition-colors">
                                 {product.category.name}
                             </Link>
                             <ChevronRight size={14} className="mx-2 flex-shrink-0" />
                         </>
                     )}
-                    <span className="text-gray-900 font-medium truncate">{product.name}</span>
+                    <span className="text-[var(--text-primary)] truncate">{product.name}</span>
                 </nav>
 
                 <div className="flex flex-col lg:flex-row gap-10 xl:gap-16">
@@ -199,39 +200,41 @@ export const ProductDetailPage = () => {
                     </div>
 
                     {/* Right: Info */}
-                    <div className="w-full lg:w-[55%] flex flex-col">
-                        <div className="mb-2 flex items-center justify-between">
-                            <span className="text-sm font-mono text-gray-500">SKU: {currentVariation?.sku || product.sku}</span>
+                    <div className="w-full lg:w-[55%] flex flex-col bg-[var(--surface-primary)] p-6 md:p-10 rounded-[2.5rem] border border-[var(--border-premium)] shadow-[var(--shadow-elevated)] relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-[var(--primary)]/10 rounded-full blur-[80px] pointer-events-none"></div>
+                        <div className="relative z-10">
+                            <div className="mb-4 flex items-center justify-between">
+                                <span className="text-sm font-mono text-[var(--text-muted)]">SKU: {currentVariation?.sku || product.sku}</span>
                             {product.is_bundle && (
-                                <span className="bg-purple-100 text-purple-700 text-xs font-bold px-2 py-1 rounded uppercase tracking-wider">
-                                    Bundle Pack
+                                <span className="bg-[var(--primary)]/10 text-[var(--primary)] text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest border border-[var(--primary)]/20 shadow-[0_0_10px_var(--glow-warm)]">
+                                    Mahakarya Bundle
                                 </span>
                             )}
                         </div>
 
-                        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
+                        <h1 className="text-4xl md:text-5xl font-display font-bold text-[var(--text-primary)] mb-6 leading-[1.1] tracking-tight">
                             {product.name}
                         </h1>
 
-                        <div className="flex items-center gap-4 mb-6">
+                        <div className="flex items-center gap-4 mb-8">
                             <div className="flex items-center">
-                                <div className="flex text-yellow-400">
+                                <div className="flex text-[var(--primary)]">
                                     {Array.from({ length: 5 }).map((_, i) => (
-                                        <svg key={i} className={`w-5 h-5 ${i < Math.floor(Number(product.average_rating || 0)) ? 'fill-current' : 'text-gray-300'}`} viewBox="0 0 20 20" fill="currentColor">
+                                        <svg key={i} className={`w-5 h-5 ${i < Math.floor(Number(product.average_rating || 0)) ? 'fill-current' : 'text-[var(--surface-secondary)] border-[var(--border-premium)]'}`} viewBox="0 0 20 20" fill="currentColor">
                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
                                     ))}
                                 </div>
-                                <span className="ml-2 font-bold">{Number(product.average_rating || 0).toFixed(1)}</span>
-                                <span className="ml-1 text-gray-500 text-sm">({product.reviews?.length || 0} ulasan)</span>
+                                <span className="ml-3 font-mono font-bold text-[var(--text-primary)]">{Number(product.average_rating || 0).toFixed(1)}</span>
+                                <span className="ml-2 text-[var(--text-secondary)] text-sm font-medium">({product.reviews?.length || 0} apresiasi)</span>
                             </div>
-                            <span className="text-gray-300">|</span>
-                            <span className={`text-sm font-bold ${isOutOfStock ? 'text-red-500' : 'text-green-600'}`}>
-                                {isOutOfStock ? 'Stok Habis' : 'Tersedia'}
+                            <span className="text-[var(--border-premium)]">|</span>
+                            <span className={`text-[10px] font-black uppercase tracking-widest ${isOutOfStock ? 'text-red-500' : 'text-green-500'}`}>
+                                {isOutOfStock ? 'Koleksi Kosong' : 'Tersedia'}
                             </span>
                         </div>
 
-                        <div className="text-3xl md:text-4xl font-extrabold text-orange-600 mb-8">
+                        <div className="text-3xl md:text-4xl font-mono font-bold text-[var(--primary)] mb-10 tracking-tight">
                             {formattedPrice}
                         </div>
 
@@ -248,178 +251,180 @@ export const ProductDetailPage = () => {
                         )}
 
                         {/* Actions (Desktop only mostly, duplicated for sticky mobile) */}
-                        <div className="hidden md:flex items-end gap-4 mb-10 pb-10 border-b border-gray-100 dark:border-gray-800">
+                        <div className="hidden md:flex items-end gap-4 mb-12 pb-12 border-b border-[var(--border-premium)]">
                             <div className="flex flex-col">
-                                <span className="text-sm font-bold text-gray-500 dark:text-gray-400 mb-2">Kuantitas</span>
-                                <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-lg overflow-hidden h-12 w-32 transition-colors">
-                                    <button onClick={() => handleQuantityChange(-1)} className="w-10 h-full flex justify-center items-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors"><Minus size={16} /></button>
-                                    <div className="flex-1 h-full flex justify-center items-center font-bold text-gray-900 dark:text-white border-x border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 transition-colors">{quantity}</div>
-                                    <button onClick={() => handleQuantityChange(1)} className="w-10 h-full flex justify-center items-center bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400 transition-colors"><Plus size={16} /></button>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] mb-3">Kuantitas</span>
+                                <div className="flex items-center border border-[var(--border-premium)] rounded-xl overflow-hidden h-14 w-36 transition-colors bg-[var(--surface-primary)]">
+                                    <button onClick={() => handleQuantityChange(-1)} className="w-12 h-full flex justify-center items-center hover:bg-[var(--surface-hover)] text-[var(--text-secondary)] transition-colors"><Minus size={16} /></button>
+                                    <div className="flex-1 h-full flex justify-center items-center font-mono font-bold text-[var(--text-primary)] border-x border-[var(--border-premium)]">{quantity}</div>
+                                    <button onClick={() => handleQuantityChange(1)} className="w-12 h-full flex justify-center items-center hover:bg-[var(--surface-hover)] text-[var(--text-secondary)] transition-colors"><Plus size={16} /></button>
                                 </div>
                             </div>
 
-                            <div className="flex-1 flex gap-2">
+                            <div className="flex-1 flex gap-3">
                                 <button
                                     onClick={handleAddToCart}
                                     disabled={isOutOfStock}
-                                    className={`flex-1 h-12 rounded-lg flex items-center justify-center gap-2 font-bold transition-all shadow-sm border
+                                    className={`flex-1 h-14 rounded-xl flex items-center justify-center gap-3 text-xs font-bold uppercase tracking-widest transition-all duration-300 border
                                         ${isOutOfStock
-                                            ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-gray-200 dark:border-gray-700 cursor-not-allowed shadow-none'
-                                            : 'bg-white dark:bg-gray-950 text-orange-600 border-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/20'
+                                            ? 'bg-[var(--surface-secondary)] text-[var(--text-muted)] border-[var(--border-soft)] cursor-not-allowed'
+                                            : 'bg-transparent text-[var(--primary)] border-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--bg-primary)] hover:shadow-[0_0_20px_var(--glow-warm)]'
                                         }
                                     `}
                                 >
-                                    <ShoppingCart size={20} />
-                                    + Keranjang
+                                    <ShoppingCart size={18} />
+                                    Keranjang
                                 </button>
 
                                 <button
                                     onClick={handleBuyNow}
                                     disabled={isOutOfStock}
-                                    className={`flex-1 h-12 rounded-lg flex items-center justify-center gap-2 font-bold text-white transition-all shadow-md
+                                    className={`flex-[1.5] h-14 rounded-xl flex items-center justify-center gap-3 text-xs font-bold uppercase tracking-widest transition-all duration-300
                                         ${isOutOfStock
-                                            ? 'bg-gray-400 cursor-not-allowed shadow-none'
-                                            : 'bg-orange-600 hover:bg-orange-700 hover:shadow-lg'
+                                            ? 'bg-[var(--surface-secondary)] text-[var(--text-muted)] border border-[var(--border-soft)] cursor-not-allowed'
+                                            : 'btn-atelier-primary'
                                         }
                                     `}
                                 >
-                                    <Zap size={20} />
+                                    <Zap size={18} />
                                     Beli Langsung
                                 </button>
                             </div>
 
-                            <button onClick={handleWishlist} className={`w-12 h-12 flex items-center justify-center shrink-0 rounded-lg border transition-colors ${isInWishlist
-                                ? 'bg-red-50 dark:bg-red-950/30 text-red-500 border-red-200 dark:border-red-900/50'
-                                : 'border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-500 hover:border-red-200 dark:hover:border-red-900/50'
+                            <button onClick={handleWishlist} className={`w-14 h-14 flex items-center justify-center shrink-0 rounded-xl border transition-all duration-300 ${isInWishlist
+                                ? 'bg-red-500/10 text-red-500 border-red-500/30'
+                                : 'border-[var(--border-premium)] text-[var(--text-muted)] hover:bg-red-500/10 hover:text-red-500 hover:border-red-500/30'
                                 }`}>
-                                <Heart size={24} className={isInWishlist ? 'fill-current' : ''} />
+                                <Heart size={20} className={isInWishlist ? 'fill-current' : ''} />
                             </button>
-                            <button className="w-12 h-12 flex items-center justify-center shrink-0 rounded-lg border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors" onClick={() => {
+                            <button className="w-14 h-14 flex items-center justify-center shrink-0 rounded-xl border border-[var(--border-premium)] text-[var(--text-muted)] hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] hover:border-[var(--border-soft)] transition-colors" onClick={() => {
                                 navigator.clipboard.writeText(window.location.href);
-                                toast.success('Link produk berhasil disalin');
+                                toast.success('Tautan mahakarya disalin');
                             }}>
                                 <Share2 size={20} />
                             </button>
                         </div>
 
                         {/* Tabs / Accordions */}
-                        <div className="mt-8 flex flex-col gap-4">
+                        <div className="mt-8 flex flex-col gap-6">
                             {/* Description Accordion */}
-                            <details className="group border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900 overflow-hidden" open>
-                                <summary className="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-lg font-bold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <details className="group border border-[var(--border-premium)] rounded-[2rem] bg-[var(--surface-primary)] overflow-hidden shadow-[var(--shadow-subtle)]" open>
+                                <summary className="flex justify-between items-center font-medium cursor-pointer list-none p-6 text-xl font-display font-bold text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors">
                                     Deskripsi Produk
-                                    <span className="transition group-open:rotate-180">
-                                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                                    <span className="transition group-open:rotate-180 text-[var(--primary)]">
+                                        <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
                                     </span>
                                 </summary>
-                                <div className="text-gray-600 dark:text-gray-400 px-5 pb-5 prose prose-orange dark:prose-invert max-w-none leading-relaxed whitespace-pre-line text-sm md:text-base border-t border-gray-100 dark:border-gray-800 pt-4">
-                                    {product.description || 'Tidak ada deskripsi untuk produk ini.'}
+                                <div className="text-[var(--text-secondary)] px-6 pb-6 prose dark:prose-invert max-w-none leading-relaxed whitespace-pre-line text-sm md:text-base border-t border-[var(--border-premium)] pt-5">
+                                    {product.description || 'Tidak ada deskripsi untuk mahakarya ini.'}
                                 </div>
                             </details>
 
                             {/* Specs Accordion */}
-                            <details className="group border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900 overflow-hidden" open>
-                                <summary className="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-lg font-bold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            <details className="group border border-[var(--border-premium)] rounded-[2rem] bg-[var(--surface-primary)] overflow-hidden shadow-[var(--shadow-subtle)]" open>
+                                <summary className="flex justify-between items-center font-medium cursor-pointer list-none p-6 text-xl font-display font-bold text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors">
                                     Spesifikasi Teknis
-                                    <span className="transition group-open:rotate-180">
-                                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                                    <span className="transition group-open:rotate-180 text-[var(--primary)]">
+                                        <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
                                     </span>
                                 </summary>
-                                <div className="px-5 pb-5 border-t border-gray-100 dark:border-gray-800 pt-4">
+                                <div className="px-6 pb-6 border-t border-[var(--border-premium)] pt-5">
                                     <table className="w-full text-sm">
                                         <tbody>
-                                            <tr className="border-b border-gray-100 dark:border-gray-800">
-                                                <td className="py-3 px-4 text-gray-500 dark:text-gray-400 w-1/3">Berat</td>
-                                                <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{(product.weight_gram / 1000).toFixed(2)} kg</td>
+                                            <tr className="border-b border-[var(--border-soft)]">
+                                                <td className="py-4 px-4 text-[var(--text-muted)] w-1/3">Berat</td>
+                                                <td className="py-4 px-4 font-bold text-[var(--text-primary)]">{(product.weight_gram / 1000).toFixed(2)} kg</td>
                                             </tr>
-                                            <tr className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30">
-                                                <td className="py-3 px-4 text-gray-500 dark:text-gray-400 w-1/3">Kategori</td>
-                                                <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{product.category?.name || '-'}</td>
+                                            <tr className="border-b border-[var(--border-soft)] bg-[var(--surface-secondary)]">
+                                                <td className="py-4 px-4 text-[var(--text-muted)] w-1/3">Kategori</td>
+                                                <td className="py-4 px-4 font-bold text-[var(--text-primary)]">{product.category?.name || '-'}</td>
                                             </tr>
                                             <tr>
-                                                <td className="py-3 px-4 text-gray-500 dark:text-gray-400 w-1/3">SKU Dasar</td>
-                                                <td className="py-3 px-4 font-medium text-gray-900 dark:text-white">{product.sku}</td>
+                                                <td className="py-4 px-4 text-[var(--text-muted)] w-1/3">SKU Dasar</td>
+                                                <td className="py-4 px-4 font-bold text-[var(--text-primary)]">{product.sku}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </div>
                             </details>
 
-                            <details className="group border border-gray-200 dark:border-gray-800 rounded-xl bg-white dark:bg-gray-900 overflow-hidden" open>
-                                <summary className="flex justify-between items-center font-medium cursor-pointer list-none p-5 text-lg font-bold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                                    Ulasan Komunitas
-                                    <span className="transition group-open:rotate-180">
-                                        <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
+                            {/* Reviews Accordion */}
+                            <details className="group border border-[var(--border-premium)] rounded-[2rem] bg-[var(--surface-primary)] overflow-hidden shadow-[var(--shadow-subtle)]" open>
+                                <summary className="flex justify-between items-center font-medium cursor-pointer list-none p-6 text-xl font-display font-bold text-[var(--text-primary)] hover:bg-[var(--surface-hover)] transition-colors">
+                                    Apresiasi Komunitas
+                                    <span className="transition group-open:rotate-180 text-[var(--primary)]">
+                                        <svg fill="none" height="24" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" viewBox="0 0 24 24" width="24"><path d="M6 9l6 6 6-6"></path></svg>
                                     </span>
                                 </summary>
-                                <div className="px-5 pb-5 border-t border-gray-100 dark:border-gray-800 pt-4">
+                                <div className="px-6 pb-6 border-t border-[var(--border-premium)] pt-5">
                                     {product.reviews && product.reviews.length > 0 ? (
                                         <div className="space-y-4">
                                             {product.reviews.map(review => (
-                                                <div key={review.id} className="bg-white dark:bg-gray-950 border border-gray-100 dark:border-gray-800 p-4 rounded-xl shadow-sm">
-                                                    <div className="flex items-start justify-between mb-3">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 flex items-center justify-center font-bold">
-                                                                {review.user?.name?.charAt(0) || 'U'}
+                                                <div key={review.id} className="bg-[var(--surface-secondary)] border border-[var(--border-premium)] p-5 rounded-2xl">
+                                                    <div className="flex items-start justify-between mb-4">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="w-12 h-12 rounded-full bg-[var(--primary)]/10 text-[var(--primary)] border border-[var(--primary)]/20 flex items-center justify-center font-display font-bold text-lg">
+                                                                {review.user?.name?.charAt(0) || 'K'}
                                                             </div>
                                                             <div>
-                                                                <div className="font-bold text-sm text-gray-900 dark:text-white">{review.user?.name || 'User'}</div>
-                                                                <div className="text-xs text-gray-500 dark:text-gray-400">{new Date(review.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                                                                <div className="font-bold text-sm text-[var(--text-primary)]">{review.user?.name || 'Kolektor'}</div>
+                                                                <div className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] font-black mt-0.5">{new Date(review.created_at).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
                                                             </div>
                                                         </div>
-                                                        <div className="flex text-yellow-400">
+                                                        <div className="flex text-[var(--primary)]">
                                                             {Array.from({ length: 5 }).map((_, i) => (
-                                                                <svg key={i} className={`w-4 h-4 ${i < review.rating ? 'fill-current' : 'text-gray-300 dark:text-gray-600'}`} viewBox="0 0 20 20" fill="currentColor">
+                                                                <svg key={i} className={`w-4 h-4 ${i < review.rating ? 'fill-current' : 'text-[var(--text-muted)]'}`} viewBox="0 0 20 20" fill="currentColor">
                                                                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                                                 </svg>
                                                             ))}
                                                         </div>
                                                     </div>
-                                                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{review.comment}</p>
+                                                    <p className="text-[var(--text-secondary)] text-sm leading-relaxed">{review.comment}</p>
                                                 </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="bg-gray-50 dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl p-6 text-center text-gray-500 dark:text-gray-400 text-sm">
-                                            Belum ada ulasan untuk produk ini.
+                                        <div className="bg-[var(--surface-secondary)] border border-[var(--border-premium)] rounded-[1.5rem] p-8 text-center text-[var(--text-muted)] text-sm font-medium">
+                                            Belum ada apresiasi tertulis untuk mahakarya ini.
                                         </div>
                                     )}
                                 </div>
                             </details>
                         </div>
+                        </div>
                     </div>
                 </div>
             </main>
 
-            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 p-3 flex items-center gap-2 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe">
+            <div className="md:hidden fixed bottom-0 left-0 right-0 bg-[var(--surface-primary)] border-t border-[var(--border-premium)] p-4 flex items-center gap-3 z-50 shadow-[var(--shadow-elevated)] pb-safe">
                 <div className="flex flex-col flex-[0.8] justify-center truncate pr-2">
-                    <div className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">Harga</div>
-                    <div className="font-bold text-orange-600 dark:text-orange-400 text-sm leading-tight truncate">{formattedPrice}</div>
+                    <div className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)]">Nilai</div>
+                    <div className="font-mono font-bold text-[var(--primary)] text-sm leading-tight truncate">{formattedPrice}</div>
                 </div>
-                <div className="flex flex-[1.2] gap-2 h-11">
+                <div className="flex flex-[1.2] gap-2 h-12">
                     <button
                         onClick={handleAddToCart}
                         disabled={isOutOfStock}
-                        className={`flex-1 rounded-lg flex items-center justify-center font-bold text-xs transition-colors border
+                        className={`flex-1 rounded-xl flex items-center justify-center font-bold text-[10px] uppercase tracking-widest transition-colors border
                             ${isOutOfStock
-                                ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-gray-200 dark:border-gray-700 cursor-not-allowed'
-                                : 'bg-white dark:bg-gray-950 text-orange-600 border-orange-600 active:bg-orange-50'
+                                ? 'bg-[var(--surface-secondary)] text-[var(--text-muted)] border-[var(--border-soft)] cursor-not-allowed'
+                                : 'bg-transparent text-[var(--primary)] border-[var(--primary)] active:bg-[var(--primary)] active:text-white'
                             }
                         `}
                     >
-                        + Keranjang
+                        + Krnjg
                     </button>
                     <button
                         onClick={handleBuyNow}
                         disabled={isOutOfStock}
-                        className={`flex-1 rounded-lg flex items-center justify-center font-bold text-white text-xs transition-colors
+                        className={`flex-1 rounded-xl flex items-center justify-center font-bold text-white text-[10px] uppercase tracking-widest transition-colors
                             ${isOutOfStock
-                                ? 'bg-gray-400 dark:bg-gray-700 cursor-not-allowed'
-                                : 'bg-orange-600 active:bg-orange-700'
+                                ? 'bg-[var(--text-muted)] cursor-not-allowed'
+                                : 'btn-atelier-primary'
                             }
                         `}
                     >
-                        {isOutOfStock ? 'Stok Habis' : 'Beli'}
+                        {isOutOfStock ? 'Habis' : 'Beli'}
                     </button>
                 </div>
             </div>

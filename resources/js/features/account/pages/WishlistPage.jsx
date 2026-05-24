@@ -43,67 +43,74 @@ export const WishlistPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
+        <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col text-[var(--text-primary)] transition-colors duration-500">
             <Navbar />
 
-            <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
-                <div className="flex items-center gap-2 mb-8">
-                    <Link to="/explore" className="p-2 hover:bg-white dark:hover:bg-gray-800 rounded-full transition-colors text-gray-500 hover:text-gray-900 dark:hover:text-white">
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 pt-32 pb-20 relative">
+                {/* Background Accent */}
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[var(--primary)]/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+                <div className="flex items-center gap-4 mb-12 relative z-10">
+                    <Link to="/explore" className="w-12 h-12 flex items-center justify-center bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] border border-[var(--border-premium)] rounded-full transition-colors text-[var(--text-secondary)] hover:text-[var(--text-primary)]">
                         <ArrowLeft size={20} />
                     </Link>
-                    <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">Wishlist Saya</h1>
-                    <span className="ml-2 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold px-3 py-1 rounded-full">
-                        {items.length} Favorit
+                    <div className="flex-1">
+                        <h1 className="font-display text-4xl md:text-5xl font-bold text-[var(--text-primary)] tracking-tight">Koleksi Impian</h1>
+                        <p className="text-[var(--text-secondary)] font-medium mt-2">Kurasi instrumen pilihan yang menanti Anda.</p>
+                    </div>
+                    <span className="hidden md:inline-flex bg-[var(--primary)]/10 text-[var(--primary)] text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full border border-[var(--primary)]/20 shadow-[0_0_15px_var(--glow-warm)]">
+                        {items.length} Karya Seni
                     </span>
                 </div>
 
                 {isLoading && items.length === 0 ? (
-                    <div className="flex-1 flex items-center justify-center py-20">
-                        <div className="animate-spin w-10 h-10 border-4 border-orange-600 border-t-transparent rounded-full"></div>
+                    <div className="flex-1 flex items-center justify-center py-32">
+                        <Loader2 className="animate-spin text-[var(--primary)] w-12 h-12" />
                     </div>
                 ) : items.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 relative z-10">
                         {items.map((item) => (
-                            <div key={item.id} className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-xl transition-all duration-300 group overflow-hidden flex flex-col">
+                            <div key={item.id} className="bg-[var(--surface-primary)] rounded-[2rem] border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-elevated)] transition-all duration-500 group overflow-hidden flex flex-col">
                                 {/* Image Container */}
-                                <div className="relative aspect-[4/3] overflow-hidden bg-gray-50 dark:bg-gray-800">
+                                <div className="relative aspect-[4/5] overflow-hidden bg-[var(--surface-secondary)]">
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                                     <ImageFallback
                                         src={item.image}
                                         alt={item.name}
-                                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                                         fallbackType="instrument"
                                     />
                                     <button
                                         onClick={() => handleRemove(item)}
-                                        className="absolute top-3 right-3 p-2 bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm text-gray-400 hover:text-red-600 rounded-full shadow-sm transition-all transform hover:scale-110"
-                                        title="Hapus dari wishlist"
+                                        className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center bg-black/40 backdrop-blur-md text-white hover:text-red-400 hover:bg-black/60 rounded-full shadow-lg transition-all transform hover:scale-110 z-20 border border-white/10"
+                                        title="Hapus dari koleksi"
                                     >
-                                        <Trash2 size={18} />
+                                        <Trash2 size={16} />
                                     </button>
                                 </div>
 
                                 {/* Content */}
-                                <div className="p-5 flex flex-col flex-1">
-                                    <Link to={`/product/${item.id}`} className="text-base font-bold text-gray-900 dark:text-white hover:text-orange-600 transition-colors line-clamp-2 mb-2 h-12">
+                                <div className="p-6 flex flex-col flex-1">
+                                    <Link to={`/product/${item.id}`} className="font-display text-lg font-bold text-[var(--text-primary)] hover:text-[var(--primary)] transition-colors line-clamp-2 mb-3">
                                         {item.name}
                                     </Link>
 
-                                    <div className="mt-auto">
-                                        <p className="text-lg font-black text-orange-600 mb-4">
+                                    <div className="mt-auto pt-4 border-t border-[var(--border-premium)]">
+                                        <p className="font-mono text-lg text-[var(--primary)] tracking-tight mb-5">
                                             {formatPrice(item.price)}
                                         </p>
 
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-3">
                                             <button
                                                 onClick={() => handleAddToCart(item)}
-                                                className="flex-1 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold py-2.5 rounded-lg flex items-center justify-center gap-2 transition-all"
+                                                className="flex-1 btn-atelier-primary flex items-center justify-center gap-2 py-3 px-4 text-[10px]"
                                             >
                                                 <ShoppingCart size={14} />
-                                                Detail & Beli
+                                                Eksplorasi
                                             </button>
                                             <Link
                                                 to={`/product/${item.id}`}
-                                                className="p-2.5 border border-gray-200 dark:border-gray-700 text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                                                className="w-12 flex items-center justify-center border border-[var(--border-premium)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--surface-hover)] rounded-xl transition-colors"
                                             >
                                                 <ChevronRight size={18} />
                                             </Link>
@@ -114,21 +121,24 @@ export const WishlistPage = () => {
                         ))}
                     </div>
                 ) : (
-                    <div className="bg-white dark:bg-gray-900 rounded-3xl p-12 md:p-20 text-center border border-gray-100 dark:border-gray-800 shadow-sm transition-colors">
-                        <div className="w-32 h-32 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-8 animate-pulse">
-                            <Heart size={48} className="text-red-500 fill-current" />
+                    <div className="bg-[var(--surface-primary)] rounded-[3rem] p-16 md:p-24 text-center border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] transition-colors relative z-10 overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-b from-[var(--surface-secondary)]/50 to-transparent pointer-events-none"></div>
+                        <div className="relative z-10">
+                            <div className="w-32 h-32 bg-[var(--surface-secondary)] rounded-full flex items-center justify-center mx-auto mb-10 border border-[var(--border-soft)] shadow-inner">
+                                <Heart size={40} className="text-[var(--text-muted)]" strokeWidth={1.5} />
+                            </div>
+                            <h2 className="font-display text-3xl md:text-4xl font-bold text-[var(--text-primary)] mb-5">Koleksi Impian Masih Kosong</h2>
+                            <p className="text-[var(--text-secondary)] font-medium max-w-md mx-auto mb-12 text-lg">
+                                Temukan instrumen mahakarya yang resonan dengan jiwa Anda dan simpan di ruang kurasi ini.
+                            </p>
+                            <Link
+                                to="/explore"
+                                className="inline-flex items-center gap-3 btn-atelier-primary px-10 py-5"
+                            >
+                                Eksplorasi Galeri
+                                <ShoppingBag size={18} />
+                            </Link>
                         </div>
-                        <h2 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white mb-4">Wishlist-mu Masih Kosong</h2>
-                        <p className="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-10 text-lg">
-                            Simpan instrumen favoritmu di sini agar tidak lupa saat ingin membelinya nanti.
-                        </p>
-                        <Link
-                            to="/explore"
-                            className="inline-flex items-center gap-3 bg-orange-600 hover:bg-orange-700 text-white font-black px-10 py-4 rounded-full transition-all shadow-xl shadow-orange-100 dark:shadow-none hover:-translate-y-1"
-                        >
-                            Cari Instrumen
-                            <ShoppingBag size={20} />
-                        </Link>
                     </div>
                 )}
             </main>

@@ -189,18 +189,23 @@ export const ProfilePage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
+        <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col text-[var(--text-primary)] transition-colors duration-500">
             <Navbar />
 
-            <main className="flex-1 w-full max-w-5xl mx-auto px-4 md:px-8 py-10 md:py-16">
-                <div className="flex flex-col md:flex-row gap-8">
+            <main className="flex-1 w-full max-w-6xl mx-auto px-4 md:px-8 pt-32 pb-16 relative">
+                <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-[var(--primary)]/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+                <div className="flex flex-col md:flex-row gap-8 relative z-10">
                     {/* Sidebar / User Card */}
                     <div className="w-full md:w-80 shrink-0">
-                        <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden sticky top-28">
-                            <div className="h-24 bg-gradient-to-r from-orange-500 to-amber-500"></div>
-                            <div className="px-6 pb-8 -mt-12 text-center">
+                        <div className="bg-[var(--surface-primary)] rounded-[2rem] border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] overflow-hidden sticky top-32">
+                            <div className="h-32 bg-[var(--surface-secondary)] relative overflow-hidden">
+                                <div className="absolute inset-0 bg-gradient-to-tr from-[var(--primary)]/20 to-transparent"></div>
+                                <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-[var(--primary)]/30 blur-2xl rounded-full"></div>
+                            </div>
+                            <div className="px-8 pb-8 -mt-16 text-center relative z-10">
                                 <div className="relative inline-block mb-4">
-                                    <div className={`w-24 h-24 rounded-full border-4 border-white dark:border-gray-900 bg-gray-100 dark:bg-gray-800 overflow-hidden mx-auto shadow-lg relative ${isUploadingAvatar ? 'opacity-50' : ''}`}>
+                                    <div className={`w-32 h-32 rounded-full border-[6px] border-[var(--surface-primary)] bg-[var(--surface-secondary)] overflow-hidden mx-auto shadow-xl relative ${isUploadingAvatar ? 'opacity-50' : ''}`}>
                                         <img
                                             src={user?.avatar || FALLBACK_AVATAR}
                                             alt={user?.name}
@@ -208,8 +213,8 @@ export const ProfilePage = () => {
                                             onError={(e) => e.target.src = FALLBACK_AVATAR}
                                         />
                                         {isUploadingAvatar && (
-                                            <div className="absolute inset-0 flex items-center justify-center">
-                                                <Loader2 size={24} className="animate-spin text-orange-600" />
+                                            <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+                                                <Loader2 size={24} className="animate-spin text-white" />
                                             </div>
                                         )}
                                     </div>
@@ -223,37 +228,37 @@ export const ProfilePage = () => {
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
                                         disabled={isUploadingAvatar}
-                                        className="absolute bottom-0 right-0 p-1.5 bg-white dark:bg-gray-800 rounded-full shadow-md text-gray-500 hover:text-orange-600 border border-gray-100 dark:border-gray-700 transition-colors disabled:opacity-50"
+                                        className="absolute bottom-2 right-2 w-10 h-10 flex items-center justify-center bg-[var(--text-primary)] rounded-full shadow-lg text-[var(--bg-primary)] hover:scale-110 transition-transform disabled:opacity-50 disabled:hover:scale-100"
                                     >
-                                        <Camera size={16} />
+                                        <Camera size={18} />
                                     </button>
                                 </div>
-                                <h2 className="text-xl font-black text-gray-900 dark:text-white truncate">{user?.name}</h2>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{user?.email}</p>
-                                <div className="mt-4 inline-flex items-center gap-1.5 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-[10px] font-black uppercase px-2.5 py-1 rounded-full">
+                                <h2 className="font-display text-2xl font-bold text-[var(--text-primary)] truncate">{user?.name}</h2>
+                                <p className="text-sm text-[var(--text-secondary)] mt-1">{user?.email}</p>
+                                <div className="mt-5 inline-flex items-center gap-2 bg-[var(--primary)]/10 text-[var(--primary)] text-[10px] font-black uppercase tracking-widest px-4 py-1.5 rounded-full border border-[var(--primary)]/20">
                                     <Shield size={12} />
-                                    Verified Member
+                                    Kurator Terverifikasi
                                 </div>
                             </div>
 
-                            <nav className="p-3 border-t border-gray-50 dark:border-gray-800">
+                            <nav className="p-4 border-t border-[var(--border-premium)] flex flex-col gap-2">
                                 <button
                                     onClick={() => setActiveTab('profile')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'profile'
-                                        ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600'
-                                        : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                    className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'profile'
+                                        ? 'bg-[var(--primary)] text-[var(--bg-primary)] shadow-lg shadow-[var(--primary)]/20'
+                                        : 'text-[var(--text-secondary)] hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)]'
                                         }`}
                                 >
-                                    <User size={18} /> Informasi Profil
+                                    <User size={16} /> Profil Pribadi
                                 </button>
                                 <button
                                     onClick={() => setActiveTab('addresses')}
-                                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'addresses'
-                                        ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600'
-                                        : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                    className={`w-full flex items-center gap-3 px-5 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === 'addresses'
+                                        ? 'bg-[var(--primary)] text-[var(--bg-primary)] shadow-lg shadow-[var(--primary)]/20'
+                                        : 'text-[var(--text-secondary)] hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)]'
                                         }`}
                                 >
-                                    <MapPin size={18} /> Daftar Alamat
+                                    <MapPin size={16} /> Titik Ekspedisi
                                 </button>
                             </nav>
                         </div>
@@ -262,54 +267,54 @@ export const ProfilePage = () => {
                     {/* Main Content Area */}
                     <div className="flex-1 min-w-0">
                         {activeTab === 'profile' ? (
-                            <section className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm p-8 transition-all">
-                                <div className="flex items-center justify-between mb-8">
-                                    <h3 className="text-2xl font-black text-gray-900 dark:text-white">Profil Saya</h3>
+                            <section className="bg-[var(--surface-primary)] rounded-[2rem] border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] p-8 md:p-12 transition-all">
+                                <div className="flex items-center justify-between mb-10 pb-6 border-b border-[var(--border-premium)]">
+                                    <h3 className="font-display text-3xl font-bold text-[var(--text-primary)]">Identitas Profil</h3>
                                     {!isEditingProfile && (
                                         <button
                                             onClick={() => setIsEditingProfile(true)}
-                                            className="inline-flex items-center gap-2 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-900 dark:text-white px-4 py-2 rounded-xl text-sm font-bold border border-gray-200 dark:border-gray-700 transition-all"
+                                            className="inline-flex items-center gap-2 bg-[var(--surface-secondary)] hover:bg-[var(--surface-hover)] text-[var(--text-primary)] px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest border border-[var(--border-premium)] transition-all"
                                         >
-                                            <Pencil size={16} /> Edit
+                                            <Pencil size={14} /> Edit Data
                                         </button>
                                     )}
                                 </div>
 
-                                <form onSubmit={handleProfileSubmit} className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
+                                <form onSubmit={handleProfileSubmit} className="space-y-8">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest flex items-center gap-2">
                                                 <User size={14} /> Nama Lengkap
                                             </label>
                                             <input
                                                 type="text"
                                                 disabled={!isEditingProfile}
-                                                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-500/20 disabled:opacity-70 dark:text-white transition-all"
+                                                className="w-full bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-xl px-5 py-4 text-sm font-bold focus:ring-1 focus:ring-[var(--primary)] outline-none text-[var(--text-primary)] transition-all disabled:opacity-60 disabled:bg-[var(--surface-secondary)]"
                                                 value={profileForm.name}
                                                 onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
                                             />
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                                                <Mail size={14} /> Email
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest flex items-center gap-2">
+                                                <Mail size={14} /> Alamat Surel
                                             </label>
                                             <input
                                                 type="email"
                                                 disabled
-                                                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-sm outline-none opacity-50 cursor-not-allowed dark:text-white transition-all"
+                                                className="w-full bg-[var(--surface-secondary)] border border-[var(--border-soft)] rounded-xl px-5 py-4 text-sm font-bold outline-none opacity-60 cursor-not-allowed text-[var(--text-primary)] transition-all"
                                                 value={profileForm.email}
                                             />
-                                            <p className="text-[10px] text-gray-400">Email tidak dapat diubah.</p>
+                                            <p className="text-[10px] text-[var(--text-muted)] font-medium">Alamat surel bersifat permanen demi keamanan.</p>
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                                                <Phone size={14} /> Nomor Telepon
+                                        <div className="space-y-3">
+                                            <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest flex items-center gap-2">
+                                                <Phone size={14} /> Kontak Pribadi
                                             </label>
                                             <input
                                                 type="text"
                                                 disabled={!isEditingProfile}
-                                                placeholder="Belum ada nomor telepon"
-                                                className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-500/20 disabled:opacity-70 dark:text-white transition-all"
+                                                placeholder="Tambahkan nomor kontak"
+                                                className="w-full bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-xl px-5 py-4 text-sm font-bold focus:ring-1 focus:ring-[var(--primary)] outline-none text-[var(--text-primary)] transition-all disabled:opacity-60 disabled:bg-[var(--surface-secondary)]"
                                                 value={profileForm.phone}
                                                 onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
                                             />
@@ -317,7 +322,7 @@ export const ProfilePage = () => {
                                     </div>
 
                                     {isEditingProfile && (
-                                        <div className="flex gap-3 pt-6 border-t border-gray-50 dark:border-gray-800">
+                                        <div className="flex gap-4 pt-10 mt-10 border-t border-[var(--border-premium)]">
                                             <button
                                                 type="button"
                                                 onClick={() => {
@@ -328,96 +333,96 @@ export const ProfilePage = () => {
                                                         phone: user?.profile?.phone || '',
                                                     });
                                                 }}
-                                                className="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 font-bold py-3.5 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                                                className="px-8 py-4 bg-transparent border border-[var(--border-premium)] text-[var(--text-secondary)] text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
                                             >
-                                                Batal
+                                                Batalkan
                                             </button>
                                             <button
                                                 type="submit"
                                                 disabled={isSavingProfile}
-                                                className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-orange-100 dark:shadow-none"
+                                                className="flex-1 btn-atelier-primary flex items-center justify-center gap-3 disabled:opacity-50"
                                             >
                                                 {isSavingProfile ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} />}
-                                                Simpan Perubahan
+                                                Perbarui Identitas
                                             </button>
                                         </div>
                                     )}
                                 </form>
                             </section>
                         ) : (
-                            <section className="space-y-6">
-                                <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm p-8">
-                                    <div className="flex items-center justify-between mb-8">
+                            <section className="space-y-8">
+                                <div className="bg-[var(--surface-primary)] rounded-[2rem] border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] p-8 md:p-12">
+                                    <div className="flex items-center justify-between mb-10 pb-6 border-b border-[var(--border-premium)]">
                                         <div>
-                                            <h3 className="text-2xl font-black text-gray-900 dark:text-white">Daftar Alamat</h3>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Kelola alamat pengiriman pesananmu.</p>
+                                            <h3 className="font-display text-3xl font-bold text-[var(--text-primary)]">Titik Ekspedisi</h3>
+                                            <p className="text-sm font-medium text-[var(--text-secondary)] mt-2">Atur destinasi pengiriman untuk pesanan Anda.</p>
                                         </div>
                                         <button
                                             onClick={handleOpenAddAddress}
-                                            className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-orange-100 dark:shadow-none transition-all"
+                                            className="inline-flex items-center gap-2 btn-atelier-primary px-6 py-3 text-[10px]"
                                         >
-                                            <Plus size={18} /> Tambah
+                                            <Plus size={14} /> Titik Baru
                                         </button>
                                     </div>
 
                                     {isAddressLoading ? (
                                         <div className="flex justify-center py-20">
-                                            <Loader2 size={32} className="animate-spin text-orange-600" />
+                                            <Loader2 size={32} className="animate-spin text-[var(--primary)]" />
                                         </div>
                                     ) : addresses.length > 0 ? (
-                                        <div className="grid grid-cols-1 gap-4">
+                                        <div className="grid grid-cols-1 gap-5">
                                             {addresses.map((addr) => (
                                                 <div
                                                     key={addr.id}
-                                                    className={`p-6 rounded-2xl border transition-all ${addr.is_default
-                                                        ? 'border-orange-500 bg-orange-50/20 dark:bg-orange-900/10'
-                                                        : 'border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-950/30'
+                                                    className={`p-8 rounded-2xl border transition-all ${addr.is_default
+                                                        ? 'border-[var(--primary)] bg-[var(--primary)]/5 shadow-[0_0_15px_var(--glow-warm)]'
+                                                        : 'border-[var(--border-premium)] bg-[var(--surface-secondary)] hover:border-[var(--primary)]/30'
                                                         }`}
                                                 >
-                                                    <div className="flex items-center justify-between mb-4">
+                                                    <div className="flex items-center justify-between mb-5">
                                                         <div className="flex items-center gap-3">
-                                                            <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 px-2 py-0.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded">
+                                                            <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] px-3 py-1 bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-md">
                                                                 {addr.label}
                                                             </span>
                                                             {addr.is_default && (
-                                                                <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-100 dark:bg-orange-900/30 px-2 py-0.5 rounded">
+                                                                <span className="text-[10px] font-black uppercase tracking-widest text-[var(--bg-primary)] bg-[var(--primary)] px-3 py-1 rounded-md shadow-[0_0_10px_var(--glow-warm)]">
                                                                     Utama
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <div className="flex items-center gap-2">
+                                                        <div className="flex items-center gap-3">
                                                             <button
                                                                 onClick={() => handleOpenEditAddress(addr)}
-                                                                className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                                                                className="text-[var(--text-muted)] hover:text-[var(--primary)] transition-colors"
                                                             >
-                                                                <Pencil size={18} />
+                                                                <Pencil size={16} />
                                                             </button>
                                                             <button
                                                                 onClick={() => handleDeleteAddress(addr.id)}
-                                                                className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                                                                className="text-[var(--text-muted)] hover:text-red-500 transition-colors"
                                                             >
-                                                                <Trash2 size={18} />
+                                                                <Trash2 size={16} />
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <h4 className="font-bold text-gray-900 dark:text-white text-lg">{addr.receiver_name}</h4>
-                                                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{addr.phone_number}</p>
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-3 leading-relaxed">
+                                                    <h4 className="font-bold text-[var(--text-primary)] text-xl">{addr.receiver_name}</h4>
+                                                    <p className="text-sm font-medium text-[var(--text-secondary)] mt-1">{addr.phone_number}</p>
+                                                    <p className="text-sm text-[var(--text-secondary)] mt-4 leading-relaxed max-w-2xl">
                                                         {addr.full_address}
                                                     </p>
-                                                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                                                    <p className="text-sm font-bold text-[var(--text-muted)] mt-2">
                                                         {addr.city_name}, {addr.province_name} {addr.postal_code}
                                                     </p>
                                                 </div>
                                             ))}
                                         </div>
                                     ) : (
-                                        <div className="text-center py-20 bg-gray-50 dark:bg-gray-950 rounded-3xl border-2 border-dashed border-gray-200 dark:border-gray-800">
-                                            <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                                                <MapPin size={32} className="text-gray-300" />
+                                        <div className="text-center py-24 bg-[var(--surface-secondary)] rounded-3xl border border-[var(--border-premium)]">
+                                            <div className="w-20 h-20 bg-[var(--bg-primary)] rounded-full flex items-center justify-center mx-auto mb-6 border border-[var(--border-soft)]">
+                                                <MapPin size={32} className="text-[var(--text-muted)]" />
                                             </div>
-                                            <h4 className="text-lg font-bold text-gray-900 dark:text-white">Belum ada alamat</h4>
-                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Tambahkan alamat pengiriman untuk mempermudah checkout.</p>
+                                            <h4 className="font-display text-xl font-bold text-[var(--text-primary)]">Belum Ada Titik Ekspedisi</h4>
+                                            <p className="text-sm text-[var(--text-secondary)] mt-3">Tambahkan profil alamat pengiriman untuk mempermudah transaksi.</p>
                                         </div>
                                     )}
                                 </div>
@@ -429,55 +434,55 @@ export const ProfilePage = () => {
 
             {/* Address Modal */}
             {showAddressModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-gray-900 rounded-3xl w-full max-w-2xl shadow-2xl overflow-hidden animate-in zoom-in duration-300 flex flex-col max-h-[90vh]">
-                        <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-                            <h3 className="text-xl font-black text-gray-900 dark:text-white">
-                                {isEditingAddress ? 'Edit Alamat' : 'Tambah Alamat Baru'}
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+                    <div className="bg-[var(--surface-primary)] rounded-[2rem] w-full max-w-2xl shadow-[var(--shadow-elevated)] overflow-hidden animate-in zoom-in duration-300 flex flex-col max-h-[90vh] border border-[var(--border-premium)]">
+                        <div className="px-8 py-6 border-b border-[var(--border-premium)] flex items-center justify-between bg-[var(--surface-secondary)]">
+                            <h3 className="font-display text-xl font-bold text-[var(--text-primary)]">
+                                {isEditingAddress ? 'Edit Profil Alamat' : 'Buat Profil Alamat'}
                             </h3>
-                            <button onClick={() => setShowAddressModal(false)} className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors text-gray-500">
-                                <X size={20} />
+                            <button onClick={() => setShowAddressModal(false)} className="w-8 h-8 flex items-center justify-center hover:bg-[var(--surface-hover)] rounded-full transition-colors text-[var(--text-secondary)] hover:text-[var(--primary)] border border-transparent hover:border-[var(--border-premium)]">
+                                <X size={16} />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSaveAddress} className="flex-1 overflow-y-auto p-6 md:p-8">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <form onSubmit={handleSaveAddress} className="flex-1 overflow-y-auto p-8 custom-scrollbar">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Label Alamat</label>
+                                    <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest block">Label Alamat</label>
                                     <input
                                         type="text"
                                         required
-                                        placeholder="Contoh: Rumah, Kantor, Kost"
-                                        className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-500/20 dark:text-white transition-all"
+                                        placeholder="Contoh: Studio, Rumah, Galeri"
+                                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-xl px-4 py-3.5 text-xs font-bold focus:ring-1 focus:ring-[var(--primary)] outline-none text-[var(--text-primary)] placeholder-[var(--text-muted)] transition-all"
                                         value={addressForm.label}
                                         onChange={(e) => setAddressForm({ ...addressForm, label: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Nama Penerima</label>
+                                    <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest block">Nama Penerima</label>
                                     <input
                                         type="text"
                                         required
-                                        className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-500/20 dark:text-white transition-all"
+                                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-xl px-4 py-3.5 text-xs font-bold focus:ring-1 focus:ring-[var(--primary)] outline-none text-[var(--text-primary)] transition-all"
                                         value={addressForm.receiver_name}
                                         onChange={(e) => setAddressForm({ ...addressForm, receiver_name: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Nomor Telepon</label>
+                                    <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest block">Nomor Telepon</label>
                                     <input
                                         type="text"
                                         required
-                                        className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-500/20 dark:text-white transition-all"
+                                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-xl px-4 py-3.5 text-xs font-bold focus:ring-1 focus:ring-[var(--primary)] outline-none text-[var(--text-primary)] transition-all"
                                         value={addressForm.phone_number}
                                         onChange={(e) => setAddressForm({ ...addressForm, phone_number: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Provinsi</label>
+                                    <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest block">Provinsi</label>
                                     <select
                                         required
-                                        className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-500/20 dark:text-white appearance-none transition-all"
+                                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-xl px-4 py-3.5 text-xs font-bold focus:ring-1 focus:ring-[var(--primary)] outline-none text-[var(--text-primary)] transition-all appearance-none"
                                         value={addressForm.province_id}
                                         onChange={(e) => {
                                             const prov = provinces.find(p => String(p.province_id) === String(e.target.value));
@@ -491,15 +496,15 @@ export const ProfilePage = () => {
                                             fetchCities(e.target.value);
                                         }}
                                     >
-                                        <option value="">Pilih Provinsi</option>
+                                        <option value="" className="text-[var(--text-muted)]">Pilih Provinsi</option>
                                         {provinces.map(p => <option key={p.province_id} value={p.province_id}>{p.province}</option>)}
                                     </select>
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Kota/Kabupaten</label>
+                                    <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest block">Kota/Kabupaten</label>
                                     <select
                                         required
-                                        className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-500/20 dark:text-white disabled:opacity-50 appearance-none transition-all"
+                                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-xl px-4 py-3.5 text-xs font-bold focus:ring-1 focus:ring-[var(--primary)] outline-none text-[var(--text-primary)] transition-all appearance-none disabled:opacity-50"
                                         disabled={!addressForm.province_id || isLoadingCities}
                                         value={addressForm.city_id}
                                         onChange={(e) => {
@@ -507,57 +512,62 @@ export const ProfilePage = () => {
                                             setAddressForm({ ...addressForm, city_id: e.target.value, city_name: city?.city_name || '' });
                                         }}
                                     >
-                                        <option value="">{isLoadingCities ? 'Memuat daftar kota...' : 'Pilih Kota'}</option>
+                                        <option value="">{isLoadingCities ? 'Memuat data wilayah...' : 'Pilih Kota/Kabupaten'}</option>
                                         {!isLoadingCities && cities.map(c => (
                                             <option key={c.city_id} value={c.city_id}>{c.city_name}</option>
                                         ))}
                                     </select>
                                 </div>
                                 <div className="space-y-2 md:col-span-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Alamat Lengkap</label>
+                                    <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest block">Alamat Lengkap</label>
                                     <textarea
                                         required
-                                        placeholder="Nama jalan, nomor rumah, RT/RW, dsb."
-                                        className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-500/20 dark:text-white min-h-[100px] transition-all resize-none"
+                                        placeholder="Nama jalan, nomor rumah, detail, dll."
+                                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-xl px-4 py-3.5 text-xs font-bold focus:ring-1 focus:ring-[var(--primary)] outline-none text-[var(--text-primary)] min-h-[100px] transition-all"
                                         value={addressForm.full_address}
                                         onChange={(e) => setAddressForm({ ...addressForm, full_address: e.target.value })}
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Kode Pos</label>
+                                    <label className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest block">Kode Pos</label>
                                     <input
                                         type="text"
                                         required
-                                        className="w-full bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-2xl px-5 py-3.5 text-sm outline-none focus:ring-2 focus:ring-orange-500/20 dark:text-white transition-all"
+                                        className="w-full bg-[var(--bg-primary)] border border-[var(--border-soft)] rounded-xl px-4 py-3.5 text-xs font-bold focus:ring-1 focus:ring-[var(--primary)] outline-none text-[var(--text-primary)] transition-all"
                                         value={addressForm.postal_code}
                                         onChange={(e) => setAddressForm({ ...addressForm, postal_code: e.target.value })}
                                     />
                                 </div>
                                 <div className="flex items-center gap-3 md:col-span-2 pt-2">
-                                    <input
-                                        type="checkbox"
-                                        id="is_default_profile"
-                                        checked={addressForm.is_default}
-                                        onChange={(e) => setAddressForm({ ...addressForm, is_default: e.target.checked })}
-                                        className="w-5 h-5 accent-orange-600 rounded-lg cursor-pointer"
-                                    />
-                                    <label htmlFor="is_default_profile" className="text-sm font-bold text-gray-700 dark:text-gray-300 cursor-pointer select-none">Jadikan Alamat Utama</label>
+                                    <div className={`w-5 h-5 rounded border flex items-center justify-center transition-colors cursor-pointer ${addressForm.is_default ? 'bg-[var(--primary)] border-[var(--primary)]' : 'border-[var(--text-muted)] hover:border-[var(--primary)]/50'}`}>
+                                        <input
+                                            type="checkbox"
+                                            id="is_default_profile"
+                                            checked={addressForm.is_default}
+                                            onChange={(e) => setAddressForm({ ...addressForm, is_default: e.target.checked })}
+                                            className="hidden"
+                                        />
+                                        {addressForm.is_default && <Shield size={14} className="text-[var(--bg-primary)]" />}
+                                    </div>
+                                    <label htmlFor="is_default_profile" className="text-[10px] font-black uppercase tracking-widest text-[var(--text-secondary)] cursor-pointer">
+                                        Tetapkan Sebagai Alamat Utama
+                                    </label>
                                 </div>
                             </div>
 
-                            <div className="flex gap-4 pt-10">
+                            <div className="flex gap-4 pt-10 mt-10 border-t border-[var(--border-premium)]">
                                 <button
                                     type="button"
                                     onClick={() => setShowAddressModal(false)}
-                                    className="flex-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 font-bold py-4 rounded-2xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
+                                    className="px-8 py-4 bg-transparent border border-[var(--border-premium)] text-[var(--text-secondary)] text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-[var(--surface-hover)] hover:text-[var(--text-primary)] transition-colors"
                                 >
-                                    Batal
+                                    Batalkan
                                 </button>
                                 <button
                                     type="submit"
-                                    className="flex-1 bg-orange-600 hover:bg-orange-700 text-white font-bold py-4 rounded-2xl transition-all shadow-lg shadow-orange-100 dark:shadow-none"
+                                    className="flex-1 btn-atelier-primary py-4"
                                 >
-                                    Simpan Alamat
+                                    {isEditingAddress ? 'Perbarui Profil' : 'Simpan Profil'}
                                 </button>
                             </div>
                         </form>

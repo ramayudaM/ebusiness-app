@@ -159,40 +159,40 @@ export const OrdersPage = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col text-gray-900 dark:text-white transition-colors duration-300">
+        <div className="min-h-screen bg-[var(--bg-primary)] flex flex-col text-[var(--text-primary)] transition-colors duration-500">
             <Navbar />
 
-            <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 py-6 md:py-10">
-                <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-6">
-                    <Link to="/" className="hover:text-orange-600">Beranda</Link>
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 md:px-8 pt-32 pb-16">
+                <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[var(--text-muted)] mb-10">
+                    <Link to="/" className="hover:text-[var(--primary)] transition-colors">Beranda</Link>
                     <ChevronRight size={14} />
-                    <span className="text-gray-900 dark:text-white font-bold">Pesanan Saya</span>
+                    <span className="text-[var(--text-primary)]">Pesanan Saya</span>
                 </div>
 
                 {isLoading ? (
-                    <div className="flex flex-col items-center justify-center py-20 text-gray-500">
-                        <Loader2 className="animate-spin mb-4" size={32} />
-                        <p>Memuat daftar pesanan...</p>
+                    <div className="flex flex-col items-center justify-center py-32 text-[var(--text-muted)]">
+                        <Loader2 className="animate-spin mb-4 text-[var(--primary)]" size={32} />
+                        <p className="text-sm font-bold uppercase tracking-widest">Memuat daftar pesanan...</p>
                     </div>
                 ) : orders.length === 0 ? (
-                    <div className="bg-white dark:bg-gray-900 rounded-3xl border border-gray-100 dark:border-gray-800 shadow-sm p-12 text-center transition-colors">
-                        <div className="w-24 h-24 bg-gray-50 dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-6 text-gray-400 dark:text-gray-500">
+                    <div className="bg-[var(--surface-primary)] rounded-[2rem] border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] p-16 text-center transition-colors">
+                        <div className="w-24 h-24 bg-[var(--surface-secondary)] border border-[var(--border-soft)] rounded-full flex items-center justify-center mx-auto mb-8 text-[var(--primary)]">
                             <Package size={40} />
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Belum ada pesanan</h2>
-                        <p className="text-gray-500 dark:text-gray-400 mb-8 max-w-md mx-auto">Anda belum pernah melakukan pemesanan. Yuk telusuri produk kami dan mulai belanja!</p>
+                        <h2 className="font-display text-3xl font-bold text-[var(--text-primary)] mb-4">Belum ada pesanan</h2>
+                        <p className="text-[var(--text-secondary)] mb-10 max-w-md mx-auto leading-relaxed">Anda belum pernah melakukan pemesanan. Mulai telusuri koleksi kami dan temukan mahakarya Anda.</p>
                         <Link
                             to="/explore"
-                            className="inline-flex items-center justify-center bg-gray-900 dark:bg-orange-600 text-white font-bold px-8 py-3 rounded-xl hover:bg-gray-800 dark:hover:bg-orange-700 transition-colors"
+                            className="btn-atelier-primary px-10 py-4"
                         >
-                            Mulai Belanja
+                            Eksplorasi Sekarang
                         </Link>
                     </div>
                 ) : (
                     <div className="space-y-6">
-                        <div className="flex items-center justify-between mb-8">
-                            <h1 className="text-2xl md:text-3xl font-black text-gray-900 dark:text-white">Pesanan Saya</h1>
-                            <span className="text-sm font-medium text-gray-500 dark:text-gray-400">({orders.length} Pesanan)</span>
+                        <div className="flex items-center justify-between mb-10 border-b border-[var(--border-premium)] pb-6">
+                            <h1 className="font-display text-4xl font-bold text-[var(--text-primary)]">Pesanan Saya</h1>
+                            <span className="text-xs font-black uppercase tracking-widest text-[var(--text-muted)] bg-[var(--surface-secondary)] px-4 py-2 rounded-full border border-[var(--border-soft)]">{orders.length} Pesanan</span>
                         </div>
                         {orders.map((order) => {
                             const config = getStatusConfig(order.status, order.payment_status);
@@ -204,21 +204,21 @@ export const OrdersPage = () => {
                                 <div
                                     key={order.id}
                                     onClick={() => navigate(`/account/orders/${order.id}`)}
-                                    className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm hover:shadow-md transition-all cursor-pointer overflow-hidden group"
+                                    className="bg-[var(--surface-primary)] rounded-[2rem] border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] hover:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] hover:border-[var(--primary)]/30 transition-all duration-500 cursor-pointer overflow-hidden group"
                                 >
-                                    <div className="px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-between gap-4 bg-gray-50/50 dark:bg-gray-950/50">
-                                        <div className="flex items-center gap-4">
-                                            <div className="p-2 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-orange-600 dark:text-orange-400">
+                                    <div className="px-6 md:px-8 py-5 border-b border-[var(--border-premium)] flex flex-wrap items-center justify-between gap-4 bg-[var(--surface-secondary)]/50">
+                                        <div className="flex items-center gap-5">
+                                            <div className="p-3 bg-[var(--primary)]/10 border border-[var(--primary)]/20 rounded-xl text-[var(--primary)]">
                                                 <Package size={20} />
                                             </div>
                                             <div>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider">Nomor Pesanan</p>
-                                                <p className="text-sm font-black text-gray-900 dark:text-white">{order.order_number}</p>
+                                                <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-1">Nomor Pesanan</p>
+                                                <p className="text-sm font-mono font-bold text-[var(--text-primary)]">{order.order_number}</p>
                                             </div>
                                         </div>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm text-gray-400 dark:text-gray-500">{formatDate(order.created_at)}</span>
-                                            <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${config.bg} ${config.color} ${config.border} text-xs font-bold uppercase tracking-wider dark:bg-opacity-20`}>
+                                        <div className="flex items-center gap-4">
+                                            <span className="text-xs font-bold text-[var(--text-muted)]">{formatDate(order.created_at)}</span>
+                                            <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${config.bg} ${config.color} ${config.border} text-[10px] font-black uppercase tracking-widest bg-opacity-20`}>
                                                 <StatusIcon size={14} />
                                                 {config.label}
                                             </div>
@@ -226,55 +226,55 @@ export const OrdersPage = () => {
                                     </div>
 
                                     {/* Body */}
-                                    <div className="p-6 flex flex-col md:flex-row gap-6">
+                                    <div className="px-6 md:px-8 py-6 flex flex-col md:flex-row gap-8">
                                         <div className="flex-1 min-w-0">
                                             {firstItem && (
-                                                <div className="flex gap-4">
-                                                    <div className="w-20 h-20 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-800 overflow-hidden shrink-0">
+                                                <div className="flex gap-5">
+                                                    <div className="w-24 h-24 bg-[var(--surface-secondary)] rounded-xl border border-[var(--border-premium)] overflow-hidden shrink-0">
                                                         <ImageFallback
                                                             src={getImageUrl(firstItem.product?.images?.[0]?.url)}
                                                             alt={firstItem.product_name_snapshot}
-                                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                                         />
                                                     </div>
-                                                    <div className="flex-1 min-w-0 py-1">
-                                                        <h4 className="font-bold text-gray-900 dark:text-white line-clamp-1 mb-1 transition-colors group-hover:text-orange-600">{firstItem.product_name_snapshot}</h4>
+                                                    <div className="flex-1 min-w-0 py-1 flex flex-col justify-center">
+                                                        <h4 className="font-bold text-base text-[var(--text-primary)] line-clamp-1 mb-2 transition-colors group-hover:text-[var(--primary)]">{firstItem.product_name_snapshot}</h4>
                                                         {firstItem.variation_name_snapshot && (
-                                                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Varian: {firstItem.variation_name_snapshot}</p>
+                                                            <p className="text-xs font-medium text-[var(--text-secondary)] mb-2">Varian: {firstItem.variation_name_snapshot}</p>
                                                         )}
-                                                        <p className="text-xs text-gray-500 dark:text-gray-400">{firstItem.qty} barang x {formatPrice(firstItem.unit_price_sen)}</p>
+                                                        <p className="text-xs font-mono text-[var(--text-muted)]">{firstItem.qty} × {formatPrice(firstItem.unit_price_sen)}</p>
                                                     </div>
                                                 </div>
                                             )}
                                             {otherCount > 0 && (
-                                                <div className="mt-4 text-sm font-medium text-gray-500 pl-24">
-                                                    + {otherCount} produk lainnya
+                                                <div className="mt-5 text-[10px] font-black uppercase tracking-widest text-[var(--text-muted)] pl-[116px]">
+                                                    + {otherCount} karya lainnya
                                                 </div>
                                             )}
                                         </div>
 
-                                        <div className="w-full md:w-48 shrink-0 flex flex-col justify-center border-t md:border-t-0 md:border-l border-gray-100 dark:border-gray-800 pt-4 md:pt-0 md:pl-6">
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 font-bold uppercase tracking-wider mb-1">Total Belanja</p>
-                                            <p className="text-xl font-black text-gray-900 dark:text-white">{formatPrice(order.total_sen)}</p>
+                                        <div className="w-full md:w-48 shrink-0 flex flex-col justify-center border-t md:border-t-0 md:border-l border-[var(--border-premium)] pt-5 md:pt-0 md:pl-8">
+                                            <p className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest mb-2">Total Belanja</p>
+                                            <p className="text-xl font-mono font-bold text-[var(--primary)]">{formatPrice(order.total_sen)}</p>
                                         </div>
                                     </div>
 
                                     {/* Footer */}
-                                    <div className="px-6 py-4 bg-gray-50 dark:bg-gray-950/50 border-t border-gray-100 dark:border-gray-800 flex flex-wrap items-center justify-end gap-3 transition-colors">
+                                    <div className="px-6 md:px-8 py-5 bg-[var(--surface-secondary)]/30 border-t border-[var(--border-premium)] flex flex-wrap items-center justify-end gap-4 transition-colors">
                                         <Link
                                             to={`/account/orders/${order.id}`}
-                                            className="px-6 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 font-bold text-sm rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                                            className="px-6 py-3 bg-transparent border border-[var(--border-premium)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-soft)] hover:bg-[var(--surface-hover)] font-bold text-xs uppercase tracking-widest rounded-xl transition-all"
                                         >
                                             Lihat Detail
                                         </Link>
                                         {order.status === 'PENDING' && (
-                                            <div className="flex gap-2">
+                                            <div className="flex gap-3">
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handleVerifyPayment(order.order_number);
                                                     }}
-                                                    className="px-6 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 font-bold text-sm rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                                                    className="px-6 py-3 bg-[var(--surface-primary)] border border-[var(--border-premium)] text-[var(--text-primary)] font-bold text-xs uppercase tracking-widest rounded-xl hover:border-[var(--primary)] transition-colors"
                                                 >
                                                     Cek Status
                                                 </button>
@@ -283,16 +283,16 @@ export const OrdersPage = () => {
                                                         e.stopPropagation();
                                                         handleCancelOrder(order.id);
                                                     }}
-                                                    className="px-6 py-2.5 bg-white dark:bg-gray-900 border border-red-200 dark:border-red-900/30 text-red-600 dark:text-red-400 font-bold text-sm rounded-xl hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors"
+                                                    className="px-6 py-3 bg-red-500/10 border border-red-500/30 text-red-500 font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-colors"
                                                 >
-                                                    Batalkan Pesanan
+                                                    Batal
                                                 </button>
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         handlePayNow(order);
                                                     }}
-                                                    className="px-6 py-2.5 bg-orange-600 text-white font-bold text-sm rounded-xl hover:bg-orange-700 transition-colors shadow-sm"
+                                                    className="btn-atelier-primary px-8 py-3 text-xs"
                                                 >
                                                     Bayar Sekarang
                                                 </button>

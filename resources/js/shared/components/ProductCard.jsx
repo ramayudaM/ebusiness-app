@@ -163,57 +163,57 @@ export const ProductCard = ({ product }) => {
         <>
             <div
                 onClick={() => navigate(`/product/${product.id}`)}
-                className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg dark:hover:shadow-orange-900/10 transition-all duration-300 group flex flex-col h-full cursor-pointer relative"
+                className="bg-[var(--surface-primary)] border border-[var(--border-premium)] rounded-[1.5rem] overflow-hidden shadow-[var(--shadow-subtle)] hover:shadow-2xl hover:border-[var(--primary)]/50 transition-all duration-500 group flex flex-col h-full cursor-pointer relative"
             >
-                <div className="relative aspect-[4/3] bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                <div className="relative aspect-[4/3] bg-[var(--bg-primary)] overflow-hidden">
                     <ImageFallback
                         src={product.primary_image_url}
                         alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         fallbackType="instrument,guitar"
                     />
 
                     {/* Wishlist Button Overlay */}
                     <button
                         onClick={handleWishlist}
-                        className={`absolute top-2 right-2 p-2 rounded-full shadow-sm transition-all duration-300 transform hover:scale-110 z-10 ${isInWishlist
-                            ? 'bg-red-500 text-white'
-                            : 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm text-gray-400 hover:text-red-500'
+                        className={`absolute top-3 right-3 p-2.5 rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 z-10 backdrop-blur-md border ${isInWishlist
+                            ? 'bg-red-500/90 border-red-400 text-white shadow-red-500/20'
+                            : 'bg-[var(--surface-primary)]/80 border-[var(--border-soft)] text-[var(--text-muted)] hover:text-red-500 hover:border-red-500/30'
                             }`}
                     >
                         <Heart size={16} className={isInWishlist ? 'fill-current' : ''} />
                     </button>
 
                     {hasPromo && (
-                        <div className="absolute top-2 left-2 bg-red-600 text-white text-[10px] font-bold px-2 py-1 rounded">
-                            PROMO
+                        <div className="absolute top-3 left-3 bg-gradient-to-r from-[var(--primary)] to-orange-500 text-white text-[9px] font-black tracking-widest px-3 py-1.5 rounded-full shadow-lg shadow-orange-500/30">
+                            PENAWARAN
                         </div>
                     )}
                 </div>
 
-                <div className="p-4 flex flex-col flex-1">
-                    <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm line-clamp-2 h-10 mb-2 group-hover:text-orange-600 transition-colors">
+                <div className="p-5 flex flex-col flex-1 relative">
+                    <h3 className="font-display font-bold text-[var(--text-primary)] text-sm md:text-base line-clamp-2 h-12 mb-3 group-hover:text-[var(--primary)] transition-colors">
                         {product.name}
                     </h3>
 
-                    <div className="flex items-center gap-1 mb-2">
-                        <span className="text-yellow-400 text-sm leading-none">★</span>
-                        <span className="text-xs text-gray-600 dark:text-gray-400 font-medium">{product.average_rating ? Number(product.average_rating).toFixed(1) : '0.0'}</span>
-                        <span className="text-xs text-gray-400 dark:text-gray-500">({product.review_count || 0})</span>
+                    <div className="flex items-center gap-1.5 mb-4">
+                        <span className="text-[var(--primary)] text-sm leading-none drop-shadow-[0_0_8px_rgba(234,88,12,0.5)]">★</span>
+                        <span className="text-xs text-[var(--text-primary)] font-bold">{product.average_rating ? Number(product.average_rating).toFixed(1) : '0.0'}</span>
+                        <span className="text-[10px] text-[var(--text-muted)] font-medium">({product.review_count || 0} ulasan)</span>
                     </div>
 
                     <div className="mt-auto">
                         {hasPromo ? (
                             <div className="flex flex-col gap-1">
-                                <span className="text-[11px] text-gray-400 line-through leading-none">
+                                <span className="text-[10px] text-[var(--text-muted)] font-bold line-through tracking-wider">
                                     {formatRupiah(product.price_sen)}
                                 </span>
-                                <span className="text-base font-bold text-orange-600 leading-none">
+                                <span className="text-lg font-black text-[var(--primary)] tracking-tight">
                                     {formatRupiah(product.promo_price_sen)}
                                 </span>
                             </div>
                         ) : (
-                            <div className="text-base font-bold text-orange-600">
+                            <div className="text-lg font-black text-[var(--text-primary)] tracking-tight group-hover:text-[var(--primary)] transition-colors">
                                 {formatRupiah(product.price_sen)}
                             </div>
                         )}
@@ -225,9 +225,9 @@ export const ProductCard = ({ product }) => {
                             e.preventDefault();
                             handleAddToCart();
                         }}
-                        className={`mt-4 w-full flex items-center justify-center gap-2 py-1.5 px-3 rounded font-medium text-xs transition-all ${isDisabled
-                            ? 'bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 border border-gray-200 dark:border-gray-700 cursor-not-allowed'
-                            : 'bg-white dark:bg-gray-900 border border-orange-600 text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/30'
+                        className={`mt-5 w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl font-bold text-xs uppercase tracking-widest transition-all duration-300 ${isDisabled
+                            ? 'bg-[var(--surface-secondary)] text-[var(--text-muted)] border border-[var(--border-soft)] cursor-not-allowed'
+                            : 'bg-transparent border border-[var(--primary)] text-[var(--primary)] hover:bg-[var(--primary)] hover:text-[var(--bg-primary)] hover:shadow-lg hover:shadow-[var(--primary)]/20'
                             }`}
                         disabled={isDisabled}
                     >
