@@ -72,11 +72,12 @@ function AdminAvatar({ compact = false }) {
   return (
     <div className="flex items-center gap-3">
       <div
-        className={`relative flex shrink-0 items-center justify-center rounded-2xl font-black shadow-sm ${compact ? 'h-10 w-10 text-sm' : 'h-11 w-11 text-base'
+        className={`relative flex shrink-0 items-center justify-center rounded-2xl font-bold shadow-sm ${compact ? 'h-10 w-10 text-sm' : 'h-11 w-11 text-base'
           }`}
         style={{
-          background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})`,
+          background: `linear-gradient(135deg, ${theme.primary}, ${theme.brass})`,
           color: '#FFFFFF',
+          fontFamily: "'Manrope', sans-serif",
         }}
       >
         A
@@ -84,12 +85,12 @@ function AdminAvatar({ compact = false }) {
       </div>
 
       {!compact && (
-        <div className="min-w-0">
-          <p className="truncate text-sm font-black leading-none text-slate-900">
-            Admin Nada
+        <div className="min-w-0" style={{ fontFamily: "'Manrope', sans-serif" }}>
+          <p className="truncate text-sm font-bold leading-none" style={{ color: theme.textPrimary }}>
+            Admin NadaKita
           </p>
-          <p className="mt-1 text-xs font-bold uppercase tracking-wide text-slate-400">
-            Super Admin
+          <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: theme.textMuted }}>
+            Sonic Control Room
           </p>
         </div>
       )}
@@ -110,7 +111,7 @@ function SidebarContent({
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col" style={{ fontFamily: "'Manrope', sans-serif" }}>
       <div
         className={`flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-between'
           }`}
@@ -121,22 +122,22 @@ function SidebarContent({
             }`}
         >
           <div
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[18px] font-black text-white shadow-lg"
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl font-bold text-white shadow-lg"
             style={{
-              background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})`,
-              boxShadow: `0 14px 30px ${theme.primary}35`,
+              background: `linear-gradient(135deg, ${theme.primary}, ${theme.brass})`,
+              boxShadow: `0 10px 25px ${theme.primaryGlow}`,
             }}
           >
-            N
+            ♪
           </div>
 
           {!sidebarCollapsed && (
             <div>
-              <h2 className="text-lg font-black leading-none text-white">
-                NadaKita Admin
+              <h2 className="text-base font-bold leading-none text-white tracking-tight">
+                NadaKita
               </h2>
-              <p className="mt-2 text-[11px] font-bold uppercase tracking-[0.22em] text-white/40">
-                Premium Curator
+              <p className="mt-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-white/30">
+                Sonic Control Room
               </p>
             </div>
           )}
@@ -145,7 +146,7 @@ function SidebarContent({
         <button
           type="button"
           onClick={onCloseMobile}
-          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/5 text-white/70 transition hover:bg-white/10 xl:hidden"
+          className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white/5 text-white/60 transition hover:bg-white/10 xl:hidden"
         >
           <AdminIcon name="x" />
         </button>
@@ -154,7 +155,7 @@ function SidebarContent({
           <button
             type="button"
             onClick={onToggle}
-            className="hidden h-10 w-10 items-center justify-center rounded-2xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white xl:flex"
+            className="hidden h-10 w-10 items-center justify-center rounded-2xl bg-white/5 text-white/50 transition hover:bg-white/10 hover:text-white xl:flex"
             title="Sembunyikan sidebar"
           >
             <AdminIcon name="chevronLeft" />
@@ -173,12 +174,12 @@ function SidebarContent({
           {menuGroups.map((group) => (
             <div key={group.label}>
               {!sidebarCollapsed && (
-                <p className="mb-3 px-4 text-[10px] font-black uppercase tracking-[0.24em] text-white/28">
+                <p className="mb-3 px-4 text-[9px] font-bold uppercase tracking-[0.28em] text-white/25">
                   {group.label}
                 </p>
               )}
 
-              <nav className="space-y-1.5">
+              <nav className="space-y-1">
                 {group.items.map((item) => (
                   <SidebarItem
                     key={item.activeKey}
@@ -195,28 +196,28 @@ function SidebarContent({
         </div>
       </div>
 
-      <div className="border-t border-white/10 pt-5">
+      <div className="border-t border-white/8 pt-5">
         {!sidebarCollapsed ? (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <a
               href="/admin/settings"
-              className="block rounded-[24px] border border-white/10 bg-white/[0.04] p-4 transition hover:bg-white/[0.07]"
+              className="block rounded-2xl border border-white/8 bg-white/[0.03] p-4 transition hover:bg-white/[0.06]"
             >
               <div className="flex items-center gap-3">
                 <div
-                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl font-black text-white"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-bold text-white text-sm"
                   style={{
-                    background: `linear-gradient(135deg, ${theme.primary}, ${theme.primaryDark})`,
+                    background: `linear-gradient(135deg, ${theme.primary}, ${theme.brass})`,
                   }}
                 >
                   A
                 </div>
 
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-black text-white">
+                  <p className="truncate text-sm font-bold text-white">
                     Admin NadaKita
                   </p>
-                  <p className="mt-1 text-[11px] font-bold uppercase tracking-wide text-white/35">
+                  <p className="mt-0.5 text-[10px] font-medium text-white/30">
                     Master Access
                   </p>
                 </div>
@@ -226,7 +227,7 @@ function SidebarContent({
             <button
               type="button"
               onClick={handleLogout}
-              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-white/55 transition hover:bg-white/5 hover:text-white"
+              className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold text-white/45 transition hover:bg-white/5 hover:text-white"
             >
               <AdminIcon name="logout" />
               <span>Keluar</span>
@@ -237,7 +238,7 @@ function SidebarContent({
             <button
               type="button"
               onClick={onToggle}
-              className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 text-white/50 transition hover:bg-white/10 hover:text-white"
               title="Tampilkan sidebar"
             >
               <AdminIcon name="chevronRight" />
@@ -246,7 +247,7 @@ function SidebarContent({
             <button
               type="button"
               onClick={handleLogout}
-              className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 text-white/60 transition hover:bg-white/10 hover:text-white"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/5 text-white/50 transition hover:bg-white/10 hover:text-white"
               title="Keluar"
             >
               <AdminIcon name="logout" />
@@ -273,7 +274,7 @@ export default function AdminLayout({
   )
 
   const isDark = themeMode === 'dark'
-  const sidebarWidth = sidebarCollapsed ? 'xl:ml-[96px]' : 'xl:ml-[292px]'
+  const sidebarWidth = sidebarCollapsed ? 'xl:ml-[96px]' : 'xl:ml-[280px]'
 
   const breadcrumbItems = String(breadcrumb)
     .split('/')
@@ -300,25 +301,29 @@ export default function AdminLayout({
 
   return (
     <div
-      className="min-h-screen text-slate-950"
+      className="min-h-screen"
       style={{
-        backgroundColor: isDark ? '#0B1220' : theme.background,
+        backgroundColor: isDark ? '#080E1A' : theme.background,
+        color: isDark ? '#E8E4DE' : theme.textPrimary,
+        fontFamily: "'Manrope', sans-serif",
       }}
     >
       {mobileSidebarOpen && (
         <button
           type="button"
           onClick={() => setMobileSidebarOpen(false)}
-          className="fixed inset-0 z-40 bg-slate-950/50 backdrop-blur-sm xl:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm xl:hidden"
           aria-label="Close sidebar overlay"
         />
       )}
 
+      {/* Desktop Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 hidden h-screen flex-col border-r border-white/10 p-5 text-white shadow-2xl transition-all duration-300 xl:flex ${sidebarCollapsed ? 'w-[96px]' : 'w-[292px]'
+        className={`fixed left-0 top-0 z-50 hidden h-screen flex-col p-5 text-white shadow-2xl transition-all duration-300 xl:flex ${sidebarCollapsed ? 'w-[96px]' : 'w-[280px]'
           }`}
         style={{
-          background: `linear-gradient(180deg, ${theme.sidebar}, ${theme.navy})`,
+          background: `linear-gradient(180deg, ${theme.sidebar} 0%, ${theme.navyDark} 100%)`,
+          borderRight: `1px solid rgba(255,255,255,0.06)`,
         }}
       >
         <SidebarContent
@@ -329,11 +334,13 @@ export default function AdminLayout({
         />
       </aside>
 
+      {/* Mobile Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-50 h-screen w-[292px] border-r border-white/10 p-5 text-white shadow-2xl transition-transform duration-300 xl:hidden ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        className={`fixed left-0 top-0 z-50 h-screen w-[280px] p-5 text-white shadow-2xl transition-transform duration-300 xl:hidden ${mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
         style={{
-          background: `linear-gradient(180deg, ${theme.sidebar}, ${theme.navy})`,
+          background: `linear-gradient(180deg, ${theme.sidebar} 0%, ${theme.navyDark} 100%)`,
+          borderRight: `1px solid rgba(255,255,255,0.06)`,
         }}
       >
         <SidebarContent
@@ -344,20 +351,27 @@ export default function AdminLayout({
         />
       </aside>
 
+      {/* Main Content */}
       <main className={`min-h-screen transition-all duration-300 ${sidebarWidth}`}>
+        {/* Top Bar */}
         <header
           className="sticky top-0 z-30 border-b backdrop-blur-xl"
           style={{
-            backgroundColor: isDark ? 'rgba(15,23,42,0.86)' : `${theme.background}E6`,
-            borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(226,232,240,0.8)',
+            backgroundColor: isDark ? 'rgba(8,14,26,0.88)' : `${theme.background}EE`,
+            borderColor: isDark ? 'rgba(255,255,255,0.06)' : theme.borderSoft,
           }}
         >
-          <div className="flex h-[76px] items-center justify-between gap-4 px-4 md:px-8">
+          <div className="flex h-[72px] items-center justify-between gap-4 px-4 md:px-8">
             <div className="flex min-w-0 items-center gap-3">
               <button
                 type="button"
                 onClick={() => setMobileSidebarOpen(true)}
-                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 xl:hidden"
+                className="flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm transition hover:shadow-md xl:hidden"
+                style={{
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+                  borderColor: isDark ? 'rgba(255,255,255,0.08)' : theme.border,
+                  color: isDark ? '#E8E4DE' : theme.textSecondary,
+                }}
               >
                 <AdminIcon name="menu" />
               </button>
@@ -366,7 +380,12 @@ export default function AdminLayout({
                 <button
                   type="button"
                   onClick={() => setSidebarCollapsed(false)}
-                  className="hidden h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 xl:flex"
+                  className="hidden h-10 w-10 items-center justify-center rounded-xl border shadow-sm transition hover:shadow-md xl:flex"
+                  style={{
+                    backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+                    borderColor: isDark ? 'rgba(255,255,255,0.08)' : theme.border,
+                    color: isDark ? '#E8E4DE' : theme.textSecondary,
+                  }}
                   title="Tampilkan sidebar"
                 >
                   <AdminIcon name="chevronRight" />
@@ -374,31 +393,29 @@ export default function AdminLayout({
               )}
 
               <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-wrap items-center gap-1.5">
                   {breadcrumbItems.map((item, index) => (
-                    <div key={`${item}-${index}`} className="flex items-center gap-2">
+                    <div key={`${item}-${index}`} className="flex items-center gap-1.5">
                       <span
-                        className={`text-[11px] font-black uppercase tracking-[0.18em] ${index === breadcrumbItems.length - 1
-                            ? 'text-orange-600'
-                            : isDark
-                              ? 'text-slate-500'
-                              : 'text-slate-400'
-                          }`}
+                        className="text-[10px] font-bold uppercase tracking-[0.15em]"
+                        style={{
+                          color: index === breadcrumbItems.length - 1
+                            ? theme.primary
+                            : isDark ? 'rgba(255,255,255,0.3)' : theme.textMuted,
+                        }}
                       >
                         {item}
                       </span>
 
                       {index < breadcrumbItems.length - 1 && (
-                        <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>
-                          ›
-                        </span>
+                        <span style={{ color: isDark ? 'rgba(255,255,255,0.15)' : theme.textMuted }}>›</span>
                       )}
                     </div>
                   ))}
                 </div>
 
                 <h1
-                  className="mt-1 truncate text-lg font-black tracking-tight md:text-2xl"
+                  className="mt-0.5 truncate text-lg font-bold tracking-tight"
                   style={{ color: isDark ? '#FFFFFF' : theme.textPrimary }}
                 >
                   {title}
@@ -406,59 +423,80 @@ export default function AdminLayout({
               </div>
             </div>
 
-            <div className="hidden max-w-xl flex-1 lg:flex">
+            {/* Search */}
+            <div className="hidden max-w-md flex-1 lg:flex">
               <div
-                className="flex w-full items-center gap-3 rounded-[22px] border px-4 py-3 shadow-sm"
+                className="flex w-full items-center gap-3 rounded-xl border px-4 py-2.5 transition-all focus-within:shadow-md"
                 style={{
-                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
-                  borderColor: isDark ? 'rgba(255,255,255,0.08)' : theme.border,
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.04)' : '#FFFFFF',
+                  borderColor: isDark ? 'rgba(255,255,255,0.06)' : theme.border,
                 }}
               >
-                <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>
+                <span style={{ color: isDark ? 'rgba(255,255,255,0.3)' : theme.textMuted }}>
                   <AdminIcon name="search" />
                 </span>
 
                 <input
                   type="text"
                   placeholder={searchPlaceholder}
-                  className="w-full border-0 bg-transparent text-sm font-semibold outline-none ring-0 placeholder:text-slate-400 focus:border-0 focus:outline-none focus:ring-0"
-                  style={{ color: isDark ? '#FFFFFF' : theme.textPrimary }}
+                  className="w-full border-0 bg-transparent text-sm font-medium outline-none ring-0 placeholder:font-normal focus:border-0 focus:outline-none focus:ring-0"
+                  style={{
+                    color: isDark ? '#E8E4DE' : theme.textPrimary,
+                    fontFamily: "'Manrope', sans-serif",
+                  }}
                 />
               </div>
             </div>
 
-            <div className="relative flex items-center gap-3">
+            {/* Actions */}
+            <div className="relative flex items-center gap-2">
               <button
                 type="button"
                 onClick={handleToggleTheme}
-                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50"
-                title={isDark ? 'Gunakan light mode' : 'Gunakan dark mode'}
+                className="flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm transition hover:shadow-md"
+                style={{
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+                  borderColor: isDark ? 'rgba(255,255,255,0.08)' : theme.border,
+                  color: isDark ? '#E8E4DE' : theme.textSecondary,
+                }}
+                title={isDark ? 'Light mode' : 'Dark mode'}
               >
                 <AdminIcon name={isDark ? 'sun' : 'moon'} />
               </button>
 
               <a
                 href="/admin/notifications"
-                className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50"
-                title="Notifikasi admin"
+                className="relative flex h-10 w-10 items-center justify-center rounded-xl border shadow-sm transition hover:shadow-md"
+                style={{
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+                  borderColor: isDark ? 'rgba(255,255,255,0.08)' : theme.border,
+                  color: isDark ? '#E8E4DE' : theme.textSecondary,
+                }}
+                title="Notifikasi"
               >
                 <AdminIcon name="bell" />
                 <span
-                  className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full border-2 border-white"
-                  style={{ backgroundColor: theme.primary }}
+                  className="absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full border-2"
+                  style={{ 
+                    backgroundColor: theme.primary,
+                    borderColor: isDark ? '#080E1A' : theme.background,
+                  }}
                 />
               </a>
 
-              <div className="hidden h-9 w-px bg-slate-200 md:block" />
+              <div className="hidden h-8 w-px md:block" style={{ backgroundColor: isDark ? 'rgba(255,255,255,0.06)' : theme.borderSoft }} />
 
               <button
                 type="button"
                 onClick={() => setProfileOpen((prev) => !prev)}
-                className="hidden items-center gap-3 rounded-[22px] border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:bg-slate-50 md:flex"
+                className="hidden items-center gap-3 rounded-xl border px-3 py-1.5 shadow-sm transition hover:shadow-md md:flex"
+                style={{
+                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
+                  borderColor: isDark ? 'rgba(255,255,255,0.08)' : theme.border,
+                }}
               >
                 <AdminAvatar />
-
-                <span className="text-slate-400 transition hover:text-slate-700">
+                <span style={{ color: isDark ? 'rgba(255,255,255,0.3)' : theme.textMuted }}>
                   <AdminIcon name="chevronDown" />
                 </span>
               </button>
@@ -472,51 +510,55 @@ export default function AdminLayout({
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 top-14 z-50 w-[280px] overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-2xl">
-                  <div className="border-b border-slate-100 p-4">
+                <div
+                  className="absolute right-0 top-14 z-50 w-[260px] overflow-hidden rounded-2xl border shadow-2xl"
+                  style={{
+                    backgroundColor: isDark ? '#10182A' : '#FFFFFF',
+                    borderColor: isDark ? 'rgba(255,255,255,0.08)' : theme.border,
+                  }}
+                >
+                  <div className="p-4" style={{ borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : theme.borderSoft}` }}>
                     <AdminAvatar />
                   </div>
 
-                  <div className="p-2">
-                    <a
-                      href="/admin/settings"
-                      className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-                    >
-                      <AdminIcon name="profile" />
-                      Profil Admin
-                    </a>
-
-                    <a
-                      href="/admin/settings"
-                      className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-                    >
-                      <AdminIcon name="settings" />
-                      Pengaturan
-                    </a>
-
-                    <a
-                      href="/admin/notifications"
-                      className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-                    >
-                      <AdminIcon name="bell" />
-                      Notifikasi
-                    </a>
+                  <div className="p-1.5">
+                    {[
+                      { href: '/admin/settings', icon: 'profile', label: 'Profil Admin' },
+                      { href: '/admin/settings', icon: 'settings', label: 'Pengaturan' },
+                      { href: '/admin/notifications', icon: 'bell', label: 'Notifikasi' },
+                    ].map(item => (
+                      <a
+                        key={item.label}
+                        href={item.href}
+                        className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm font-medium transition"
+                        style={{ color: isDark ? '#E8E4DE' : theme.textPrimary }}
+                        onMouseEnter={e => e.currentTarget.style.backgroundColor = isDark ? 'rgba(255,255,255,0.05)' : theme.surfaceSoft}
+                        onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                      >
+                        <AdminIcon name={item.icon} />
+                        {item.label}
+                      </a>
+                    ))}
 
                     <button
                       type="button"
                       onClick={handleToggleTheme}
-                      className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                      className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-medium transition"
+                      style={{ color: isDark ? '#E8E4DE' : theme.textPrimary }}
+                      onMouseEnter={e => e.currentTarget.style.backgroundColor = isDark ? 'rgba(255,255,255,0.05)' : theme.surfaceSoft}
+                      onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
                     >
                       <AdminIcon name={isDark ? 'sun' : 'moon'} />
                       {isDark ? 'Light Mode' : 'Dark Mode'}
                     </button>
                   </div>
 
-                  <div className="border-t border-slate-100 p-2">
+                  <div className="p-1.5" style={{ borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : theme.borderSoft}` }}>
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-black text-rose-600 transition hover:bg-rose-50"
+                      className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left text-sm font-bold transition hover:bg-red-500/10"
+                      style={{ color: theme.danger }}
                     >
                       <AdminIcon name="logout" />
                       Keluar
@@ -528,7 +570,7 @@ export default function AdminLayout({
           </div>
         </header>
 
-        <section className="mx-auto max-w-[1480px] space-y-6 p-4 md:p-8">
+        <section className="mx-auto max-w-[1440px] space-y-6 p-4 md:p-8">
           {children}
         </section>
       </main>

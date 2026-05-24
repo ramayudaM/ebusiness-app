@@ -1,35 +1,49 @@
 export const adminTheme = {
-  primary: '#FF4D1C',
-  primaryDark: '#C7350D',
-  primarySoft: '#FFF1EC',
+  // Primary brand - synchronized with Sonic Atelier
+  primary: '#E8732A',
+  primaryDark: '#C45A1A',
+  primarySoft: '#FFF3ED',
+  primaryGlow: 'rgba(232, 115, 42, 0.15)',
 
-  navy: '#0F172A',
-  navyDark: '#0B1220',
-  sidebar: '#0B1220',
+  // Dark palette - cinematic studio
+  navy: '#0C1322',
+  navyDark: '#080E1A',
+  sidebar: '#0A0F1C',
+  sidebarHover: 'rgba(232, 115, 42, 0.08)',
+  sidebarActive: 'rgba(232, 115, 42, 0.12)',
 
-  background: '#F6F7F9',
+  // Light surfaces
+  background: '#F4F3F0',
   surface: '#FFFFFF',
-  surfaceSoft: '#F9FAFB',
-  surfaceMuted: '#F3F4F6',
+  surfaceSoft: '#FAF9F7',
+  surfaceMuted: '#F1F0ED',
 
-  border: '#E5E7EB',
-  borderSoft: '#EEF0F3',
+  // Borders
+  border: '#E2DFD9',
+  borderSoft: '#ECEAE5',
+  borderPremium: 'rgba(232, 115, 42, 0.12)',
 
-  textPrimary: '#111827',
-  textSecondary: '#667085',
-  textMuted: '#98A2B3',
+  // Typography
+  textPrimary: '#1A1714',
+  textSecondary: '#6B6560',
+  textMuted: '#9C958E',
 
+  // Status
   success: '#16A34A',
   successSoft: '#ECFDF3',
 
-  warning: '#F59E0B',
-  warningSoft: '#FFFBEB',
+  warning: '#E8A317',
+  warningSoft: '#FEF9EC',
 
-  danger: '#EF4444',
+  danger: '#DC2626',
   dangerSoft: '#FEF2F2',
 
   blue: '#2563EB',
   blueSoft: '#EFF6FF',
+
+  // Accent
+  brass: '#C9A96E',
+  copper: '#E8732A',
 
   slate: '#475569',
   slateSoft: '#F1F5F9',

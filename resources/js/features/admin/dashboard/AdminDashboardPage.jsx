@@ -635,8 +635,8 @@ export default function AdminDashboardPage() {
 
                           <span
                             className={`shrink-0 rounded-full px-3 py-1 text-xs font-black ${Number(product.stock_qty || 0) <= 5
-                                ? 'bg-rose-50 text-rose-700'
-                                : 'bg-amber-50 text-amber-700'
+                              ? 'bg-rose-50 text-rose-700'
+                              : 'bg-amber-50 text-amber-700'
                               }`}
                           >
                             {product.stock_qty || 0}
