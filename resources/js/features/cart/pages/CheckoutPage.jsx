@@ -280,8 +280,8 @@ export const CheckoutPage = () => {
                                                 key={addr.id}
                                                 onClick={() => setSelectedAddressId(addr.id)}
                                                 className={`group p-4 rounded-xl border-2 cursor-pointer transition-all relative ${selectedAddressId === addr.id
-                                                        ? 'border-orange-600 bg-orange-50/30 dark:bg-orange-900/10'
-                                                        : 'border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 bg-white dark:bg-gray-950'
+                                                    ? 'border-orange-600 bg-orange-50/30 dark:bg-orange-900/10'
+                                                    : 'border-gray-100 dark:border-gray-800 hover:border-gray-200 dark:hover:border-gray-700 bg-white dark:bg-gray-950'
                                                     }`}
                                             >
                                                 <div className="flex items-center justify-between mb-2">
@@ -346,8 +346,8 @@ export const CheckoutPage = () => {
                                                 key={idx}
                                                 onClick={() => setSelectedService(service)}
                                                 className={`p-4 rounded-xl border-2 cursor-pointer transition-all flex items-center justify-between ${selectedService?.service === service.service && selectedService?.courier === service.courier
-                                                        ? 'border-blue-600 bg-blue-50/30 dark:bg-blue-900/10'
-                                                        : 'border-gray-50 dark:border-gray-800 hover:border-gray-100 dark:hover:border-gray-700 bg-white dark:bg-gray-950'
+                                                    ? 'border-blue-600 bg-blue-50/30 dark:bg-blue-900/10'
+                                                    : 'border-gray-50 dark:border-gray-800 hover:border-gray-100 dark:hover:border-gray-700 bg-white dark:bg-gray-950'
                                                     }`}
                                             >
                                                 <div>

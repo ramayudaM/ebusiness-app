@@ -294,8 +294,8 @@ const RegisterPage = () => {
                                 onChange={handleChange}
                                 noValidate
                                 className={`w-full pl-10 pr-4 py-2 bg-gray-100 border-2 ${combinedErrors.password_confirmation
-                                        ? 'border-red-500 bg-red-50'
-                                        : 'border-transparent'
+                                    ? 'border-red-500 bg-red-50'
+                                    : 'border-transparent'
                                     } rounded-xl focus:bg-white focus:outline-none focus:border-orange-500 transition-all`}
                                 placeholder="••••••••"
                             />

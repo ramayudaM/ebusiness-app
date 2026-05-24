@@ -240,8 +240,8 @@ export const ProfilePage = () => {
                                 <button
                                     onClick={() => setActiveTab('profile')}
                                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'profile'
-                                            ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600'
-                                            : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                        ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600'
+                                        : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
                                         }`}
                                 >
                                     <User size={18} /> Informasi Profil
@@ -249,8 +249,8 @@ export const ProfilePage = () => {
                                 <button
                                     onClick={() => setActiveTab('addresses')}
                                     className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-all ${activeTab === 'addresses'
-                                            ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600'
-                                            : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                        ? 'bg-orange-50 dark:bg-orange-900/20 text-orange-600'
+                                        : 'text-gray-500 hover:bg-gray-50 dark:hover:bg-gray-800'
                                         }`}
                                 >
                                     <MapPin size={18} /> Daftar Alamat
@@ -370,8 +370,8 @@ export const ProfilePage = () => {
                                                 <div
                                                     key={addr.id}
                                                     className={`p-6 rounded-2xl border transition-all ${addr.is_default
-                                                            ? 'border-orange-500 bg-orange-50/20 dark:bg-orange-900/10'
-                                                            : 'border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-950/30'
+                                                        ? 'border-orange-500 bg-orange-50/20 dark:bg-orange-900/10'
+                                                        : 'border-gray-100 dark:border-gray-800 bg-gray-50/30 dark:bg-gray-950/30'
                                                         }`}
                                                 >
                                                     <div className="flex items-center justify-between mb-4">

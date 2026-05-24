@@ -27,7 +27,7 @@ export default {
         }
       },
       fontFamily: {
-        sans: ['Manrope', ...defaultTheme.fontFamily.sans],
+        sans: ['Manrope', 'sans-serif'],
         display: ['"Instrument Serif"', 'serif'],
         ui: ['Manrope', 'sans-serif'],
       },

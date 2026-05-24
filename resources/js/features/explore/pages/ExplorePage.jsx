@@ -340,8 +340,8 @@ export const ExplorePage = () => {
                                                 key={page}
                                                 onClick={() => handlePageChange(page)}
                                                 className={`w-10 h-10 flex items-center justify-center text-sm font-bold rounded-lg border transition-colors ${meta.current_page === page
-                                                        ? 'bg-orange-600 border-orange-600 text-white shadow-sm'
-                                                        : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                                                    ? 'bg-orange-600 border-orange-600 text-white shadow-sm'
+                                                    : 'bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                                                     }`}
                                             >
                                                 {page}
