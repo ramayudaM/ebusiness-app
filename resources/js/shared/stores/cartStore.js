@@ -1,51 +1,73 @@
 import { create } from 'zustand'
 import api from '@/shared/utils/api'
 
-/**
- * Cart Store untuk mengelola keranjang belanja.
- */
 export const useCartStore = create((set, get) => ({
   items: [],
   isLoading: false,
   
-  // Fetch items from backend
+  // ======================
+  // FETCH CART
+  // ======================
   fetchItems: async () => {
     set({ isLoading: true });
     try {
       const response = await api.get('/cart');
-      const formattedItems = response.data.map(item => ({
+
+      // 🔥 FIX 1: HARUS AMBIL items
+      const data = response.data.items || [];
+
+      const formattedItems = data.map(item => ({
         id: item.product_id,
         cartItemId: item.id,
-        name: item.product.name,
-        price: item.variation ? (item.variation.price_sen || item.product.price_sen) : item.product.price_sen,
-        image: item.product.primary_image_url,
+        name: item.product?.name,
+        price: item.variation 
+          ? (item.variation.price_sen || item.product?.price_sen) 
+          : item.product?.price_sen,
+        image: item.product?.primary_image_url,
         variation: item.variation,
-        quantity: item.quantity,
-        isSelected: !!item.is_selected,
-        slug: item.product.slug
+
+        // 🔥 FIX 2: backend = qty, bukan quantity
+        quantity: item.qty,
+
+        isSelected: item.is_selected ?? true,
+        slug: item.product?.slug
       }));
-      set({ items: [...formattedItems], isLoading: false });
+
+      set({ items: formattedItems, isLoading: false });
+
     } catch (error) {
       console.error('Failed to fetch cart:', error);
       set({ isLoading: false });
     }
   },
 
-  addItem: async (product, variation, quantity = 1) => {
+  // ======================
+  // ADD ITEM
+  // ======================
+  addItem: async (product, variation, quantity = 1, options = {}) => {
     try {
       const response = await api.post('/cart', {
+
+        // 🔥 FIX 3: sesuai backend
         product_id: product.id,
-        product_variation_id: variation?.id || null,
-        quantity: quantity
+        variation_id: variation?.id || null,
+        qty: quantity,
+        select_only: options.selectOnly || false
+
       });
+
       await get().fetchItems();
       return response.data;
+
     } catch (error) {
       console.error('Failed to add item:', error);
       throw error;
     }
   },
 
+  // ======================
+  // REMOVE ITEM
+  // ======================
   removeItem: async (cartItemId) => {
     try {
       await api.delete(`/cart/${cartItemId}`);
@@ -55,20 +77,30 @@ export const useCartStore = create((set, get) => ({
     }
   },
 
+  // ======================
+  // UPDATE QTY
+  // ======================
   updateQuantity: async (cartItemId, quantity) => {
     if (quantity < 1) return;
     try {
-      await api.put(`/cart/${cartItemId}`, { quantity });
+
+      // 🔥 FIX 4: kirim qty, bukan quantity
+      await api.put(`/cart/${cartItemId}`, { qty: quantity });
+
       set({ 
         items: get().items.map(item => 
           item.cartItemId === cartItemId ? { ...item, quantity } : item
         ) 
       });
+
     } catch (error) {
       console.error('Failed to update quantity:', error);
     }
   },
 
+  // ======================
+  // TOGGLE ITEM
+  // ======================
   toggleSelection: async (cartItemId, isSelected) => {
     try {
       await api.put(`/cart/${cartItemId}`, { is_selected: isSelected });
@@ -82,6 +114,9 @@ export const useCartStore = create((set, get) => ({
     }
   },
 
+  // ======================
+  // TOGGLE ALL
+  // ======================
   toggleAllSelection: async (isSelected) => {
     try {
       await api.post('/cart/toggle-all', { is_selected: isSelected });
@@ -93,6 +128,9 @@ export const useCartStore = create((set, get) => ({
     }
   },
 
+  // ======================
+  // CLEAR CART
+  // ======================
   clearCart: async () => {
     try {
       await api.delete('/cart');
@@ -104,10 +142,14 @@ export const useCartStore = create((set, get) => ({
 
   resetCart: () => set({ items: [] }),
 
-  // Getters
+  // ======================
+  // TOTAL ITEMS
+  // ======================
   getTotalItems: () => get().items.reduce((sum, item) => sum + item.quantity, 0),
-  
-  // Hitung total hanya untuk yang dipilih (isSelected)
+
+  // ======================
+  // SELECTED ITEMS
+  // ======================
   getSelectedTotalItems: () => get().items
     .filter(item => item.isSelected)
     .reduce((sum, item) => sum + item.quantity, 0),

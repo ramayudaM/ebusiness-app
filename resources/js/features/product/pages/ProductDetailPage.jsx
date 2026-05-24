@@ -21,7 +21,7 @@ export const ProductDetailPage = () => {
 
     const addItem = useCartStore(state => state.addItem);
     const toggleWishlist = useWishlistStore(state => state.toggleWishlist);
-    const isInWishlist = useWishlistStore(state => state.isInWishlist(Number(id)));
+    const isInWishlist = useWishlistStore(state => state.isInWishlist(Number(product?.id || id)));
 
     const [selectedVariationId, setSelectedVariationId] = useState(null);
     const [quantity, setQuantity] = useState(1);
@@ -54,7 +54,7 @@ export const ProductDetailPage = () => {
         setQuantity(newQty);
     };
 
-    const handleAddToCart = withAuth(() => {
+    const handleAddToCart = withAuth(async () => {
         const currentVariation = product?.variations?.find(v => v.id === selectedVariationId);
 
         if (product?.variations?.length > 0 && !currentVariation) {
@@ -68,11 +68,16 @@ export const ProductDetailPage = () => {
         }
 
         // Add to Cart Store
-        addItem(product, currentVariation, quantity);
-        toast.success(`✅ ${product.name} berhasil ditambahkan ke keranjang!`);
+        try {
+            await addItem(product, currentVariation, quantity);
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Gagal menambahkan produk ke keranjang');
+            return;
+        }
+        toast.success(`${product.name} berhasil ditambahkan ke keranjang`);
     });
 
-    const handleBuyNow = withAuth(() => {
+    const handleBuyNow = withAuth(async () => {
         const currentVariation = product?.variations?.find(v => v.id === selectedVariationId);
 
         if (product?.variations?.length > 0 && !currentVariation) {
@@ -86,17 +91,28 @@ export const ProductDetailPage = () => {
         }
 
         // Add to cart then navigate
-        addItem(product, currentVariation, quantity);
-        toast.success(`✅ Mengarahkan ke pembayaran...`);
-        navigate('/cart'); // Changed to /cart for better flow, or /checkout if exists
+        try {
+            await addItem(product, currentVariation, quantity, { selectOnly: true });
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Gagal memulai checkout');
+            return;
+        }
+        toast.success('Produk siap checkout');
+        navigate('/checkout');
     });
 
-    const handleWishlist = withAuth(() => {
-        const added = toggleWishlist(product);
+    const handleWishlist = withAuth(async () => {
+        let added;
+        try {
+            added = await toggleWishlist(product);
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Gagal memperbarui wishlist');
+            return;
+        }
         if (added) {
-            toast.success(`❤️ ${product.name} ditambahkan ke Wishlist!`);
+            toast.success(`${product.name} ditambahkan ke wishlist`);
         } else {
-            toast.info(`💔 ${product.name} dihapus dari Wishlist`);
+            toast.info(`${product.name} dihapus dari wishlist`);
         }
     });
 

@@ -12,6 +12,8 @@ class Order extends Model
 {
     use HasFactory;
 
+    protected $appends = ['payment_status'];
+
     protected $fillable = [
         'order_number',
         'user_id',
@@ -19,7 +21,6 @@ class Order extends Model
         'guest_name',
 
         'status',
-        'payment_status',
 
         'shipping_name',
         'shipping_phone',
@@ -39,6 +40,7 @@ class Order extends Model
 
         'tracking_number',
         'tracking_url',
+        'courier',
 
         'processed_at',
         'shipped_at',
@@ -47,6 +49,8 @@ class Order extends Model
         'cancelled_at',
         'paid_at',
         'expires_at',
+
+        'customer_notes',
     ];
 
     protected $casts = [
@@ -81,5 +85,37 @@ class Order extends Model
     public function internalNotes(): HasMany
     {
         return $this->hasMany(OrderInternalNote::class)->latest();
+    }
+
+    public function getPaymentStatusAttribute($value): ?string
+    {
+        if ($value) {
+            return $value;
+        }
+
+        $transactionStatus = $this->relationLoaded('payment')
+            ? $this->payment?->transaction_status
+            : $this->payment()->value('transaction_status');
+
+        return match ($transactionStatus) {
+            'settlement' => 'paid',
+            'expire' => 'expired',
+            'failure', 'cancel' => 'failed',
+            'pending' => 'pending',
+            default => $transactionStatus ? (string) $transactionStatus : 'unpaid',
+        };
+    }
+
+    public function restoreVariationStock(): void
+    {
+        $this->loadMissing('items');
+
+        foreach ($this->items as $item) {
+            if (! $item->variation_id) {
+                continue;
+            }
+
+            ProductVariation::whereKey($item->variation_id)->increment('stock_qty', $item->qty);
+        }
     }
 }

@@ -6,14 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Validation\Rule;
 
 class AdminOrderController extends Controller
 {
     public function index(Request $request)
     {
         $query = Order::query()
-            ->with(['user', 'items.product'])
+            ->with(['user', 'items.product', 'items.variation', 'payment'])
             ->latest();
 
         if ($request->filled('search')) {
@@ -29,11 +28,14 @@ class AdminOrderController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $query->where('status', $this->normalizeOrderStatus($request->status));
         }
 
         if ($request->filled('payment_status')) {
-            $query->where('payment_status', $request->payment_status);
+            $paymentStatus = $this->normalizePaymentStatus($request->payment_status);
+            $query->whereHas('payment', function ($paymentQuery) use ($paymentStatus) {
+                $paymentQuery->where('transaction_status', $paymentStatus);
+            });
         }
 
         $orders = $query->paginate($request->input('per_page', 10));
@@ -52,10 +54,10 @@ class AdminOrderController extends Controller
 
     public function show(Order $order)
     {
-        $relations = ['user', 'items.product'];
+        $relations = ['user', 'items.product', 'items.variation', 'payment'];
 
         if (Schema::hasTable('order_internal_notes')) {
-            $relations[] = 'internalNotes.admin';
+            $relations[] = 'internalNotes';
         }
 
         return response()->json([
@@ -66,38 +68,55 @@ class AdminOrderController extends Controller
 
     public function updateStatus(Request $request, Order $order)
     {
+        // Valid order status enum values from database
+        $validStatuses = [
+            'PENDING',
+            'PAID',
+            'PROCESSING',
+            'SHIPPED',
+            'DELIVERED',
+            'EXPIRED',
+            'CANCELLED',
+        ];
+
         $validated = $request->validate([
             'status' => [
                 'required',
-                Rule::in([
-                    'pending',
-                    'processing',
-                    'shipped',
-                    'completed',
-                    'cancelled',
-                ]),
+                'string',
             ],
         ]);
 
-        $status = $validated['status'];
+        $status = $this->normalizeOrderStatus($validated['status']);
+
+        if (! in_array($status, $validStatuses, true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Status pesanan tidak valid.',
+            ], 422);
+        }
 
         $updateData = [
             'status' => $status,
         ];
 
-        if (Schema::hasColumn('orders', 'processed_at') && $status === 'processing' && ! $order->processed_at) {
+        // Set timestamps based on status transition
+        if ($status === 'PROCESSING' && !$order->processed_at) {
             $updateData['processed_at'] = now();
         }
 
-        if (Schema::hasColumn('orders', 'shipped_at') && $status === 'shipped' && ! $order->shipped_at) {
+        if ($status === 'SHIPPED' && !$order->shipped_at) {
             $updateData['shipped_at'] = now();
         }
 
-        if (Schema::hasColumn('orders', 'completed_at') && $status === 'completed' && ! $order->completed_at) {
-            $updateData['completed_at'] = now();
+        if ($status === 'DELIVERED' && !$order->delivered_at) {
+            $updateData['delivered_at'] = now();
         }
 
-        if (Schema::hasColumn('orders', 'cancelled_at') && $status === 'cancelled' && ! $order->cancelled_at) {
+        if ($status === 'CANCELLED' && ! in_array($order->status, ['CANCELLED', 'EXPIRED'], true)) {
+            $order->restoreVariationStock();
+        }
+
+        if ($status === 'CANCELLED' && !$order->cancelled_at) {
             $updateData['cancelled_at'] = now();
         }
 
@@ -111,47 +130,79 @@ class AdminOrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Status pesanan berhasil diperbarui.',
-            'data' => $order->fresh()->load(['user', 'items.product']),
+            'data' => $order->fresh()->load(['user', 'items.product', 'items.variation', 'payment']),
         ]);
     }
 
     public function updatePaymentStatus(Request $request, Order $order)
     {
+        // Payment status adalah transaction_status di table payments
+        $payment = $order->payment;
+        if (!$payment) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Record pembayaran tidak ditemukan untuk order ini.',
+            ], 422);
+        }
+
+        // Valid transaction status enum values from database
+        $validStatuses = [
+            'pending',
+            'settlement',
+            'expire',
+            'failure',
+            'cancel',
+        ];
+
         $validated = $request->validate([
+            'transaction_status' => [
+                'nullable',
+                'string',
+            ],
             'payment_status' => [
-                'required',
-                Rule::in([
-                    'unpaid',
-                    'pending',
-                    'paid',
-                    'failed',
-                    'expired',
-                    'refunded',
-                ]),
+                'nullable',
+                'string',
             ],
         ]);
 
-        $paymentStatus = $validated['payment_status'];
+        $statusInput = $validated['transaction_status'] ?? $validated['payment_status'] ?? null;
+        $status = $this->normalizePaymentStatus($statusInput);
 
-        $updateData = [
-            'payment_status' => $paymentStatus,
-        ];
-
-        if (Schema::hasColumn('orders', 'paid_at') && $paymentStatus === 'paid' && ! $order->paid_at) {
-            $updateData['paid_at'] = now();
+        if (! in_array($status, $validStatuses, true)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Status pembayaran tidak valid.',
+            ], 422);
         }
 
-        $order->update($updateData);
+        $updateData = [
+            'transaction_status' => $status,
+        ];
+
+        if ($status === 'settlement' && !$payment->paid_at) {
+            $updateData['paid_at'] = now();
+            $order->update([
+                'status' => 'PROCESSING',
+                'paid_at' => $order->paid_at ?: now(),
+            ]);
+        }
+
+        if (($status === 'expire' || $status === 'failure' || $status === 'cancel') && ! in_array($order->status, ['CANCELLED', 'EXPIRED'], true)) {
+            $order->restoreVariationStock();
+            $order->update(['status' => 'CANCELLED']);
+        }
+
+        $payment->update($updateData);
 
         $this->createSystemNoteIfAvailable(
             $order,
-            'Status pembayaran diperbarui menjadi ' . $this->formatPaymentStatus($paymentStatus) . '.'
+            'Status pembayaran diperbarui menjadi ' . $this->formatPaymentStatus($status) . '.'
         );
 
         return response()->json([
             'success' => true,
             'message' => 'Status pembayaran berhasil diperbarui.',
-            'data' => $order->fresh()->load(['user', 'items.product']),
+            'data' => $order->fresh()->load(['user', 'items.product', 'items.variation', 'payment']),
         ]);
     }
 
@@ -184,7 +235,7 @@ class AdminOrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Nomor resi berhasil diperbarui.',
-            'data' => $order->fresh()->load(['user', 'items.product']),
+            'data' => $order->fresh()->load(['user', 'items.product', 'items.variation', 'payment']),
         ]);
     }
 
@@ -247,11 +298,13 @@ class AdminOrderController extends Controller
     private function formatOrderStatus(string $status): string
     {
         return match ($status) {
-            'pending' => 'Menunggu',
-            'processing' => 'Sedang Diproses',
-            'shipped' => 'Dikirim',
-            'completed' => 'Selesai',
-            'cancelled' => 'Dibatalkan',
+            'PENDING' => 'Menunggu Pembayaran',
+            'PAID' => 'Sudah Dibayar',
+            'PROCESSING' => 'Sedang Diproses',
+            'SHIPPED' => 'Dikirim',
+            'DELIVERED' => 'Selesai',
+            'EXPIRED' => 'Kedaluwarsa',
+            'CANCELLED' => 'Dibatalkan',
             default => $status,
         };
     }
@@ -259,12 +312,37 @@ class AdminOrderController extends Controller
     private function formatPaymentStatus(string $status): string
     {
         return match ($status) {
-            'unpaid' => 'Belum Bayar',
             'pending' => 'Menunggu',
-            'paid' => 'Lunas',
-            'failed' => 'Gagal',
-            'expired' => 'Kedaluwarsa',
-            'refunded' => 'Refund',
+            'settlement' => 'Lunas',
+            'expire' => 'Kedaluwarsa',
+            'failure' => 'Gagal',
+            'cancel' => 'Dibatalkan',
+            default => $status,
+        };
+    }
+
+    private function normalizeOrderStatus(string $status): string
+    {
+        return match (strtolower($status)) {
+            'pending' => 'PENDING',
+            'paid' => 'PAID',
+            'processing' => 'PROCESSING',
+            'shipped' => 'SHIPPED',
+            'completed', 'delivered' => 'DELIVERED',
+            'expired' => 'EXPIRED',
+            'cancelled', 'canceled' => 'CANCELLED',
+            default => strtoupper($status),
+        };
+    }
+
+    private function normalizePaymentStatus(?string $status): ?string
+    {
+        return match (strtolower((string) $status)) {
+            'unpaid', 'pending' => 'pending',
+            'paid', 'settlement', 'capture' => 'settlement',
+            'expired', 'expire' => 'expire',
+            'failed', 'failure', 'deny' => 'failure',
+            'cancelled', 'canceled', 'cancel' => 'cancel',
             default => $status,
         };
     }

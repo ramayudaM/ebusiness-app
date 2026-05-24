@@ -64,7 +64,7 @@ export const OrdersPage = () => {
                 icon: Clock
             };
         }
-        if (status === 'PROCESSING') {
+        if (status === 'PAID' || status === 'PROCESSING') {
             return {
                 label: 'Sedang Dikemas',
                 color: 'text-blue-600',
@@ -82,7 +82,7 @@ export const OrdersPage = () => {
                 icon: Truck
             };
         }
-        if (status === 'COMPLETED') {
+        if (status === 'COMPLETED' || status === 'DELIVERED') {
             return {
                 label: 'Selesai',
                 color: 'text-green-600',

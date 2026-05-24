@@ -7,6 +7,7 @@ use App\Models\Wishlist;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class WishlistController extends Controller
 {
@@ -32,8 +33,6 @@ class WishlistController extends Controller
             ->where('product_id', $productId)
             ->first();
 
-        $product = Product::find($productId);
-
         if ($exists) {
             $exists->delete();
             return response()->json([
@@ -42,13 +41,22 @@ class WishlistController extends Controller
             ]);
         }
 
+        $product = Product::where('is_active', true)->findOrFail($productId);
+
         $wishlist = Wishlist::create([
             'user_id' => $userId,
             'product_id' => $productId,
         ]);
 
-        // Notify user
-        Auth::user()->notify(new \App\Notifications\ProductAddedToWishlist($product));
+        try {
+            Auth::user()->notify(new \App\Notifications\ProductAddedToWishlist($product));
+        } catch (\Throwable $e) {
+            Log::warning('ProductAddedToWishlist notification failed', [
+                'user_id' => $userId,
+                'product_id' => $product->id,
+                'error' => $e->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'message' => 'Ditambahkan ke wishlist',

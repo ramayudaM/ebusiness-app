@@ -67,29 +67,11 @@ Route::prefix('v1')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
-    | Protected Customer Routes
+    | Cart Routes (Protected)
     |--------------------------------------------------------------------------
     */
 
     Route::middleware(['auth:sanctum'])->group(function () {
-        Route::post('/auth/logout', [AuthController::class, 'logout'])
-            ->name('auth.logout');
-
-        Route::get('/user/profile', [UserController::class, 'profile'])
-            ->name('user.profile');
-
-        Route::put('/user/profile', [UserController::class, 'updateProfile'])
-            ->name('user.profile.update');
-
-        Route::post('/user/avatar', [UserController::class, 'updateAvatar'])
-            ->name('user.avatar.update');
-
-        /*
-        |--------------------------------------------------------------------------
-        | Cart
-        |--------------------------------------------------------------------------
-        */
-
         Route::get('/cart', [\App\Http\Controllers\Api\V1\User\CartController::class, 'index'])
             ->name('cart.index');
 
@@ -107,6 +89,26 @@ Route::prefix('v1')->group(function () {
 
         Route::delete('/cart', [\App\Http\Controllers\Api\V1\User\CartController::class, 'clear'])
             ->name('cart.clear');
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Protected Customer Routes
+    |--------------------------------------------------------------------------
+    */
+
+    Route::middleware(['auth:sanctum'])->group(function () {
+        Route::post('/auth/logout', [AuthController::class, 'logout'])
+            ->name('auth.logout');
+
+        Route::get('/user/profile', [UserController::class, 'profile'])
+            ->name('user.profile');
+
+        Route::put('/user/profile', [UserController::class, 'updateProfile'])
+            ->name('user.profile.update');
+
+        Route::post('/user/avatar', [UserController::class, 'updateAvatar'])
+            ->name('user.avatar.update');
 
         /*
         |--------------------------------------------------------------------------

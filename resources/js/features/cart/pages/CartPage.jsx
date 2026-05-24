@@ -213,15 +213,14 @@ export const CartPage = () => {
                                     </div>
                                 </div>
 
-                                <Link to="/checkout" className="block">
-                                    <button 
-                                        disabled={selectedCount === 0}
-                                        className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-all transform active:scale-95 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed group shadow-lg shadow-orange-100 dark:shadow-none"
-                                    >
-                                        Checkout Sekarang
-                                        <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
-                                    </button>
-                                </Link>
+                                <button 
+                                    onClick={handleCheckout}
+                                    disabled={selectedCount === 0}
+                                    className="w-full bg-orange-600 hover:bg-orange-700 text-white font-black py-4 rounded-xl flex items-center justify-center gap-3 transition-all transform active:scale-95 disabled:bg-gray-200 dark:disabled:bg-gray-800 disabled:text-gray-400 disabled:cursor-not-allowed group shadow-lg shadow-orange-100 dark:shadow-none"
+                                >
+                                    Checkout Sekarang
+                                    <ChevronRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                </button>
 
                                 <div className="mt-6 flex flex-col gap-3">
                                     <div className="flex items-center gap-2 text-[10px] text-gray-500 dark:text-gray-400 font-bold uppercase tracking-widest">

@@ -4,15 +4,20 @@ namespace App\Http\Controllers\Api\V1\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Address;
+use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Payment;
 use App\Models\Product;
+use App\Models\ProductVariation;
 use App\Services\MidtransService;
 use App\Services\RajaOngkirService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
@@ -26,6 +31,22 @@ class CheckoutController extends Controller
         $this->midtrans = $midtrans;
     }
 
+    /**
+     * Helper method to get selected cart items
+     * Handles case when is_selected column doesn't exist yet (before migration)
+     */
+    private function getSelectedCartItems(int $cartId)
+    {
+        $query = CartItem::where('cart_id', $cartId);
+        
+        // Only filter by is_selected if column exists (after migration)
+        if (Schema::hasColumn('cart_items', 'is_selected')) {
+            $query->where('is_selected', true);
+        }
+        
+        return $query->with(['product', 'variation'])->get();
+    }
+
     public function calculateShipping(Request $request)
     {
         $request->validate([
@@ -33,57 +54,101 @@ class CheckoutController extends Controller
             'courier' => 'nullable|string',
         ]);
 
-        $address = Address::findOrFail($request->address_id);
-        
-        $cartItems = CartItem::where('user_id', Auth::id())
-            ->where('is_selected', true)
-            ->with('product')
-            ->get();
-            
-        $totalWeight = 0;
-        foreach ($cartItems as $item) {
-            $totalWeight += (($item->product->weight_gram ?? 1000) * $item->quantity);
-        }
-
-        if ($totalWeight <= 0) $totalWeight = 1000;
-
-        $couriers = $request->courier ? [$request->courier] : ['jne', 'pos', 'tiki'];
-        $allServices = [];
-
-        \Illuminate\Support\Facades\Log::info("Calculating shipping for address {$address->id} (City: {$address->city_id}), Weight: {$totalWeight}g");
-
-        foreach ($couriers as $courier) {
-            $results = $this->rajaOngkir->calculateCost(
-                $address->city_id,
-                $totalWeight,
-                $courier
-            );
-
-            if (!empty($results)) {
-                $courierData = $results[0] ?? null;
-                if ($courierData && isset($courierData['costs'])) {
-                    foreach ($courierData['costs'] as $item) {
-                        $allServices[] = [
-                            'courier' => $courier,
-                            'service' => $item['service'],
-                            'description' => $item['description'],
-                            'cost' => collect($item['cost'])->map(function($c) {
-                                return [
-                                    'value' => (int) $c['value'],
-                                    'etd' => $c['etd']
-                                ];
-                            })->toArray()
-                        ];
-                    }
-                }
-            } else {
-                \Illuminate\Support\Facades\Log::warning("No shipping results for courier {$courier}");
+        try {
+            $userId = Auth::id();
+            if (!$userId) {
+                return response()->json(['message' => 'Unauthorized'], 401);
             }
+
+            $address = Address::where('user_id', $userId)->findOrFail($request->address_id);
+            
+            // Get cart for current user
+            $cart = Cart::where('user_id', $userId)->first();
+            if (!$cart) {
+                return response()->json([$this->getFallbackShipping()]);
+            }
+            
+            // Get selected cart items with product and variation
+            $cartItems = $this->getSelectedCartItems($cart->id);
+            
+            if ($cartItems->isEmpty()) {
+                return response()->json([$this->getFallbackShipping()]);
+            }
+                
+            $totalWeight = 0;
+            foreach ($cartItems as $item) {
+                $totalWeight += (($item->product->weight_gram ?? 1000) * $item->qty);
+            }
+
+            if ($totalWeight <= 0) $totalWeight = 1000;
+
+            $couriers = $request->courier ? [$request->courier] : ['jne', 'pos', 'tiki'];
+            $allServices = [];
+
+            Log::info("Calculating shipping for address {$address->id} (City: {$address->city_id}), Weight: {$totalWeight}g");
+
+            foreach ($couriers as $courier) {
+                $results = $this->rajaOngkir->calculateCost(
+                    $address->city_id,
+                    $totalWeight,
+                    $courier
+                );
+
+                if (!empty($results)) {
+                    $courierData = $results[0] ?? null;
+                    if ($courierData && isset($courierData['costs'])) {
+                        foreach ($courierData['costs'] as $item) {
+                            $allServices[] = [
+                                'courier' => $courier,
+                                'service' => $item['service'],
+                                'description' => $item['description'],
+                                'cost' => collect($item['cost'])->map(function($c) {
+                                    return [
+                                        'value' => (int) $c['value'],
+                                        'etd' => $c['etd']
+                                    ];
+                                })->toArray()
+                            ];
+                        }
+                    }
+                } else {
+                    Log::warning("No shipping results for courier {$courier}");
+                }
+            }
+
+            Log::info("Total shipping services found: " . count($allServices));
+
+            // If no services found, return fallback
+            if (empty($allServices)) {
+                return response()->json([$this->getFallbackShipping()]);
+            }
+
+            return response()->json($allServices);
+        } catch (\Exception $e) {
+            Log::error("Shipping calculation error: " . $e->getMessage());
+            // Return fallback shipping instead of error
+            return response()->json([$this->getFallbackShipping()]);
         }
+    }
 
-        \Illuminate\Support\Facades\Log::info("Total shipping services found: " . count($allServices));
-
-        return response()->json($allServices);
+    /**
+     * TODO: Fallback shipping hanya untuk development/demo.
+     * Jika RajaOngkir API gagal atau tidak ada hasil, gunakan fallback ini.
+     * Di production, sebaiknya return error atau handle dengan lebih baik.
+     */
+    private function getFallbackShipping()
+    {
+        return [
+            'courier' => 'jne',
+            'service' => 'reg',
+            'description' => 'JNE REG',
+            'cost' => [
+                [
+                    'value' => 25000,
+                    'etd' => '2-3'
+                ]
+            ]
+        ];
     }
 
     public function process(Request $request)
@@ -96,32 +161,64 @@ class CheckoutController extends Controller
             'notes' => 'nullable|string',
         ]);
 
-        return DB::transaction(function () use ($request) {
-            $user = Auth::user();
-            $address = Address::findOrFail($request->address_id);
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        try {
+            return DB::transaction(function () use ($request, $user) {
+                $userId = $user->id;
             
-            $cartItems = CartItem::where('user_id', $user->id)
-                ->where('is_selected', true)
-                ->with(['product', 'variation'])
-                ->get();
+            // Get cart for current user
+            $cart = Cart::where('user_id', $userId)->first();
+            if (!$cart) {
+                return response()->json(['message' => 'Keranjang tidak ditemukan'], 422);
+            }
+            
+            $address = Address::where('user_id', $userId)->findOrFail($request->address_id);
+            
+            $cartItems = $this->getSelectedCartItems($cart->id);
 
             if ($cartItems->isEmpty()) {
                 return response()->json(['message' => 'Keranjang kosong'], 422);
             }
 
+            // Validate stock and lock product variations
+            foreach ($cartItems as $item) {
+                if ($item->variation_id) {
+                    $variation = ProductVariation::lockForUpdate()
+                        ->where('product_id', $item->product_id)
+                        ->where('is_active', true)
+                        ->findOrFail($item->variation_id);
+                    
+                    if ($variation->stock_qty < $item->qty) {
+                        throw new \Exception("Stok {$variation->name} tidak cukup");
+                    }
+
+                    $item->setRelation('variation', $variation);
+                } else {
+                    $product = Product::with('variations')->lockForUpdate()->findOrFail($item->product_id);
+                    if ($product->variations->isNotEmpty()) {
+                        throw new \Exception("Variasi untuk {$product->name} wajib dipilih");
+                    }
+                }
+            }
+
             $subtotal = 0;
             foreach ($cartItems as $item) {
                 $price = $item->variation ? ($item->variation->price_sen ?? $item->product->price_sen) : $item->product->price_sen;
-                $subtotal += ($price * $item->quantity);
+                $subtotal += ($price * $item->qty);
             }
 
             $orderNumber = 'NK-' . strtoupper(Str::random(10));
             $shippingCost = (int) $request->shipping_cost;
             $total = $subtotal + $shippingCost;
 
+            // Create order with valid status enum
             $order = Order::create([
                 'order_number' => $orderNumber,
-                'user_id' => $user->id,
+                'user_id' => $userId,
                 'status' => 'PENDING',
                 'shipping_name' => $address->receiver_name,
                 'shipping_phone' => $address->phone_number,
@@ -135,60 +232,98 @@ class CheckoutController extends Controller
                 'subtotal_sen' => $subtotal,
                 'total_sen' => $total,
                 'customer_notes' => $request->notes,
-                'payment_status' => 'unpaid',
+                'expires_at' => now()->addHours(24),
             ]);
 
+            // Create order items and reduce stock
             foreach ($cartItems as $item) {
                 $price = $item->variation ? ($item->variation->price_sen ?? $item->product->price_sen) : $item->product->price_sen;
                 
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
-                    'variation_id' => $item->product_variation_id,
+                    'variation_id' => $item->variation_id,
                     'product_name_snapshot' => $item->product->name,
                     'variation_name_snapshot' => $item->variation ? $item->variation->name : null,
                     'product_sku_snapshot' => $item->variation ? $item->variation->sku : $item->product->sku,
-                    'qty' => $item->quantity,
+                    'qty' => $item->qty,
                     'unit_price_sen' => $price,
-                    'subtotal_sen' => ($price * $item->quantity),
+                    'subtotal_sen' => ($price * $item->qty),
                 ]);
+
+                // Reduce stock - product variations have stock_qty column
+                if ($item->variation_id) {
+                    $item->variation->decrement('stock_qty', $item->qty);
+                }
             }
 
             // Get Midtrans Snap Token
-            $snapToken = $this->midtrans->getSnapToken($order, $order->items);
+            try {
+                $snapToken = $this->midtrans->getSnapToken($order, $order->items);
+            } catch (\Exception $e) {
+                Log::error("Midtrans error: " . $e->getMessage());
+                throw new \Exception("Gagal membuat token pembayaran: " . $e->getMessage());
+            }
+
             $order->update(['payment_token' => $snapToken]);
 
-            // Clear cart
-            CartItem::where('user_id', $user->id)->where('is_selected', true)->delete();
+            // Create payment record with pending status
+            Payment::create([
+                'order_id' => $order->id,
+                'midtrans_order_id' => $order->order_number,
+                'payment_type' => 'va',  // Default to VA, will be updated on webhook
+                'transaction_status' => 'pending',
+                'gross_amount_sen' => $total,
+                'payment_url' => null,
+                'expires_at' => now()->addHours(24),
+            ]);
+
+            // Clear selected items from cart
+            CartItem::where('cart_id', $cart->id)
+                ->whereIn('id', $cartItems->pluck('id'))
+                ->delete();
+
+                return response()->json([
+                    'message' => 'Pesanan berhasil dibuat',
+                    'order_number' => $order->order_number,
+                    'snap_token' => $snapToken
+                ]);
+            });
+        } catch (\Throwable $e) {
+            Log::error('Checkout process failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            if (str_contains($e->getMessage(), 'Gagal membuat token pembayaran') ||
+                str_contains($e->getMessage(), 'Midtrans API') ||
+                str_contains($e->getMessage(), 'Access denied due to unauthorized transaction')) {
+                return response()->json([
+                    'message' => 'Gagal membuat token pembayaran. Periksa konfigurasi Midtrans sandbox/server key.',
+                ], 502);
+            }
 
             return response()->json([
-                'message' => 'Pesanan berhasil dibuat',
-                'order_number' => $order->order_number,
-                'snap_token' => $snapToken
-            ]);
-        });
+                'message' => $e->getMessage() ?: 'Checkout gagal diproses.',
+            ], 422);
+        }
     }
 
     public function verify($orderNumber)
     {
         try {
             $status = $this->midtrans->checkStatus($orderNumber);
-            $order = Order::where('order_number', $orderNumber)->firstOrFail();
+            $order = Order::where('order_number', $orderNumber)->with('payment')->firstOrFail();
 
             $transactionStatus = $status->transaction_status;
-            
-            if ($transactionStatus == 'capture' || $transactionStatus == 'settlement') {
-                $order->update(['payment_status' => 'paid', 'status' => 'PROCESSING']);
-            } else if ($transactionStatus == 'pending') {
-                $order->update(['payment_status' => 'unpaid']);
-            } else if ($transactionStatus == 'deny' || $transactionStatus == 'expire' || $transactionStatus == 'cancel') {
-                $order->update(['payment_status' => 'failed', 'status' => 'CANCELLED']);
-            }
+            $this->syncPaymentStatus($order, $transactionStatus);
+            $order->refresh()->load('payment');
 
             return response()->json([
                 'success' => true,
                 'status' => $order->status,
-                'payment_status' => $order->payment_status
+                'payment_status' => $order->payment_status,
+                'transaction_status' => $order->payment?->transaction_status,
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -211,16 +346,49 @@ class CheckoutController extends Controller
         $order = Order::where('order_number', $request->order_id)->first();
         if (!$order) return response()->json(['message' => 'Order not found'], 404);
 
-        $status = $request->transaction_status;
-        
-        if ($status == 'capture' || $status == 'settlement') {
-            $order->update(['payment_status' => 'paid', 'status' => 'PROCESSING']);
-        } else if ($status == 'pending') {
-            $order->update(['payment_status' => 'unpaid']);
-        } else if ($status == 'deny' || $status == 'expire' || $status == 'cancel') {
-            $order->update(['payment_status' => 'failed', 'status' => 'CANCELLED']);
-        }
+        $this->syncPaymentStatus($order, $request->transaction_status, $request->payment_type);
 
         return response()->json(['message' => 'Webhook processed']);
+    }
+
+    private function syncPaymentStatus(Order $order, string $midtransStatus, ?string $paymentType = null): void
+    {
+        $transactionStatus = match ($midtransStatus) {
+            'capture', 'settlement' => 'settlement',
+            'expire' => 'expire',
+            'deny', 'failure' => 'failure',
+            'cancel' => 'cancel',
+            default => 'pending',
+        };
+
+        $paymentData = ['transaction_status' => $transactionStatus];
+
+        if (in_array($paymentType, ['va', 'qris', 'ewallet'], true)) {
+            $paymentData['payment_type'] = $paymentType;
+        }
+
+        if ($transactionStatus === 'settlement') {
+            $paymentData['paid_at'] = now();
+            $order->update([
+                'status' => 'PROCESSING',
+                'paid_at' => $order->paid_at ?: now(),
+            ]);
+        } elseif (in_array($transactionStatus, ['expire', 'failure', 'cancel'], true)) {
+            if (! in_array($order->status, ['CANCELLED', 'EXPIRED'], true)) {
+                $order->restoreVariationStock();
+            }
+
+            $order->update(['status' => 'CANCELLED']);
+        }
+
+        $order->payment()->updateOrCreate(
+            ['order_id' => $order->id],
+            array_merge([
+                'midtrans_order_id' => $order->order_number,
+                'payment_type' => 'va',
+                'gross_amount_sen' => $order->total_sen,
+                'expires_at' => $order->expires_at ?? now()->addHours(24),
+            ], $paymentData)
+        );
     }
 }

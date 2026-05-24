@@ -3,59 +3,124 @@
 namespace App\Http\Controllers\Api\V1\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
+use App\Models\ProductVariation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 
 class CartController extends Controller
 {
     public function index()
     {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+
         $items = CartItem::with(['product', 'variation'])
-            ->where('user_id', Auth::id())
+            ->where('cart_id', $cart->id)
             ->get();
 
-        return response()->json($items);
+        $total = $items->sum(function ($item) {
+            $price = ($item->variation?->price_sen ?? $item->product?->price_sen) ?? 0;
+            return $price * $item->qty;
+        });
+
+        return response()->json([
+            'items' => $items,
+            'total' => $total,
+        ]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'product_id' => 'required|exists:products,id',
-            'product_variation_id' => 'nullable|exists:product_variations,id',
-            'quantity' => 'required|integer|min:1',
+            'variation_id' => 'nullable|exists:product_variations,id',
+            'qty' => 'required|integer|min:1',
+            'select_only' => 'nullable|boolean',
         ]);
 
-        $userId = Auth::id();
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $cart = Cart::firstOrCreate(['user_id' => $user->id]);
         $productId = $request->product_id;
-        $variationId = $request->product_variation_id;
+        $variationId = $request->variation_id;
+        $product = Product::with('variations')
+            ->where('is_active', true)
+            ->findOrFail($productId);
+        $variation = null;
+
+        if ($variationId) {
+            $variation = ProductVariation::where('product_id', $productId)
+                ->where('is_active', true)
+                ->findOrFail($variationId);
+
+            if ($variation->stock_qty < $request->qty) {
+                return response()->json(['message' => 'Stok variasi tidak cukup'], 422);
+            }
+        } elseif ($product->variations->isNotEmpty()) {
+            return response()->json(['message' => 'Variasi produk wajib dipilih'], 422);
+        }
+
+        if ($request->boolean('select_only') && Schema::hasColumn('cart_items', 'is_selected')) {
+            CartItem::where('cart_id', $cart->id)->update(['is_selected' => false]);
+        }
 
         // Cek apakah item sudah ada di keranjang
-        $cartItem = CartItem::where('user_id', $userId)
+        $cartItem = CartItem::where('cart_id', $cart->id)
             ->where('product_id', $productId)
-            ->where('product_variation_id', $variationId)
+            ->where('variation_id', $variationId)
             ->first();
 
         if ($cartItem) {
-            // Jika ada, tambahkan jumlahnya
-            $cartItem->increment('quantity', $request->quantity);
+            if ($variation && ($cartItem->qty + $request->qty) > $variation->stock_qty) {
+                return response()->json(['message' => 'Jumlah keranjang melebihi stok variasi'], 422);
+            }
+
+            $updateData = [
+                'qty' => $cartItem->qty + $request->qty,
+            ];
+
+            if (Schema::hasColumn('cart_items', 'is_selected')) {
+                $updateData['is_selected'] = true;
+            }
+
+            $cartItem->update($updateData);
         } else {
-            // Jika belum ada, buat baru
-            $cartItem = CartItem::create([
-                'user_id' => $userId,
+            $createData = [
+                'cart_id' => $cart->id,
                 'product_id' => $productId,
-                'product_variation_id' => $variationId,
-                'quantity' => $request->quantity,
-                'is_selected' => true,
-            ]);
+                'variation_id' => $variationId,
+                'qty' => $request->qty,
+            ];
+
+            if (Schema::hasColumn('cart_items', 'is_selected')) {
+                $createData['is_selected'] = true;
+            }
+
+            // Jika belum ada, buat baru
+            $cartItem = CartItem::create($createData);
         }
 
         // Generate Notification
-        $product = Product::find($productId);
-        if (Auth::user()) {
-            Auth::user()->notify(new \App\Notifications\ProductAddedToCart($product));
+        try {
+            $user->notify(new \App\Notifications\ProductAddedToCart($product));
+        } catch (\Throwable $e) {
+            Log::warning('ProductAddedToCart notification failed', [
+                'user_id' => $user->id,
+                'product_id' => $product->id,
+                'error' => $e->getMessage(),
+            ]);
         }
 
         return response()->json([
@@ -67,17 +132,39 @@ class CartController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'quantity' => 'nullable|integer|min:1',
+            'qty' => 'nullable|integer|min:1',
             'is_selected' => 'nullable|boolean',
         ]);
 
-        $cartItem = CartItem::where('user_id', Auth::id())->findOrFail($id);
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $cart = Cart::where('user_id', $user->id)->firstOrFail();
+        $cartItem = CartItem::where('cart_id', $cart->id)->findOrFail($id);
         
         $updateData = [];
-        if ($request->has('quantity')) $updateData['quantity'] = $request->quantity;
-        if ($request->has('is_selected')) $updateData['is_selected'] = $request->is_selected;
+        if ($request->has('qty')) {
+            if ($cartItem->variation_id) {
+                $variation = ProductVariation::findOrFail($cartItem->variation_id);
+
+                if ($request->qty > $variation->stock_qty) {
+                    return response()->json(['message' => 'Jumlah keranjang melebihi stok variasi'], 422);
+                }
+            }
+
+            $updateData['qty'] = $request->qty;
+        }
         
-        $cartItem->update($updateData);
+        // Only update is_selected if column exists (after migration)
+        if ($request->has('is_selected') && Schema::hasColumn('cart_items', 'is_selected')) {
+            $updateData['is_selected'] = $request->is_selected;
+        }
+        
+        if (!empty($updateData)) {
+            $cartItem->update($updateData);
+        }
 
         return response()->json([
             'message' => 'Keranjang berhasil diperbarui',
@@ -91,8 +178,18 @@ class CartController extends Controller
             'is_selected' => 'required|boolean',
         ]);
 
-        CartItem::where('user_id', Auth::id())
-            ->update(['is_selected' => $request->is_selected]);
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $cart = Cart::where('user_id', $user->id)->firstOrFail();
+
+        // Only update if column exists (after migration)
+        if (Schema::hasColumn('cart_items', 'is_selected')) {
+            CartItem::where('cart_id', $cart->id)
+                ->update(['is_selected' => $request->is_selected]);
+        }
 
         return response()->json([
             'message' => 'Status semua produk diperbarui'
@@ -101,7 +198,13 @@ class CartController extends Controller
 
     public function destroy($id)
     {
-        $cartItem = CartItem::where('user_id', Auth::id())->findOrFail($id);
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $cart = Cart::where('user_id', $user->id)->firstOrFail();
+        $cartItem = CartItem::where('cart_id', $cart->id)->findOrFail($id);
         $cartItem->delete();
 
         return response()->json([
@@ -111,7 +214,13 @@ class CartController extends Controller
 
     public function clear()
     {
-        CartItem::where('user_id', Auth::id())->delete();
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $cart = Cart::where('user_id', $user->id)->firstOrFail();
+        CartItem::where('cart_id', $cart->id)->delete();
 
         return response()->json([
             'message' => 'Keranjang dikosongkan'

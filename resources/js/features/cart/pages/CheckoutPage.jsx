@@ -25,7 +25,7 @@ import api from '@/shared/utils/api';
 
 export const CheckoutPage = () => {
     const navigate = useNavigate();
-    const { items, getSelectedTotalPrice, getSelectedTotalItems } = useCartStore();
+    const { items, fetchItems, getSelectedTotalPrice, getSelectedTotalItems } = useCartStore();
     const { 
         addresses, 
         fetchAddresses, 
@@ -65,6 +65,7 @@ export const CheckoutPage = () => {
     });
 
     useEffect(() => {
+        fetchItems();
         fetchAddresses();
         fetchProvinces();
     }, []);
@@ -170,6 +171,11 @@ export const CheckoutPage = () => {
             return;
         }
 
+        if (getSelectedTotalItems() === 0) {
+            toast.error('Pilih setidaknya satu produk untuk checkout');
+            return;
+        }
+
         setIsProcessing(true);
         try {
             const response = await api.post('/checkout/process', {
@@ -181,6 +187,11 @@ export const CheckoutPage = () => {
             });
 
             const { snap_token } = response.data;
+
+            if (!window.snap || !snap_token) {
+                toast.error('Layanan pembayaran belum siap. Periksa konfigurasi Midtrans.');
+                return;
+            }
 
             window.snap.pay(snap_token, {
                 onSuccess: (result) => {
@@ -604,4 +615,3 @@ export const CheckoutPage = () => {
         </div>
     );
 };
-
