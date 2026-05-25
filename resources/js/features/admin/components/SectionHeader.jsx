@@ -1,10 +1,12 @@
+import { adminTheme as theme } from '../styles/adminTheme'
+
 export default function SectionHeader({ title, description, action }) {
   return (
-    <div className="mb-5 flex items-start justify-between gap-4">
+    <div className="mb-8 flex items-start justify-between gap-4">
       <div>
-        <h2 className="text-lg font-bold text-slate-950 md:text-xl">{title}</h2>
+        <h2 className="text-xl font-bold md:text-2xl uppercase tracking-wide" style={{ color: theme.textPrimary }}>✧ {title}</h2>
         {description && (
-          <p className="mt-1 text-sm text-slate-500">{description}</p>
+          <p className="mt-2 text-sm" style={{ color: theme.textMuted }}>{description}</p>
         )}
       </div>
 

@@ -1,50 +1,55 @@
 export const adminTheme = {
-  // Primary brand - synchronized with Sonic Atelier
-  primary: '#E8732A',
-  primaryDark: '#C45A1A',
-  primarySoft: '#FFF3ED',
-  primaryGlow: 'rgba(232, 115, 42, 0.15)',
+  // Primary brand - synchronized with NadaKita design system
+  primary: '#DCA86A',        // Gold/Brass - matches dark mode accent
+  primaryDark: '#B08D57',    // Darker brass
+  primarySoft: '#FFF7ED',    // Soft warm background
+  primaryGlow: 'rgba(220, 168, 106, 0.15)',
 
-  // Dark palette - cinematic studio
-  navy: '#0C1322',
-  navyDark: '#080E1A',
-  sidebar: '#0A0F1C',
-  sidebarHover: 'rgba(232, 115, 42, 0.08)',
-  sidebarActive: 'rgba(232, 115, 42, 0.12)',
+  // Dark palette - Nocturne Atelier (matches dark mode)
+  navy: '#08111A',           // Very dark blue (bg-primary in dark mode)
+  navyDark: '#04090E',       // Deepest dark (bg-tertiary in dark mode)
+  sidebar: '#0D1B2A',        // Sidebar background (bg-secondary in dark mode)
+  sidebarHover: 'rgba(220, 168, 106, 0.12)',
+  sidebarActive: 'rgba(220, 168, 106, 0.2)',
 
   // Light surfaces
-  background: '#F4F3F0',
-  surface: '#FFFFFF',
-  surfaceSoft: '#FAF9F7',
-  surfaceMuted: '#F1F0ED',
+  background: '#08111A',     // Very dark
+  surface: '#112133',        // Premium surface
+  surfaceSoft: '#0D1B2A',    // Softer surface
+  surfaceMuted: '#1A2A3C',   // Muted surface
 
   // Borders
-  border: '#E2DFD9',
-  borderSoft: '#ECEAE5',
-  borderPremium: 'rgba(232, 115, 42, 0.12)',
+  border: '#233448',
+  borderSoft: 'rgba(255, 255, 255, 0.05)',
+  borderPremium: 'rgba(220, 168, 106, 0.2)',
 
   // Typography
-  textPrimary: '#1A1714',
-  textSecondary: '#6B6560',
-  textMuted: '#9C958E',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#A0AEC0',
+  textMuted: '#718096',
 
-  // Status
-  success: '#16A34A',
-  successSoft: '#ECFDF3',
+  // Status colors - refined
+  success: '#10B981',
+  successSoft: 'rgba(16, 185, 129, 0.1)',
 
-  warning: '#E8A317',
-  warningSoft: '#FEF9EC',
+  warning: '#F59E0B',
+  warningSoft: 'rgba(245, 158, 11, 0.1)',
 
-  danger: '#DC2626',
-  dangerSoft: '#FEF2F2',
+  danger: '#EF4444',
+  dangerSoft: 'rgba(239, 68, 68, 0.1)',
 
-  blue: '#2563EB',
-  blueSoft: '#EFF6FF',
+  blue: '#3B82F6',
+  blueSoft: 'rgba(59, 130, 246, 0.1)',
 
   // Accent
-  brass: '#C9A96E',
-  copper: '#E8732A',
-
+  brass: '#DCA86A',
+  copper: '#E8A469',
+  
+  // Utility
   slate: '#475569',
-  slateSoft: '#F1F5F9',
+  slateSoft: 'rgba(71, 85, 105, 0.1)',
+  
+  // Glass effect
+  glassLight: 'rgba(255, 255, 255, 0.05)',
+  glassMedium: 'rgba(255, 255, 255, 0.08)',
 }

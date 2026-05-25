@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Layout } from '@/shared/components/Layout';
+import { motion } from 'framer-motion';
 import { 
     Search, 
     CircleHelp, 
@@ -14,7 +15,10 @@ import {
     ChevronRight,
     ChevronDown,
     ExternalLink,
-    ArrowRight
+    ArrowRight,
+    Headphones,
+    Zap,
+    Clock
 } from 'lucide-react';
 
 export const HelpPage = () => {
@@ -97,169 +101,332 @@ export const HelpPage = () => {
     return (
         <Layout>
             {/* Hero Section */}
-            <div className="bg-gray-950 py-24 relative overflow-hidden">
-                <div className="absolute top-0 right-0 -mt-20 -mr-20 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 left-0 -mb-20 -ml-20 w-80 h-80 bg-blue-600/10 rounded-full blur-3xl"></div>
-                
-                <div className="max-w-4xl mx-auto px-4 text-center relative z-10">
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
-                        Ada yang bisa kami bantu?
-                    </h1>
-                    <div className="relative max-w-2xl mx-auto">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={24} />
-                        <input 
-                            type="text"
-                            placeholder="Cari kendala atau pertanyaan Anda..."
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-white/10 dark:bg-white/5 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-2xl py-5 pl-14 pr-6 text-white placeholder-gray-400 outline-none focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all text-lg"
-                        />
+            <div className="relative pt-32 pb-24 overflow-hidden bg-[var(--bg-primary)]">
+                {/* Ambient Glow */}
+                <div className="absolute top-20 left-1/4 w-96 h-96 bg-[var(--primary)]/8 rounded-full blur-[120px] pointer-events-none"></div>
+                <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-[var(--accent-brass)]/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+                <div className="max-w-6xl mx-auto px-6 md:px-12 relative z-10">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, ease: 'easeOut' }}
+                        className="text-center"
+                    >
+                        <h1 className="font-display text-5xl md:text-7xl font-bold text-[var(--text-primary)] tracking-tight leading-[1.1] mb-6">
+                            Layanan NadaKita
+                        </h1>
+                        <p className="text-lg md:text-xl text-[var(--text-secondary)] max-w-3xl mx-auto leading-relaxed font-ui">
+                            Dukungan penuh untuk memilih, membeli, dan menikmati instrumen premium Anda dengan percaya diri.
+                        </p>
+                    </motion.div>
+
+                    {/* Premium Search Bar */}
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="mt-12 max-w-2xl mx-auto"
+                    >
+                        <form onSubmit={(e) => { e.preventDefault(); }} className="relative group">
+                            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[var(--primary)]/0 via-[var(--accent-brass)]/20 to-[var(--primary)]/0 opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 blur-xl"></div>
+                            <div className="relative flex items-center bg-[var(--surface-primary)] border border-[var(--border-premium)] rounded-full shadow-[var(--shadow-elevated)] overflow-hidden group-focus-within:border-[var(--accent-brass)] transition-colors duration-300">
+                                <Search size={18} className="absolute left-5 text-[var(--text-muted)] group-focus-within:text-[var(--accent-brass)] transition-colors" />
+                                <input 
+                                    type="text"
+                                    placeholder="Cari bantuan..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="w-full pl-14 pr-6 py-4 bg-transparent border-none text-[var(--text-primary)] placeholder-[var(--text-muted)] focus:outline-none text-base font-ui"
+                                />
+                            </div>
+                        </form>
+                    </motion.div>
+                </div>
+            </div>
+
+            {/* Service Categories Grid */}
+            <div className="bg-[var(--bg-primary)] py-24 relative overflow-hidden">
+                <div className="max-w-6xl mx-auto px-6 md:px-12">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.6 }}
+                        viewport={{ once: true }}
+                        className="mb-16"
+                    >
+                        <h2 className="font-display text-4xl md:text-5xl font-bold text-[var(--text-primary)] tracking-tight mb-4">
+                            Kategori Layanan
+                        </h2>
+                        <p className="text-[var(--text-secondary)] font-ui max-w-2xl">
+                            Jelajahi panduan lengkap untuk setiap aspek pengalaman berbelanja Anda.
+                        </p>
+                    </motion.div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {categories.map((cat, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: i * 0.1 }}
+                                viewport={{ once: true }}
+                                className="group"
+                            >
+                                <Link 
+                                    to={`/help/${cat.slug}`}
+                                    className="h-full block bg-[var(--surface-primary)] rounded-[2rem] border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-elevated)] transition-all duration-300 p-8 hover:border-[var(--accent-brass)] overflow-hidden relative"
+                                >
+                                    {/* Animated Glow on Hover */}
+                                    <div className="absolute inset-0 bg-gradient-to-br from-[var(--accent-brass)]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                                    <div className="relative z-10 flex flex-col h-full">
+                                        {/* Icon */}
+                                        <div className="w-14 h-14 rounded-2xl bg-[var(--primary)]/10 border border-[var(--accent-brass)]/20 flex items-center justify-center mb-6 text-[var(--accent-brass)] group-hover:scale-110 group-hover:bg-[var(--primary)]/20 transition-all duration-300">
+                                            {cat.icon}
+                                        </div>
+
+                                        {/* Content */}
+                                        <h3 className="font-display text-2xl font-bold text-[var(--text-primary)] mb-3 group-hover:text-[var(--accent-brass)] transition-colors">
+                                            {cat.title}
+                                        </h3>
+                                        <p className="text-sm text-[var(--text-secondary)] mb-6 leading-relaxed flex-1">
+                                            {cat.description}
+                                        </p>
+
+                                        {/* Links */}
+                                        <div className="pt-6 border-t border-[var(--border-premium)] space-y-3">
+                                            {cat.links.map(link => (
+                                                <Link
+                                                    key={link.slug}
+                                                    to={`/help/${link.slug}`}
+                                                    className="flex items-center justify-between text-sm text-[var(--text-secondary)] hover:text-[var(--accent-brass)] transition-colors group/link"
+                                                >
+                                                    <span className="font-medium">{link.name}</span>
+                                                    <ChevronRight size={14} className="opacity-0 translate-x-1 group-hover/link:opacity-100 group-hover/link:translate-x-3 transition-all" />
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </Link>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
             </div>
 
-            {/* Categories Grid */}
-            <div className="max-w-7xl mx-auto px-4 md:px-8 -mt-12 mb-20 relative z-20">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {categories.map((cat, i) => (
-                        <div key={i} className="bg-white dark:bg-gray-900 rounded-3xl p-7 shadow-xl shadow-gray-200/50 dark:shadow-none border border-gray-100 dark:border-gray-800 hover:-translate-y-1 transition-all duration-300 flex flex-col">
-                            <Link to={`/help/${cat.slug}`} className="block group mb-6">
-                                <div className="w-14 h-14 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-6 text-2xl group-hover:bg-orange-50 dark:group-hover:bg-orange-900/20 group-hover:text-orange-600 transition-colors">
-                                    {cat.icon}
+            {/* How It Works / Shopping Journey */}
+            <div className="bg-[var(--bg-secondary)] py-24">
+                <div className="max-w-6xl mx-auto px-6 md:px-12">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
+                        transition={{ duration: 0.6 }}
+                        viewport={{ once: true }}
+                        className="mb-16"
+                    >
+                        <h2 className="font-display text-4xl md:text-5xl font-bold text-[var(--text-primary)] tracking-tight mb-4">
+                            Alur Pembelian
+                        </h2>
+                        <p className="text-[var(--text-secondary)] font-ui max-w-2xl">
+                            Perjalanan belanja Anda dimulai dari sini hingga instrumen tiba di tangan Anda.
+                        </p>
+                    </motion.div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {[
+                            { step: 1, title: 'Jelajahi Koleksi', desc: 'Temukan instrumen premium pilihan sesuai kebutuhan Anda.', icon: <Search size={24} /> },
+                            { step: 2, title: 'Tambah ke Keranjang', desc: 'Pilih varian dan jumlah, lalu masukkan keranjang belanja Anda.', icon: <Zap size={24} /> },
+                            { step: 3, title: 'Selesaikan Pembayaran', desc: 'Checkout aman dengan berbagai metode pembayaran terpercaya.', icon: <CreditCard size={24} /> },
+                            { step: 4, title: 'Pantau Pesanan', desc: 'Lacak pengiriman real-time hingga instrumen tiba dengan aman.', icon: <Truck size={24} /> },
+                        ].map((item, i) => (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: i * 0.15 }}
+                                viewport={{ once: true }}
+                                className="relative"
+                            >
+                                {/* Connector Line */}
+                                {i < 3 && (
+                                    <div className="hidden lg:block absolute top-12 -right-4 w-8 h-0.5 bg-gradient-to-r from-[var(--accent-brass)] to-transparent"></div>
+                                )}
+
+                                <div className="bg-[var(--surface-primary)] rounded-[2rem] border border-[var(--border-premium)] p-8 h-full hover:shadow-[var(--shadow-elevated)] transition-all duration-300">
+                                    {/* Step Number */}
+                                    <div className="w-12 h-12 rounded-full bg-[var(--primary)]/15 border border-[var(--accent-brass)]/30 flex items-center justify-center mb-6 text-[var(--accent-brass)] font-display font-bold text-lg">
+                                        {item.step}
+                                    </div>
+
+                                    {/* Icon */}
+                                    <div className="text-[var(--accent-brass)] mb-6 opacity-80">
+                                        {item.icon}
+                                    </div>
+
+                                    <h3 className="font-display text-xl font-bold text-[var(--text-primary)] mb-3">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-sm text-[var(--text-secondary)] leading-relaxed font-ui">
+                                        {item.desc}
+                                    </p>
                                 </div>
-                                <h3 className="font-extrabold text-xl text-gray-900 dark:text-white mb-3 group-hover:text-orange-600 transition-colors">{cat.title}</h3>
-                                <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                                    {cat.description}
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </div>
+
+            {/* Main FAQ & Contact */}
+            <div className="bg-[var(--bg-primary)] py-24">
+                <div className="max-w-6xl mx-auto px-6 md:px-12">
+                    <div className="grid lg:grid-cols-3 gap-12">
+                        {/* FAQ Section */}
+                        <div className="lg:col-span-2">
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                transition={{ duration: 0.6 }}
+                                viewport={{ once: true }}
+                                className="mb-10"
+                            >
+                                <h2 className="font-display text-4xl font-bold text-[var(--text-primary)] mb-3 flex items-center gap-3">
+                                    <CircleHelp className="text-[var(--accent-brass)]" size={32} />
+                                    {searchQuery ? `Hasil Pencarian (${filteredFaqs.length})` : 'Pertanyaan Populer'}
+                                </h2>
+                                <p className="text-[var(--text-secondary)] font-ui">
+                                    Temukan jawaban atas pertanyaan umum dari customer kami.
                                 </p>
-                            </Link>
-                            
-                            <div className="mt-auto pt-6 border-t border-gray-100 dark:border-gray-800 transition-colors">
-                                <ul className="space-y-4">
-                                    {cat.links.map(link => (
-                                        <li key={link.slug}>
-                                            <Link 
-                                                to={`/help/${link.slug}`}
-                                                className="flex items-center justify-between w-full text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-orange-600 transition-colors"
-                                            >
-                                                {link.name}
-                                                <ChevronRight size={16} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+                            </motion.div>
 
-            {/* Main Content Sections */}
-            <div className="max-w-7xl mx-auto px-4 md:px-8 mb-24">
-                <div className="grid lg:grid-cols-3 gap-16">
-                    
-                    {/* FAQ Section */}
-                    <div className="lg:col-span-2">
-                        <div className="flex items-center justify-between mb-10">
-                            <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white flex items-center gap-3">
-                                <CircleHelp className="text-orange-600" /> 
-                                {searchQuery ? `Hasil Pencarian (${filteredFaqs.length})` : 'Pertanyaan Populer'}
-                            </h2>
-                        </div>
-
-                        {filteredFaqs.length > 0 ? (
-                            <div className="space-y-4">
-                                 {filteredFaqs.map((faq, i) => (
-                                    <details key={i} className="group bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden transition-all duration-300 open:ring-2 open:ring-orange-100 dark:open:ring-orange-900/30">
-                                        <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                                            <span className="font-bold text-gray-800 dark:text-gray-200 pr-4 group-open:text-orange-600 dark:group-open:text-orange-400 transition-colors">{faq.q}</span>
-                                            <div className="w-8 h-8 rounded-full bg-gray-50 dark:bg-gray-800 flex items-center justify-center group-open:bg-orange-50 dark:group-open:bg-orange-900/40 group-open:text-orange-600 dark:group-open:text-orange-400 transition-all">
-                                                <ChevronDown size={18} className="transition-transform group-open:rotate-180" />
-                                            </div>
-                                        </summary>
-                                        <div className="px-6 pb-6 text-gray-600 dark:text-gray-400 text-[15px] leading-relaxed border-t border-gray-50 dark:border-gray-800 pt-5 transition-colors">
-                                            {faq.a}
-                                        </div>
-                                    </details>
-                                ))}
-                            </div>
-                        ) : (
-                            <div className="bg-gray-50 dark:bg-gray-900 rounded-3xl p-12 text-center border-2 border-dashed border-gray-200 dark:border-gray-700 transition-colors">
-                                <div className="w-16 h-16 bg-white dark:bg-gray-800 rounded-full flex items-center justify-center mx-auto mb-4 shadow-sm">
-                                    <Search size={24} className="text-gray-300 dark:text-gray-600" />
-                                </div>
-                                <h4 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Pencarian Tidak Ditemukan</h4>
-                                <p className="text-gray-500 dark:text-gray-400 max-w-xs mx-auto">Kami tidak dapat menemukan jawaban untuk "{searchQuery}". Coba kata kunci lain.</p>
-                            </div>
-                        )}
-
-                        {!searchQuery && (
-                            <Link to="/help/faq" className="mt-10 inline-flex items-center gap-2 text-orange-600 font-bold hover:gap-3 transition-all">
-                                Lihat semua FAQ <ArrowRight size={18} />
-                            </Link>
-                        )}
-                    </div>
-
-                    {/* Contact Sidebar */}
-                    <div className="space-y-8">
-                        <div className="bg-orange-600 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl shadow-orange-500/20">
-                            <div className="relative z-10">
-                                <h3 className="text-xl font-extrabold mb-2">Masih Butuh Bantuan?</h3>
-                                <p className="text-orange-100 text-sm mb-8">Tim support kami siap membantu Anda 24/7.</p>
-                                
+                            {filteredFaqs.length > 0 ? (
                                 <div className="space-y-4">
-                                    <a href="#" className="flex items-center gap-4 p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-colors backdrop-blur-sm border border-white/10 group">
-                                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-orange-600">
-                                            <MessageCircle size={20} />
+                                    {filteredFaqs.map((faq, i) => (
+                                        <motion.details 
+                                            key={i}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.4, delay: i * 0.05 }}
+                                            viewport={{ once: true }}
+                                            className="group bg-[var(--surface-primary)] rounded-2xl border border-[var(--border-premium)] shadow-[var(--shadow-subtle)] overflow-hidden hover:border-[var(--accent-brass)] transition-all duration-300 open:shadow-[var(--shadow-elevated)]"
+                                        >
+                                            <summary className="flex items-center justify-between p-6 cursor-pointer list-none hover:bg-[var(--surface-secondary)] transition-colors">
+                                                <span className="font-bold text-[var(--text-primary)] pr-4 group-open:text-[var(--accent-brass)] transition-colors text-left">{faq.q}</span>
+                                                <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--primary)]/10 flex items-center justify-center text-[var(--primary)] group-open:bg-[var(--accent-brass)]/20 group-open:text-[var(--accent-brass)] transition-all">
+                                                    <ChevronDown size={16} className="transition-transform group-open:rotate-180" />
+                                                </div>
+                                            </summary>
+                                            <div className="px-6 pb-6 text-[var(--text-secondary)] text-[15px] leading-relaxed border-t border-[var(--border-premium)] pt-5 font-ui">
+                                                {faq.a}
+                                            </div>
+                                        </motion.details>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="bg-[var(--surface-primary)] rounded-3xl p-12 text-center border border-[var(--border-premium)]">
+                                    <div className="w-16 h-16 bg-[var(--primary)]/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-[var(--accent-brass)]/20">
+                                        <Search size={28} className="text-[var(--text-muted)]" />
+                                    </div>
+                                    <h4 className="font-display text-xl font-bold text-[var(--text-primary)]">Pencarian Tidak Ditemukan</h4>
+                                    <p className="text-sm text-[var(--text-secondary)] mt-3 max-w-xs mx-auto font-ui">Coba kata kunci lain untuk menemukan jawaban yang Anda cari.</p>
+                                </div>
+                            )}
+
+                            {!searchQuery && (
+                                <Link to="/help/faq" className="mt-10 inline-flex items-center gap-2 text-[var(--accent-brass)] font-bold hover:gap-3 transition-all group">
+                                    Lihat semua FAQ <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                                </Link>
+                            )}
+                        </div>
+
+                        {/* Contact Sidebar */}
+                        <motion.div 
+                            initial={{ opacity: 0, x: 20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.6 }}
+                            viewport={{ once: true }}
+                            className="space-y-6"
+                        >
+                            {/* Primary Contact Card */}
+                            <div className="bg-gradient-to-br from-[var(--primary)]/15 to-[var(--accent-brass)]/10 rounded-[2rem] p-8 border border-[var(--accent-brass)]/30 shadow-[0_0_20px_var(--glow-warm)]">
+                                <div className="flex items-center gap-3 mb-6">
+                                    <Headphones size={24} className="text-[var(--accent-brass)]" />
+                                    <h3 className="font-display text-2xl font-bold text-[var(--text-primary)]">Butuh Bantuan?</h3>
+                                </div>
+                                <p className="text-sm text-[var(--text-secondary)] mb-8 leading-relaxed font-ui">
+                                    Tim customer service kami siap membantu Anda dengan respons cepat dan solusi profesional.
+                                </p>
+                                
+                                <div className="space-y-3">
+                                    <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-4 bg-[var(--surface-primary)] rounded-xl hover:bg-[var(--primary)]/5 border border-[var(--border-premium)] transition-all group">
+                                        <div className="w-10 h-10 bg-[var(--primary)]/10 rounded-lg flex items-center justify-center text-[var(--accent-brass)]">
+                                            <MessageCircle size={18} />
                                         </div>
-                                        <div className="flex-1">
-                                            <p className="text-xs font-bold text-orange-200">Live Chat</p>
-                                            <p className="text-sm font-bold">Chat Sekarang</p>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">WhatsApp</p>
+                                            <p className="text-sm font-bold text-[var(--text-primary)]">Chat dengan kami</p>
                                         </div>
-                                        <ExternalLink size={14} className="opacity-0 group-hover:opacity-100" />
+                                        <ExternalLink size={14} className="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--text-muted)]" />
                                     </a>
                                     
-                                    <a href="#" className="flex items-center gap-4 p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-colors backdrop-blur-sm border border-white/10 group">
-                                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-orange-600">
-                                            <Mail size={20} />
+                                    <a href="mailto:support@nadakita.id" className="flex items-center gap-3 p-4 bg-[var(--surface-primary)] rounded-xl hover:bg-[var(--primary)]/5 border border-[var(--border-premium)] transition-all group">
+                                        <div className="w-10 h-10 bg-[var(--primary)]/10 rounded-lg flex items-center justify-center text-[var(--accent-brass)]">
+                                            <Mail size={18} />
                                         </div>
-                                        <div className="flex-1">
-                                            <p className="text-xs font-bold text-orange-200">Email</p>
-                                            <p className="text-sm font-bold">support@nadakita.id</p>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-[10px] font-bold uppercase tracking-widest text-[var(--text-muted)]">Email</p>
+                                            <p className="text-sm font-bold text-[var(--text-primary)]">support@nadakita.id</p>
                                         </div>
-                                        <ExternalLink size={14} className="opacity-0 group-hover:opacity-100" />
-                                    </a>
-
-                                    <a href="#" className="flex items-center gap-4 p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-colors backdrop-blur-sm border border-white/10 group">
-                                        <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-orange-600">
-                                            <Phone size={20} />
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-xs font-bold text-orange-200">Call Center</p>
-                                            <p className="text-sm font-bold">0800-1234-5678</p>
-                                        </div>
-                                        <ExternalLink size={14} className="opacity-0 group-hover:opacity-100" />
+                                        <ExternalLink size={14} className="opacity-0 group-hover:opacity-100 transition-opacity text-[var(--text-muted)]" />
                                     </a>
                                 </div>
                             </div>
-                            <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-white/5 rounded-full blur-2xl"></div>
-                        </div>
 
-                        <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800 transition-colors">
-                            <h4 className="font-bold text-gray-900 dark:text-white mb-4">Jam Operasional Studio</h4>
-                            <div className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                                <div className="flex justify-between">
-                                    <span>Senin - Jumat</span>
-                                    <span className="font-bold text-gray-900 dark:text-white transition-colors">09:00 - 20:00</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Sabtu - Minggu</span>
-                                    <span className="font-bold text-gray-900 dark:text-white transition-colors">10:00 - 17:00</span>
+                            {/* Hours Card */}
+                            <div className="bg-[var(--surface-primary)] rounded-2xl p-6 border border-[var(--border-premium)] shadow-[var(--shadow-subtle)]">
+                                <h4 className="font-display font-bold text-[var(--text-primary)] mb-5 flex items-center gap-2">
+                                    <Clock size={18} className="text-[var(--accent-brass)]" />
+                                    Jam Operasional
+                                </h4>
+                                <div className="space-y-3 text-sm font-ui">
+                                    <div className="flex justify-between items-center pb-3 border-b border-[var(--border-soft)]">
+                                        <span className="text-[var(--text-secondary)]">Senin - Jumat</span>
+                                        <span className="font-bold text-[var(--text-primary)]">09:00 - 20:00</span>
+                                    </div>
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-[var(--text-secondary)]">Sabtu - Minggu</span>
+                                        <span className="font-bold text-[var(--text-primary)]">10:00 - 17:00</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
-
                 </div>
+            </div>
+
+            {/* CTA Section */}
+            <div className="bg-gradient-to-br from-[var(--bg-secondary)] to-[var(--bg-primary)] py-24">
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    viewport={{ once: true }}
+                    className="max-w-4xl mx-auto px-6 md:px-12 text-center"
+                >
+                    <h2 className="font-display text-4xl md:text-5xl font-bold text-[var(--text-primary)] mb-6 tracking-tight">
+                        Siap Menemukan Mahakarya Anda?
+                    </h2>
+                    <p className="text-lg text-[var(--text-secondary)] mb-10 max-w-2xl mx-auto font-ui">
+                        Jelajahi koleksi instrumen premium kami dan temukan yang sempurna untuk Anda.
+                    </p>
+                    <Link 
+                        to="/explore"
+                        className="inline-flex items-center justify-center gap-2 px-10 py-5 bg-[var(--primary)] text-[var(--bg-primary)] rounded-full font-ui font-bold text-sm uppercase tracking-wider hover:shadow-[0_10px_30px_var(--glow-warm)] hover:-translate-y-1 transition-all duration-300"
+                    >
+                        Jelajahi Koleksi
+                        <ArrowRight size={18} />
+                    </Link>
+                </motion.div>
             </div>
         </Layout>
     );
