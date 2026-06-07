@@ -60,55 +60,64 @@ export const ProductMedia = ({ mediaItems }) => {
     }, []);
 
     return (
-        <div className="bg-orange-50 border border-orange-100 rounded-xl p-6 mt-8">
-            <div className="flex justify-between items-center mb-4">
-                <h3 className="text-sm font-bold text-orange-900 uppercase tracking-widest">Pratinjau Studio</h3>
-                {media.title && <span className="text-xs font-semibold text-orange-600 bg-orange-100 px-2 py-1 rounded">{media.title}</span>}
-            </div>
-            
-            <div className="flex items-center gap-4">
-                <button 
-                    onClick={togglePlay}
-                    className="w-12 h-12 flex-shrink-0 bg-orange-600 hover:bg-orange-700 text-white rounded-full flex items-center justify-center transition-colors shadow-md"
-                >
-                    {isPlaying ? <Pause size={20} className="fill-current" /> : <Play size={20} className="fill-current ml-1" />}
-                </button>
-                
-                <div className="flex-1">
-                    {/* Visualizer fake lines */}
-                    <div className="flex items-end gap-1 h-8 mb-2">
-                        {Array.from({ length: 30 }).map((_, i) => {
-                            const height = Math.random() * 100;
-                            const isActive = (i / 30) * 100 <= progress;
-                            return (
-                                <div 
-                                    key={i} 
-                                    className={`flex-1 rounded-t-sm transition-all duration-300 ${isActive ? 'bg-orange-500' : 'bg-orange-200'}`}
-                                    style={{ height: `${Math.max(20, height)}%` }}
-                                />
-                            );
-                        })}
-                    </div>
-                    
-                    {isAudio ? (
-                        <audio 
-                            ref={mediaRef} 
-                            src={media.media_url} 
-                            onTimeUpdate={handleTimeUpdate}
-                        />
-                    ) : (
-                        <video 
-                            ref={mediaRef} 
-                            src={media.media_url} 
-                            className="hidden" // hide video visually, just play audio, or build full video player if needed
-                            onTimeUpdate={handleTimeUpdate}
-                        />
+        <div className="relative group rounded-[2rem] p-[1px] overflow-hidden bg-gradient-to-b from-zinc-800 to-zinc-900/10 mt-8">
+            <div className="relative h-full bg-[#0A0A0A] rounded-[calc(2rem-1px)] p-6 flex flex-col z-10 overflow-hidden">
+                {/* Glow decor */}
+                <div className="absolute -top-12 -right-12 w-32 h-32 bg-orange-600/10 blur-[40px] group-hover:bg-orange-500/20 transition-colors duration-500"></div>
+
+                <div className="flex justify-between items-center mb-5 relative z-10">
+                    <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Pratinjau Suara</h3>
+                    {media.title && (
+                        <span className="text-xs font-semibold text-orange-500 bg-orange-500/10 border border-orange-500/20 px-3.5 py-1 rounded-full">
+                            {media.title}
+                        </span>
                     )}
                 </div>
+                
+                <div className="flex items-center gap-4 relative z-10">
+                    <button 
+                        onClick={togglePlay}
+                        className="w-12 h-12 flex-shrink-0 bg-orange-600 hover:bg-orange-500 text-white rounded-full flex items-center justify-center transition-all duration-300 shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_30px_rgba(234,88,12,0.5)] hover:scale-105"
+                    >
+                        {isPlaying ? <Pause size={20} className="fill-current" /> : <Play size={20} className="fill-current ml-1" />}
+                    </button>
+                    
+                    <div className="flex-1">
+                        {/* Visualizer fake lines */}
+                        <div className="flex items-end gap-1 h-8 mb-2">
+                            {Array.from({ length: 30 }).map((_, i) => {
+                                const height = Math.random() * 100;
+                                const isActive = (i / 30) * 100 <= progress;
+                                return (
+                                    <div 
+                                        key={i} 
+                                        className={`flex-1 rounded-t-sm transition-all duration-300 ${isActive ? 'bg-orange-500 shadow-[0_0_10px_rgba(234,88,12,0.4)]' : 'bg-zinc-800'}`}
+                                        style={{ height: `${Math.max(20, height)}%` }}
+                                    />
+                                );
+                            })}
+                        </div>
+                        
+                        {isAudio ? (
+                            <audio 
+                                ref={mediaRef} 
+                                src={media.media_url} 
+                                onTimeUpdate={handleTimeUpdate}
+                            />
+                        ) : (
+                            <video 
+                                ref={mediaRef} 
+                                src={media.media_url} 
+                                className="hidden" 
+                                onTimeUpdate={handleTimeUpdate}
+                            />
+                        )}
+                    </div>
 
-                <button onClick={toggleMute} className="text-orange-600 hover:text-orange-800">
-                    {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
-                </button>
+                    <button onClick={toggleMute} className="text-zinc-400 hover:text-orange-500 transition-colors">
+                        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                    </button>
+                </div>
             </div>
         </div>
     );

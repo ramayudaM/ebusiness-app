@@ -20,11 +20,11 @@ export const ProductGallery = ({ images, mainImageUrl }) => {
     return (
         <div className="flex flex-col gap-4 w-full">
             {/* Main Image */}
-            <div className="w-full aspect-square bg-gray-100 rounded-xl overflow-hidden border border-gray-200 group">
+            <div className="w-full aspect-square bg-[#0A0A0A] rounded-[2rem] overflow-hidden border border-zinc-800/80 group transition-all duration-500 hover:border-orange-500/30">
                 <ImageFallback
                     src={galleryList[activeIndex]}
                     alt="Main Product"
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     fallbackType="guitar,instrument"
                 />
             </div>
@@ -36,13 +36,15 @@ export const ProductGallery = ({ images, mainImageUrl }) => {
                         <button
                             key={index}
                             onClick={() => setActiveIndex(index)}
-                            className={`shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all ${activeIndex === index ? 'border-orange-500 opacity-100' : 'border-transparent opacity-60 hover:opacity-100'
-                                }`}
+                            className={`shrink-0 w-20 h-20 rounded-2xl overflow-hidden border-2 transition-all duration-300 ${activeIndex === index 
+                                ? 'border-orange-500 opacity-100 shadow-[0_0_15px_rgba(234,88,12,0.2)]' 
+                                : 'border-zinc-800 opacity-60 hover:opacity-100 hover:border-zinc-600'
+                            }`}
                         >
                             <ImageFallback
                                 src={url}
                                 alt={`Thumbnail ${index + 1}`}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover bg-[#0A0A0A]"
                                 fallbackType="guitar,instrument"
                             />
                         </button>
