@@ -96,7 +96,7 @@ class AdminProductController extends Controller
             ]);
 
             if ($request->hasFile('image')) {
-                $path = $request->file('image')->store('products', 'public');
+                $path = $this->storeProductImage($request, $product);
 
                 ProductImage::create([
                     'product_id' => $product->id,
@@ -178,7 +178,7 @@ class AdminProductController extends Controller
                     $oldPrimary->delete();
                 }
 
-                $path = $request->file('image')->store('products', 'public');
+                $path = $this->storeProductImage($request, $product);
 
                 ProductImage::create([
                     'product_id' => $product->id,
@@ -216,5 +216,30 @@ class AdminProductController extends Controller
             'success' => true,
             'data' => $categories,
         ]);
+    }
+
+    private function productImageDirectory(Product $product): string
+    {
+        return 'products/' . Str::slug($product->name);
+    }
+
+    private function storeProductImage(Request $request, Product $product): string
+    {
+        $file = $request->file('image');
+        $directory = $this->productImageDirectory($product);
+        $filename = $file->hashName();
+        $path = $directory . '/' . $filename;
+
+        $storedPath = $file->storeAs($directory, $filename, 'public');
+
+        if ($storedPath) {
+            return $storedPath;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return $path;
+        }
+
+        throw new \RuntimeException('Gambar produk gagal disimpan.');
     }
 }
