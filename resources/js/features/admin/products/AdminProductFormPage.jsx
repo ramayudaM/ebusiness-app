@@ -12,9 +12,10 @@ const initialForm = {
   description: '',
   price_sen: '',
   weight_gram: '',
-  stock_qty: '',
+  variations: [{ id: null, name: '', stock_qty: '' }],
   is_active: true,
   image: null,
+  images: [],
 }
 
 const maxImageSizeMB = 2
@@ -32,9 +33,16 @@ function formatCurrencyPreview(value) {
     .replace('Rp', 'Rp ')
 }
 
+function formatNumberWithDots(value) {
+  const digits = String(value || '').replace(/\D/g, '')
+
+  if (!digits) return ''
+
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+}
+
 function getPrimaryImage(product) {
-  const image =
-    product?.images?.find((item) => item.is_primary) || product?.images?.[0]
+  const image = product?.images?.find((item) => item.is_primary) || product?.images?.[0]
 
   if (!image?.url) return null
   if (image.url.startsWith('http')) return image.url
@@ -50,11 +58,22 @@ function getProductStock(product) {
   }
 
   return (
-    product.variations?.reduce(
-      (total, variation) => total + Number(variation.stock_qty || 0),
-      0
-    ) || 0
+    product.variations?.reduce((total, variation) => total + Number(variation.stock_qty || 0), 0) ||
+    0
   )
+}
+
+function getFormStockTotal(variations) {
+  return variations.reduce((total, variation) => total + Number(variation.stock_qty || 0), 0)
+}
+
+function createEmptyVariation() {
+  return {
+    id: null,
+    name: '',
+    stock_qty: '',
+    key: `${Date.now()}-${Math.random()}`,
+  }
 }
 
 function Toast({ toast, onClose }) {
@@ -66,8 +85,7 @@ function Toast({ toast, onClose }) {
     info: 'border-slate-200 bg-white text-slate-700',
   }
 
-  const iconName =
-    toast.type === 'success' ? 'check' : toast.type === 'error' ? 'alert' : 'bell'
+  const iconName = toast.type === 'success' ? 'check' : toast.type === 'error' ? 'alert' : 'bell'
 
   return (
     <div className="fixed right-6 top-24 z-[80] w-[340px]">
@@ -83,9 +101,7 @@ function Toast({ toast, onClose }) {
 
           <div className="min-w-0 flex-1">
             <p className="text-sm font-black">{toast.title}</p>
-            <p className="mt-1 text-xs font-semibold opacity-75">
-              {toast.message}
-            </p>
+            <p className="mt-1 text-xs font-semibold opacity-75">{toast.message}</p>
           </div>
 
           <button
@@ -112,6 +128,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
   const [currentProduct, setCurrentProduct] = useState(null)
 
   const [imagePreview, setImagePreview] = useState(null)
+  const [imagePreviews, setImagePreviews] = useState([])
   const [imageInputKey, setImageInputKey] = useState(Date.now())
   const [imageFit, setImageFit] = useState('cover')
   const [imagePosition, setImagePosition] = useState({ x: 50, y: 50 })
@@ -127,9 +144,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
   const [toast, setToast] = useState(null)
 
   const selectedCategory = useMemo(() => {
-    return categories.find(
-      (category) => String(category.id) === String(form.category_id)
-    )
+    return categories.find((category) => String(category.id) === String(form.category_id))
   }, [categories, form.category_id])
 
   const pageTitle = isEdit ? 'Edit Produk' : 'Tambah Produk'
@@ -179,9 +194,18 @@ export default function AdminProductFormPage({ mode = 'create' }) {
         description: product.description || '',
         price_sen: product.price_sen || '',
         weight_gram: product.weight_gram || '',
-        stock_qty: getProductStock(product),
+        variations:
+          product.variations?.length > 0
+            ? product.variations.map((variation) => ({
+                id: variation.id,
+                name: variation.name || '',
+                stock_qty: variation.stock_qty ?? '',
+                key: `saved-${variation.id}`,
+              }))
+            : [{ id: null, name: '', stock_qty: getProductStock(product) }],
         is_active: Boolean(product.is_active),
         image: null,
+        images: [],
       })
 
       setImagePreview(getPrimaryImage(product))
@@ -212,13 +236,13 @@ export default function AdminProductFormPage({ mode = 'create' }) {
     const { name, value, type, checked, files } = event.target
 
     if (type === 'file') {
-      const file = files?.[0] || null
+      const selectedFiles = Array.from(files || [])
 
-      if (!file) return
+      if (selectedFiles.length === 0) return
 
-      const isImage = file.type.startsWith('image/')
+      const invalidFile = selectedFiles.find((file) => !file.type.startsWith('image/'))
 
-      if (!isImage) {
+      if (invalidFile) {
         setToast({
           type: 'error',
           title: 'Format tidak didukung',
@@ -228,7 +252,9 @@ export default function AdminProductFormPage({ mode = 'create' }) {
         return
       }
 
-      if (file.size > maxImageSize) {
+      const oversizedFile = selectedFiles.find((file) => file.size > maxImageSize)
+
+      if (oversizedFile) {
         setToast({
           type: 'error',
           title: 'Gambar terlalu besar',
@@ -238,22 +264,37 @@ export default function AdminProductFormPage({ mode = 'create' }) {
         return
       }
 
+      const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file))
+
       setForm((prev) => ({
         ...prev,
-        image: file,
+        image: selectedFiles[0],
+        images: selectedFiles,
       }))
 
-      setImagePreview(URL.createObjectURL(file))
+      setImagePreview(previewUrls[0])
+      setImagePreviews(previewUrls)
       setImageFit('cover')
       setImagePosition({ x: 50, y: 50 })
       setImageZoom(1)
 
       setToast({
         type: 'success',
-        title: 'Gambar berhasil dipilih',
-        message: 'Klik dan geser gambar untuk mengatur posisi preview.',
+        title: selectedFiles.length > 1 ? 'Gambar berhasil dipilih' : 'Gambar berhasil dipilih',
+        message:
+          selectedFiles.length > 1
+            ? `${selectedFiles.length} gambar siap diunggah. Gambar pertama akan menjadi foto utama.`
+            : 'Klik dan geser gambar untuk mengatur posisi preview.',
       })
 
+      return
+    }
+
+    if (name === 'price_sen') {
+      setForm((prev) => ({
+        ...prev,
+        price_sen: value.replace(/\D/g, ''),
+      }))
       return
     }
 
@@ -267,9 +308,11 @@ export default function AdminProductFormPage({ mode = 'create' }) {
     setForm((prev) => ({
       ...prev,
       image: null,
+      images: [],
     }))
 
     setImagePreview(isEdit ? getPrimaryImage(currentProduct) : null)
+    setImagePreviews([])
     setImageInputKey(Date.now())
     setImageFit('cover')
     setImagePosition({ x: 50, y: 50 })
@@ -288,9 +331,11 @@ export default function AdminProductFormPage({ mode = 'create' }) {
     setForm((prev) => ({
       ...prev,
       image: null,
+      images: [],
     }))
 
     setImagePreview(null)
+    setImagePreviews([])
     setImageInputKey(Date.now())
     setImageFit('cover')
     setImagePosition({ x: 50, y: 50 })
@@ -312,10 +357,23 @@ export default function AdminProductFormPage({ mode = 'create' }) {
     formData.append('description', form.description || '')
     formData.append('price_sen', form.price_sen)
     formData.append('weight_gram', form.weight_gram)
-    formData.append('stock_qty', form.stock_qty)
+    formData.append('stock_qty', getFormStockTotal(form.variations))
     formData.append('is_active', form.is_active ? '1' : '0')
 
-    if (form.image) {
+    form.variations.forEach((variation, index) => {
+      if (variation.id) {
+        formData.append(`variations[${index}][id]`, variation.id)
+      }
+
+      formData.append(`variations[${index}][name]`, variation.name || '')
+      formData.append(`variations[${index}][stock_qty]`, variation.stock_qty || 0)
+    })
+
+    if (form.images.length > 0) {
+      form.images.forEach((image) => {
+        formData.append('images[]', image)
+      })
+    } else if (form.image) {
       formData.append('image', form.image)
     }
 
@@ -410,9 +468,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
   const handleDelete = async () => {
     if (!isEdit || !currentProduct) return
 
-    const confirmed = window.confirm(
-      `Hapus produk "${currentProduct.name}" dari database?`
-    )
+    const confirmed = window.confirm(`Hapus produk "${currentProduct.name}" dari database?`)
 
     if (!confirmed) return
 
@@ -438,6 +494,41 @@ export default function AdminProductFormPage({ mode = 'create' }) {
     return errors?.[name]?.[0]
   }
 
+  const variationFieldError = (index, name) => {
+    return fieldError(`variations.${index}.${name}`)
+  }
+
+  const handleVariationChange = (index, field, value) => {
+    setForm((prev) => ({
+      ...prev,
+      variations: prev.variations.map((variation, variationIndex) =>
+        variationIndex === index
+          ? {
+              ...variation,
+              [field]: field === 'stock_qty' ? value.replace(/\D/g, '') : value,
+            }
+          : variation
+      ),
+    }))
+  }
+
+  const handleAddVariation = () => {
+    setForm((prev) => ({
+      ...prev,
+      variations: [...prev.variations, createEmptyVariation()],
+    }))
+  }
+
+  const handleRemoveVariation = (index) => {
+    setForm((prev) => ({
+      ...prev,
+      variations:
+        prev.variations.length > 1
+          ? prev.variations.filter((_, variationIndex) => variationIndex !== index)
+          : prev.variations,
+    }))
+  }
+
   if (loading) {
     return (
       <AdminLayout
@@ -449,9 +540,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
         <div className="flex min-h-[520px] items-center justify-center rounded-[32px] border border-slate-200 bg-white">
           <div className="text-center">
             <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-slate-200 border-t-orange-600" />
-            <p className="mt-4 text-sm font-bold text-slate-500">
-              Memuat data produk...
-            </p>
+            <p className="mt-4 text-sm font-bold text-slate-500">Memuat data produk...</p>
           </div>
         </div>
       </AdminLayout>
@@ -500,11 +589,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                 style={{ backgroundColor: theme.primary }}
               >
                 <AdminIcon name="plus" size={18} />
-                {submitting
-                  ? 'Menyimpan...'
-                  : isEdit
-                    ? 'Simpan Perubahan'
-                    : 'Publikasikan Produk'}
+                {submitting ? 'Menyimpan...' : isEdit ? 'Simpan Perubahan' : 'Publikasikan Produk'}
               </button>
             </div>
           </div>
@@ -531,9 +616,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-black text-slate-950">
-                    Informasi Produk
-                  </h3>
+                  <h3 className="text-lg font-black text-slate-950">Informasi Produk</h3>
                   <p className="text-sm font-medium text-slate-500">
                     Data utama yang akan ditampilkan pada katalog customer.
                   </p>
@@ -556,9 +639,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                   />
 
                   {fieldError('name') && (
-                    <p className="mt-2 text-xs font-bold text-rose-600">
-                      {fieldError('name')}
-                    </p>
+                    <p className="mt-2 text-xs font-bold text-rose-600">{fieldError('name')}</p>
                   )}
                 </div>
 
@@ -577,9 +658,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                   />
 
                   {fieldError('sku') && (
-                    <p className="mt-2 text-xs font-bold text-rose-600">
-                      {fieldError('sku')}
-                    </p>
+                    <p className="mt-2 text-xs font-bold text-rose-600">{fieldError('sku')}</p>
                   )}
                 </div>
 
@@ -608,6 +687,81 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                       {fieldError('category_id')}
                     </p>
                   )}
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
+                    Jenis Variasi Produk
+                  </label>
+
+                  <div className="mt-2 space-y-3">
+                    {form.variations.map((variation, index) => (
+                      <div
+                        key={variation.key || variation.id || index}
+                        className="grid grid-cols-1 gap-3 rounded-3xl bg-slate-50 p-3 md:grid-cols-[1fr_160px_auto]"
+                      >
+                        <div>
+                          <input
+                            value={variation.name}
+                            onChange={(event) =>
+                              handleVariationChange(index, 'name', event.target.value)
+                            }
+                            required
+                            placeholder={`Variasi ${index + 1}, contoh: Natural`}
+                            className="w-full rounded-2xl border-0 bg-white px-4 py-4 text-sm font-bold text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:ring-2 focus:ring-orange-100"
+                          />
+
+                          {variationFieldError(index, 'name') && (
+                            <p className="mt-2 text-xs font-bold text-rose-600">
+                              {variationFieldError(index, 'name')}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <input
+                            value={variation.stock_qty}
+                            onChange={(event) =>
+                              handleVariationChange(index, 'stock_qty', event.target.value)
+                            }
+                            required
+                            inputMode="numeric"
+                            placeholder="Stok"
+                            className="w-full rounded-2xl border-0 bg-white px-4 py-4 text-sm font-bold text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:ring-2 focus:ring-orange-100"
+                          />
+
+                          {variationFieldError(index, 'stock_qty') && (
+                            <p className="mt-2 text-xs font-bold text-rose-600">
+                              {variationFieldError(index, 'stock_qty')}
+                            </p>
+                          )}
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveVariation(index)}
+                          disabled={form.variations.length === 1}
+                          className="flex h-12 items-center justify-center rounded-2xl border border-rose-100 bg-white px-4 text-sm font-black text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40 md:h-full"
+                          title="Hapus variasi"
+                        >
+                          <AdminIcon name="trash" size={17} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {fieldError('variations') && (
+                    <p className="mt-2 text-xs font-bold text-rose-600">{fieldError('variations')}</p>
+                  )}
+
+                  <button
+                    type="button"
+                    onClick={handleAddVariation}
+                    className="mt-3 inline-flex items-center gap-2 rounded-2xl border border-orange-200 bg-orange-50 px-4 py-3 text-sm font-black text-orange-700 transition hover:bg-orange-100"
+                  >
+                    <AdminIcon name="plus" size={17} />
+                    Tambah Variasi
+                  </button>
                 </div>
 
                 <div className="md:col-span-2">
@@ -646,9 +800,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                 </div>
 
                 <div>
-                  <h3 className="text-lg font-black text-slate-950">
-                    Harga, Stok, dan Pengiriman
-                  </h3>
+                  <h3 className="text-lg font-black text-slate-950">Harga, Stok, dan Pengiriman</h3>
                   <p className="text-sm font-medium text-slate-500">
                     Informasi operasional untuk transaksi customer.
                   </p>
@@ -663,41 +815,18 @@ export default function AdminProductFormPage({ mode = 'create' }) {
 
                   <input
                     name="price_sen"
-                    type="number"
-                    min="0"
-                    value={form.price_sen}
+                    type="text"
+                    inputMode="numeric"
+                    value={formatNumberWithDots(form.price_sen)}
                     onChange={handleChange}
                     required
-                    placeholder="2500000"
+                    placeholder="2.500.000"
                     className="mt-2 w-full rounded-2xl border-0 bg-slate-100 px-4 py-4 text-sm font-bold text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:ring-2 focus:ring-orange-100"
                   />
 
                   {fieldError('price_sen') && (
                     <p className="mt-2 text-xs font-bold text-rose-600">
                       {fieldError('price_sen')}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="text-xs font-black uppercase tracking-[0.16em] text-slate-400">
-                    Stok
-                  </label>
-
-                  <input
-                    name="stock_qty"
-                    type="number"
-                    min="0"
-                    value={form.stock_qty}
-                    onChange={handleChange}
-                    required
-                    placeholder="20"
-                    className="mt-2 w-full rounded-2xl border-0 bg-slate-100 px-4 py-4 text-sm font-bold text-slate-800 outline-none ring-0 placeholder:text-slate-400 focus:ring-2 focus:ring-orange-100"
-                  />
-
-                  {fieldError('stock_qty') && (
-                    <p className="mt-2 text-xs font-bold text-rose-600">
-                      {fieldError('stock_qty')}
                     </p>
                   )}
                 </div>
@@ -732,12 +861,10 @@ export default function AdminProductFormPage({ mode = 'create' }) {
             <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="text-lg font-black text-slate-950">
-                    Media Produk
-                  </h3>
+                  <h3 className="text-lg font-black text-slate-950">Media Produk</h3>
 
                   <p className="mt-1 text-sm font-medium text-slate-500">
-                    Atur foto utama produk untuk tampilan katalog customer.
+                    Unggah satu atau beberapa foto produk untuk tampilan katalog customer.
                   </p>
                 </div>
 
@@ -764,9 +891,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                       onTouchMove={moveImageDrag}
                       onTouchEnd={stopImageDrag}
                       className={`relative h-full w-full select-none overflow-hidden ${
-                        imageFit === 'cover'
-                          ? 'cursor-grab active:cursor-grabbing'
-                          : ''
+                        imageFit === 'cover' ? 'cursor-grab active:cursor-grabbing' : ''
                       }`}
                     >
                       <img
@@ -849,8 +974,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                     </button>
 
                     <div className="rounded-2xl bg-white px-3 py-2 text-center text-xs font-black text-slate-500">
-                      X {Math.round(imagePosition.x)}% · Y{' '}
-                      {Math.round(imagePosition.y)}%
+                      X {Math.round(imagePosition.x)}% · Y {Math.round(imagePosition.y)}%
                     </div>
                   </div>
 
@@ -870,9 +994,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                       max="1.8"
                       step="0.1"
                       value={imageZoom}
-                      onChange={(event) =>
-                        setImageZoom(Number(event.target.value))
-                      }
+                      onChange={(event) => setImageZoom(Number(event.target.value))}
                       className="mt-3 w-full accent-orange-600"
                     />
                   </div>
@@ -888,14 +1010,33 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                     type="file"
                     name="image"
                     accept="image/*"
+                    multiple
                     onChange={handleChange}
                     className="hidden"
                   />
                 </label>
 
+                {imagePreviews.length > 1 && (
+                  <div className="grid grid-cols-4 gap-2">
+                    {imagePreviews.map((preview, index) => (
+                      <div
+                        key={preview}
+                        className="aspect-square overflow-hidden rounded-2xl bg-slate-100 ring-1 ring-slate-200"
+                        title={form.images[index]?.name}
+                      >
+                        <img
+                          src={preview}
+                          alt={`Preview produk ${index + 1}`}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
                 <div className="rounded-2xl bg-amber-50 px-4 py-3 text-xs font-bold leading-relaxed text-amber-700">
-                  Maksimal upload gambar {maxImageSizeMB} MB. Jika gambar terlalu
-                  besar, kompres terlebih dahulu sebelum dipublikasikan.
+                  Maksimal upload gambar {maxImageSizeMB} MB. Jika gambar terlalu besar, kompres
+                  terlebih dahulu sebelum dipublikasikan.
                 </div>
 
                 {imagePreview && (
@@ -910,25 +1051,18 @@ export default function AdminProductFormPage({ mode = 'create' }) {
               </div>
 
               <p className="mt-3 text-xs font-medium leading-relaxed text-slate-400">
-                Gunakan gambar JPG, PNG, atau WebP dengan rasio 1:1 agar tampil
-                rapi di katalog. Ukuran file maksimal{' '}
-                <span className="font-black text-slate-500">
-                  {maxImageSizeMB} MB
-                </span>
-                .
+                Gunakan gambar JPG, PNG, atau WebP dengan rasio 1:1 agar tampil rapi di katalog.
+                Ukuran file maksimal{' '}
+                <span className="font-black text-slate-500">{maxImageSizeMB} MB</span>.
               </p>
 
               {fieldError('image') && (
-                <p className="mt-2 text-xs font-bold text-rose-600">
-                  {fieldError('image')}
-                </p>
+                <p className="mt-2 text-xs font-bold text-rose-600">{fieldError('image')}</p>
               )}
             </div>
 
             <div className="rounded-[32px] border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-black text-slate-950">
-                Status Publikasi
-              </h3>
+              <h3 className="text-lg font-black text-slate-950">Status Publikasi</h3>
 
               <p className="mt-1 text-sm font-medium text-slate-500">
                 Produk aktif akan tampil pada halaman customer.
@@ -936,23 +1070,24 @@ export default function AdminProductFormPage({ mode = 'create' }) {
 
               <label className="mt-5 flex items-center justify-between rounded-2xl bg-slate-100 p-4">
                 <div>
-                  <p className="text-sm font-black text-slate-900">
-                    Tampilkan di katalog
-                  </p>
+                  <p className="text-sm font-black text-slate-900">Tampilkan di katalog</p>
                   <p className="mt-1 text-xs font-medium text-slate-500">
-                    {form.is_active
-                      ? 'Produk aktif'
-                      : 'Produk disimpan sebagai arsip'}
+                    {form.is_active ? 'Produk aktif' : 'Produk disimpan sebagai arsip'}
                   </p>
                 </div>
 
-                <input
-                  type="checkbox"
-                  name="is_active"
-                  checked={form.is_active}
-                  onChange={handleChange}
-                  className="h-5 w-5 accent-orange-600"
-                />
+                <span className="relative flex h-6 w-6 shrink-0 items-center justify-center">
+                  <input
+                    type="checkbox"
+                    name="is_active"
+                    checked={form.is_active}
+                    onChange={handleChange}
+                    className="peer h-6 w-6 cursor-pointer appearance-none rounded-lg border-2 border-orange-500 bg-slate-950 transition checked:bg-slate-950 focus:outline-none focus:ring-4 focus:ring-orange-100"
+                  />
+                  <span className="pointer-events-none absolute hidden text-orange-500 peer-checked:block">
+                    <AdminIcon name="check" size={16} />
+                  </span>
+                </span>
               </label>
             </div>
 
@@ -966,9 +1101,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                 Preview Ringkas
               </p>
 
-              <h3 className="mt-4 text-xl font-black">
-                {form.name || 'Nama produk belum diisi'}
-              </h3>
+              <h3 className="mt-4 text-xl font-black">{form.name || 'Nama produk belum diisi'}</h3>
 
               <p className="mt-2 text-sm font-medium text-white/50">
                 {selectedCategory?.name || 'Kategori belum dipilih'}
@@ -979,9 +1112,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                   <p className="text-[10px] font-black uppercase tracking-widest text-white/35">
                     Harga
                   </p>
-                  <p className="mt-2 text-sm font-black">
-                    {formatCurrencyPreview(form.price_sen)}
-                  </p>
+                  <p className="mt-2 text-sm font-black">{formatCurrencyPreview(form.price_sen)}</p>
                 </div>
 
                 <div className="rounded-2xl bg-white/10 p-4">
@@ -989,7 +1120,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                     Stok
                   </p>
                   <p className="mt-2 text-sm font-black">
-                    {form.stock_qty || 0} unit
+                    {getFormStockTotal(form.variations)} unit
                   </p>
                 </div>
               </div>
@@ -1034,11 +1165,7 @@ export default function AdminProductFormPage({ mode = 'create' }) {
                 className="rounded-2xl px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-60"
                 style={{ backgroundColor: theme.primary }}
               >
-                {submitting
-                  ? 'Menyimpan...'
-                  : isEdit
-                    ? 'Simpan Perubahan'
-                    : 'Publikasikan Produk'}
+                {submitting ? 'Menyimpan...' : isEdit ? 'Simpan Perubahan' : 'Publikasikan Produk'}
               </button>
             </div>
           </div>

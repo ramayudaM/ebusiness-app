@@ -20,6 +20,7 @@ class Order extends Model
 
         'status',
         'payment_status',
+        'stock_reserved_at',
 
         'shipping_name',
         'shipping_phone',
@@ -54,6 +55,7 @@ class Order extends Model
         'subtotal_sen' => 'integer',
         'total_sen' => 'integer',
 
+        'stock_reserved_at' => 'datetime',
         'processed_at' => 'datetime',
         'shipped_at' => 'datetime',
         'delivered_at' => 'datetime',

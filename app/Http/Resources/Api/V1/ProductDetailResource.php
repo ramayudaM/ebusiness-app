@@ -72,7 +72,8 @@ class ProductDetailResource extends JsonResource
                         'avatar' => $review->user?->avatar,
                     ],
                     'rating' => $review->rating,
-                    'comment' => $review->comment,
+                    'comment' => $review->review_text,
+                    'review_text' => $review->review_text,
                     'created_at' => $review->created_at->format('Y-m-d H:i:s'),
                 ];
             }),

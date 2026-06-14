@@ -173,6 +173,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/orders', [\App\Http\Controllers\Api\V1\User\OrderController::class, 'index']);
         Route::get('/orders/{id}', [\App\Http\Controllers\Api\V1\User\OrderController::class, 'show']);
         Route::post('/orders/{id}/cancel', [\App\Http\Controllers\Api\V1\User\OrderController::class, 'cancel']);
+
+        Route::post('/reviews', [\App\Http\Controllers\Api\V1\User\ReviewController::class, 'store']);
     });
 
     /*

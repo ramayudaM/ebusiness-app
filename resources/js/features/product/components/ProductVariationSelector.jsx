@@ -17,7 +17,7 @@ export const ProductVariationSelector = ({ variations, selectedVariationId, onCh
                             onClick={() => !isOutOfStock && onChange(v.id)}
                             disabled={isOutOfStock}
                             className={`
-                                px-4 py-2 border rounded-xl text-sm font-medium transition-all duration-300
+                                flex min-w-[120px] flex-col items-start gap-1 px-4 py-3 border rounded-xl text-sm font-medium transition-all duration-300
                                 ${isSelected
                                     ? 'border-orange-500 bg-orange-500/10 text-orange-500 ring-1 ring-orange-500/50 shadow-[0_0_15px_rgba(234,88,12,0.15)]'
                                     : 'border-zinc-800 bg-[#0A0A0A] text-zinc-300 hover:border-zinc-700 hover:text-white'
@@ -25,7 +25,10 @@ export const ProductVariationSelector = ({ variations, selectedVariationId, onCh
                                 ${isOutOfStock ? 'opacity-40 cursor-not-allowed bg-zinc-950/20 text-zinc-650 border-zinc-900' : ''}
                             `}
                         >
-                            {v.name}
+                            <span>{v.name}</span>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider ${isSelected ? 'text-orange-300' : 'text-zinc-500'}`}>
+                                Stok {Number(v.stock_qty || 0)} unit
+                            </span>
                         </button>
                     );
                 })}

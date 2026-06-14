@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { ShoppingCart, Heart } from 'lucide-react';
 import { FALLBACK_PRODUCT } from '@/shared/utils/placeholders';
 import { ImageFallback } from '@/shared/components/ImageFallback';
+import { useCartStore } from '@/shared/stores/cartStore';
 import { useWishlistStore } from '@/shared/stores/wishlistStore';
 import { useRequireAuth } from '@/features/auth/hooks/useRequireAuth';
 
@@ -20,13 +21,31 @@ export const formatRupiah = (price) => {
 export const ProductCard = ({ product }) => {
     const navigate = useNavigate();
     const { withAuth } = useRequireAuth();
+    const addItem = useCartStore(state => state.addItem);
     const toggleWishlist = useWishlistStore(state => state.toggleWishlist);
     const isInWishlist = useWishlistStore(state => state.isInWishlist(product.id));
 
     const hasPromo = product.promo_price_sen !== null && product.promo_price_sen !== undefined;
+    const activeVariations = Array.isArray(product.variations)
+        ? product.variations.filter(variation => variation.is_active !== false)
+        : [];
+    const shouldChooseVariation = activeVariations.length > 1;
 
     const handleAddToCart = () => {
-        toast.success(`${product.name} ditambahkan ke keranjang`);
+        withAuth(async () => {
+            if (shouldChooseVariation) {
+                toast.info('Pilih variasi produk terlebih dahulu');
+                navigate(`/product/${product.id}`);
+                return;
+            }
+
+            try {
+                await addItem(product, activeVariations[0] || null, 1);
+                toast.success(`${product.name} ditambahkan ke keranjang`);
+            } catch (error) {
+                toast.error(error.response?.data?.message || 'Gagal menambahkan produk ke keranjang');
+            }
+        })();
     };
 
     const handleWishlist = (e) => {
@@ -116,7 +135,7 @@ export const ProductCard = ({ product }) => {
                     disabled={!product.is_active}
                 >
                     <ShoppingCart size={14} />
-                    {product.variations_count > 0 ? "Pilih Variasi" : "+ Keranjang"}
+                    {shouldChooseVariation ? "Pilih Variasi" : "+ Keranjang"}
                 </button>
             </div>
         </div>

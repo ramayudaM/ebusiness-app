@@ -96,12 +96,17 @@ export const ProductDetailPage = () => {
         navigate('/cart');
     });
 
-    const handleWishlist = withAuth(() => {
-        const added = toggleWishlist(product);
-        if (added) {
-            toast.success(`❤️ ${product.name} ditambahkan ke Wishlist!`);
-        } else {
-            toast.info(`💔 ${product.name} dihapus dari Wishlist`);
+    const handleWishlist = withAuth(async () => {
+        try {
+            const added = await toggleWishlist(product);
+
+            if (added) {
+                toast.success(`❤️ ${product.name} ditambahkan ke Wishlist!`);
+            } else {
+                toast.info(`💔 ${product.name} dihapus dari Wishlist`);
+            }
+        } catch (error) {
+            toast.error('Gagal memperbarui wishlist');
         }
     });
 
@@ -137,6 +142,8 @@ export const ProductDetailPage = () => {
     const currentVariation = product.variations?.find(v => v.id === selectedVariationId);
     const displayPrice = currentVariation?.price_sen ? currentVariation.price_sen : product.price_sen;
     const formattedPrice = `Rp ${Number(displayPrice || 0).toLocaleString('id-ID')}`;
+    const selectedStock = currentVariation ? Number(currentVariation.stock_qty || 0) : 0;
+    const totalStock = product.variations?.reduce((total, variation) => total + Number(variation.stock_qty || 0), 0) || 0;
 
     const isOutOfStock = product.variations?.length > 0
         ? (currentVariation ? currentVariation.stock_qty <= 0 : true)
@@ -226,14 +233,26 @@ export const ProductDetailPage = () => {
 
                         {/* Variations */}
                         {product.variations && product.variations.length > 0 && (
-                            <ProductVariationSelector
-                                variations={product.variations}
-                                selectedVariationId={selectedVariationId}
-                                onChange={(id) => {
-                                    setSelectedVariationId(id);
-                                    setQuantity(1); // reset qty on variant change
-                                }}
-                            />
+                            <div className="mb-6">
+                                <ProductVariationSelector
+                                    variations={product.variations}
+                                    selectedVariationId={selectedVariationId}
+                                    onChange={(id) => {
+                                        setSelectedVariationId(id);
+                                        setQuantity(1); // reset qty on variant change
+                                    }}
+                                />
+
+                                {currentVariation && (
+                                    <div className={`mt-3 rounded-2xl border px-4 py-3 text-sm font-bold ${
+                                        selectedStock > 0
+                                            ? 'border-green-500/20 bg-green-500/10 text-green-400'
+                                            : 'border-red-500/20 bg-red-500/10 text-red-400'
+                                    }`}>
+                                        Stok variasi {currentVariation.name}: {selectedStock} unit
+                                    </div>
+                                )}
+                            </div>
                         )}
 
                         {/* Actions (Desktop only mostly, duplicated for sticky mobile) */}
@@ -345,6 +364,14 @@ export const ProductDetailPage = () => {
                                                 <td className="py-3 px-4 text-zinc-500 w-1/3">Kategori</td>
                                                 <td className="py-3 px-4 font-semibold text-white">{product.category?.name || '-'}</td>
                                             </tr>
+                                            {product.variations && product.variations.length > 0 && (
+                                                <tr className="border-b border-zinc-900">
+                                                    <td className="py-3 px-4 text-zinc-500 w-1/3">Stok Variasi</td>
+                                                    <td className="py-3 px-4 font-semibold text-white">
+                                                        {currentVariation ? `${currentVariation.name}: ${selectedStock} unit` : `${totalStock} unit`}
+                                                    </td>
+                                                </tr>
+                                            )}
                                             <tr>
                                                 <td className="py-3 px-4 text-zinc-500 w-1/3">SKU Dasar</td>
                                                 <td className="py-3 px-4 font-semibold text-white">{product.sku}</td>

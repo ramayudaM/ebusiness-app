@@ -85,7 +85,7 @@ class ProductController extends Controller
                 $q->where('is_active', true);
             },
             'reviews' => function($q) {
-                $q->latest()->take(5); // Bring only recent reviews initially or adjust.
+                $q->where('is_visible', true)->latest()->take(5);
             },
             'reviews.user:id,name'
         ])

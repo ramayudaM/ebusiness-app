@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Services\MidtransService;
+use App\Services\OrderStockService;
 use App\Services\RajaOngkirService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -19,11 +20,17 @@ class CheckoutController extends Controller
 {
     protected $rajaOngkir;
     protected $midtrans;
+    protected $stockService;
 
-    public function __construct(RajaOngkirService $rajaOngkir, MidtransService $midtrans)
+    public function __construct(
+        RajaOngkirService $rajaOngkir,
+        MidtransService $midtrans,
+        OrderStockService $stockService
+    )
     {
         $this->rajaOngkir = $rajaOngkir;
         $this->midtrans = $midtrans;
+        $this->stockService = $stockService;
     }
 
     public function calculateShipping(Request $request)
@@ -105,15 +112,8 @@ class CheckoutController extends Controller
                 return response()->json(['message' => 'Keranjang kosong'], 422);
             }
 
-            $subtotal = 0;
-            foreach ($cartItems as $item) {
-                $price = $item->variation ? ($item->variation->price_sen ?? $item->product->price_sen) : $item->product->price_sen;
-                $subtotal += ($price * $item->quantity);
-            }
-
             $orderNumber = 'NK-' . strtoupper(Str::random(10));
             $shippingCost = (int) $request->shipping_cost;
-            $total = $subtotal + $shippingCost;
 
             $order = Order::create([
                 'order_number' => $orderNumber,
@@ -128,27 +128,38 @@ class CheckoutController extends Controller
                 'shipping_courier' => $request->courier,
                 'shipping_service' => $request->service,
                 'shipping_cost_sen' => $shippingCost,
-                'subtotal_sen' => $subtotal,
-                'total_sen' => $total,
+                'subtotal_sen' => 0,
+                'total_sen' => $shippingCost,
                 'customer_notes' => $request->notes,
                 'payment_status' => 'unpaid',
             ]);
 
-            foreach ($cartItems as $item) {
-                $price = $item->variation ? ($item->variation->price_sen ?? $item->product->price_sen) : $item->product->price_sen;
+            $reservedItems = $this->stockService->reserveForCartItems($order, $cartItems);
+            $subtotal = 0;
+
+            foreach ($reservedItems as $reservedItem) {
+                $item = $reservedItem['cart_item'];
+                $variation = $reservedItem['variation'];
+                $price = $reservedItem['price_sen'];
+                $subtotal += ($price * $item->quantity);
                 
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item->product_id,
-                    'variation_id' => $item->product_variation_id,
+                    'variation_id' => $variation->id,
                     'product_name_snapshot' => $item->product->name,
-                    'variation_name_snapshot' => $item->variation ? $item->variation->name : null,
-                    'product_sku_snapshot' => $item->variation ? $item->variation->sku : $item->product->sku,
+                    'variation_name_snapshot' => $variation->name,
+                    'product_sku_snapshot' => $variation->sku,
                     'qty' => $item->quantity,
                     'unit_price_sen' => $price,
                     'subtotal_sen' => ($price * $item->quantity),
                 ]);
             }
+
+            $order->update([
+                'subtotal_sen' => $subtotal,
+                'total_sen' => $subtotal + $shippingCost,
+            ]);
 
             // Get Midtrans Snap Token
             $snapToken = $this->midtrans->getSnapToken($order, $order->items);
@@ -178,7 +189,10 @@ class CheckoutController extends Controller
             } else if ($transactionStatus == 'pending') {
                 $order->update(['payment_status' => 'unpaid']);
             } else if ($transactionStatus == 'deny' || $transactionStatus == 'expire' || $transactionStatus == 'cancel') {
-                $order->update(['payment_status' => 'failed', 'status' => 'CANCELLED']);
+                DB::transaction(function () use ($order) {
+                    $this->stockService->restoreForOrder($order);
+                    $order->update(['payment_status' => 'failed', 'status' => 'CANCELLED']);
+                });
             }
 
             return response()->json([
@@ -214,7 +228,10 @@ class CheckoutController extends Controller
         } else if ($status == 'pending') {
             $order->update(['payment_status' => 'unpaid']);
         } else if ($status == 'deny' || $status == 'expire' || $status == 'cancel') {
-            $order->update(['payment_status' => 'failed', 'status' => 'CANCELLED']);
+            DB::transaction(function () use ($order) {
+                $this->stockService->restoreForOrder($order);
+                $order->update(['payment_status' => 'failed', 'status' => 'CANCELLED']);
+            });
         }
 
         return response()->json(['message' => 'Webhook processed']);

@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\ProductVariation;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -139,5 +140,83 @@ class AdminProductUploadTest extends TestCase
         Storage::disk('public')->assertExists($newProductImage->url);
         $this->assertNotEquals($oldPath, $newProductImage->url);
         $this->assertStringStartsWith('products/gitar-akustik-yamaha-fs800-updated/', $newProductImage->url);
+    }
+
+    public function test_admin_can_upload_product_with_multiple_images(): void
+    {
+        Storage::fake('public');
+
+        Sanctum::actingAs($this->adminUser);
+
+        $payload = [
+            'category_id' => $this->category->id,
+            'name' => 'Gitar Multi Image Test',
+            'description' => 'Produk test dengan beberapa gambar',
+            'price_sen' => 250000000,
+            'weight_gram' => 2500,
+            'sku' => 'GTR-MULTI-IMG',
+            'stock_qty' => 10,
+            'is_active' => true,
+            'images' => [
+                UploadedFile::fake()->image('gitar-depan.jpg', 600, 600),
+                UploadedFile::fake()->image('gitar-belakang.jpg', 600, 600),
+                UploadedFile::fake()->image('gitar-detail.jpg', 600, 600),
+            ],
+        ];
+
+        $response = $this->postJson('/api/v1/admin/products', $payload);
+
+        $response->assertStatus(201);
+
+        $product = Product::where('sku', 'GTR-MULTI-IMG')->firstOrFail();
+        $images = ProductImage::where('product_id', $product->id)
+            ->orderBy('sort_order')
+            ->get();
+
+        $this->assertCount(3, $images);
+        $this->assertTrue($images[0]->is_primary);
+        $this->assertFalse($images[1]->is_primary);
+        $this->assertFalse($images[2]->is_primary);
+
+        foreach ($images as $image) {
+            $this->assertStringStartsWith('products/gitar-multi-image-test/', $image->url);
+            Storage::disk('public')->assertExists($image->url);
+        }
+    }
+
+    public function test_admin_can_create_product_with_multiple_variations(): void
+    {
+        Storage::fake('public');
+
+        Sanctum::actingAs($this->adminUser);
+
+        $payload = [
+            'category_id' => $this->category->id,
+            'name' => 'Gitar Multi Variation Test',
+            'description' => 'Produk test dengan beberapa variasi',
+            'price_sen' => 250000000,
+            'weight_gram' => 2500,
+            'sku' => 'GTR-MULTI-VAR',
+            'stock_qty' => 15,
+            'is_active' => true,
+            'variations' => [
+                ['name' => 'Natural', 'stock_qty' => 10],
+                ['name' => 'Hitam', 'stock_qty' => 5],
+            ],
+            'image' => UploadedFile::fake()->image('gitar-variasi.jpg', 600, 600),
+        ];
+
+        $response = $this->postJson('/api/v1/admin/products', $payload);
+
+        $response->assertStatus(201);
+
+        $product = Product::where('sku', 'GTR-MULTI-VAR')->firstOrFail();
+        $variations = ProductVariation::where('product_id', $product->id)
+            ->orderBy('name')
+            ->get();
+
+        $this->assertCount(2, $variations);
+        $this->assertEquals(['Hitam', 'Natural'], $variations->pluck('name')->all());
+        $this->assertEquals(15, $variations->sum('stock_qty'));
     }
 }

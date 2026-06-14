@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from '@/shared/components/Layout';
-import { Package, ChevronRight, Loader2, ArrowLeft, Clock, CircleCheckBig, Truck, CircleX, MapPin, Receipt, CircleAlert } from 'lucide-react';
+import { Package, ChevronRight, Loader2, Clock, CircleCheckBig, Truck, CircleX, MapPin, Receipt, CircleAlert, Star } from 'lucide-react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import api from '@/shared/utils/api';
 import { toast } from 'sonner';
@@ -16,6 +16,8 @@ export const OrderDetailPage = () => {
     const navigate = useNavigate();
     const [order, setOrder] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [reviewForms, setReviewForms] = useState({});
+    const [submittingReviewId, setSubmittingReviewId] = useState(null);
 
     useEffect(() => {
         fetchOrder();
@@ -92,6 +94,15 @@ export const OrderDetailPage = () => {
                 icon: CircleCheckBig
             };
         }
+        if (status === 'DELIVERED') {
+            return {
+                label: 'Selesai',
+                color: 'text-green-400',
+                bg: 'bg-green-955/30',
+                border: 'border-green-900/40',
+                icon: CircleCheckBig
+            };
+        }
         if (status === 'CANCELLED') {
             return {
                 label: 'Dibatalkan',
@@ -156,6 +167,40 @@ export const OrderDetailPage = () => {
             });
         } else {
             toast.error('Token pembayaran tidak ditemukan');
+        }
+    };
+
+    const updateReviewForm = (itemId, data) => {
+        setReviewForms((prev) => ({
+            ...prev,
+            [itemId]: {
+                rating: prev[itemId]?.rating || 5,
+                review_text: prev[itemId]?.review_text || '',
+                ...data,
+            },
+        }));
+    };
+
+    const handleSubmitReview = async (item) => {
+        const form = reviewForms[item.id] || { rating: 5, review_text: '' };
+
+        setSubmittingReviewId(item.id);
+
+        try {
+            await api.post('/reviews', {
+                order_id: order.id,
+                product_id: item.product_id,
+                rating: form.rating,
+                review_text: form.review_text,
+            });
+
+            toast.success('Ulasan berhasil dikirim');
+            await fetchOrder();
+        } catch (err) {
+            console.error('Failed to submit review:', err);
+            toast.error(err.response?.data?.message || 'Gagal mengirim ulasan');
+        } finally {
+            setSubmittingReviewId(null);
         }
     };
 
@@ -258,27 +303,98 @@ export const OrderDetailPage = () => {
                                 <h2 className="font-black text-white">Daftar Produk</h2>
                             </div>
                             <div className="p-6 flex flex-col gap-6 bg-[#050505]/20">
-                                {order.items?.map((item) => (
-                                    <div key={item.id} className="flex gap-4">
-                                        <div className="w-20 h-20 bg-zinc-950 rounded-xl border border-zinc-850 overflow-hidden shrink-0">
-                                            <ImageFallback 
-                                                src={getImageUrl(item.product?.images?.[0]?.url)} 
-                                                alt={item.product_name_snapshot}
-                                                className="w-full h-full object-cover"
-                                            />
-                                        </div>
-                                        <div className="flex-1 min-w-0 flex flex-col justify-center">
-                                            <h4 className="font-black text-white line-clamp-2 leading-snug">{item.product_name_snapshot}</h4>
-                                            {item.variation_name_snapshot && (
-                                                <p className="text-xs text-zinc-455 font-semibold mt-1">Varian: {item.variation_name_snapshot}</p>
-                                            )}
-                                            <div className="flex items-center justify-between mt-2">
-                                                <p className="text-sm text-zinc-400 font-semibold">{item.qty} x {formatPrice(item.unit_price_sen)}</p>
-                                                <p className="font-black text-white">{formatPrice(item.subtotal_sen)}</p>
+                                {order.items?.map((item) => {
+                                    const reviewForm = reviewForms[item.id] || { rating: 5, review_text: '' };
+                                    const existingReview = item.review;
+
+                                    return (
+                                        <div key={item.id} className="rounded-2xl border border-zinc-850 bg-zinc-950/30 p-4">
+                                            <div className="flex gap-4">
+                                                <div className="w-20 h-20 bg-zinc-950 rounded-xl border border-zinc-850 overflow-hidden shrink-0">
+                                                    <ImageFallback
+                                                        src={getImageUrl(item.product?.images?.[0]?.url)}
+                                                        alt={item.product_name_snapshot}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                </div>
+                                                <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                                    <h4 className="font-black text-white line-clamp-2 leading-snug">{item.product_name_snapshot}</h4>
+                                                    {item.variation_name_snapshot && (
+                                                        <p className="text-xs text-zinc-455 font-semibold mt-1">Varian: {item.variation_name_snapshot}</p>
+                                                    )}
+                                                    <div className="flex items-center justify-between mt-2">
+                                                        <p className="text-sm text-zinc-400 font-semibold">{item.qty} x {formatPrice(item.unit_price_sen)}</p>
+                                                        <p className="font-black text-white">{formatPrice(item.subtotal_sen)}</p>
+                                                    </div>
+                                                </div>
                                             </div>
+
+                                            {existingReview && (
+                                                <div className="mt-4 rounded-xl border border-green-900/30 bg-green-950/20 p-4">
+                                                    <div className="flex items-center gap-1 text-yellow-400">
+                                                        {Array.from({ length: 5 }).map((_, index) => (
+                                                            <Star
+                                                                key={index}
+                                                                size={16}
+                                                                className={index < existingReview.rating ? 'fill-current' : 'text-zinc-800'}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                    <p className="mt-2 text-xs font-bold uppercase tracking-widest text-green-400">Sudah diulas</p>
+                                                    {existingReview.review_text && (
+                                                        <p className="mt-2 text-sm text-zinc-300 leading-relaxed">{existingReview.review_text}</p>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {item.can_review && (
+                                                <div className="mt-4 rounded-xl border border-orange-900/30 bg-orange-950/10 p-4">
+                                                    <p className="text-xs font-black uppercase tracking-widest text-orange-400">Beri Ulasan</p>
+
+                                                    <div className="mt-3 flex items-center gap-1">
+                                                        {Array.from({ length: 5 }).map((_, index) => {
+                                                            const rating = index + 1;
+
+                                                            return (
+                                                                <button
+                                                                    key={rating}
+                                                                    type="button"
+                                                                    onClick={() => updateReviewForm(item.id, { rating })}
+                                                                    className="text-yellow-400 transition hover:scale-110"
+                                                                >
+                                                                    <Star
+                                                                        size={22}
+                                                                        className={rating <= reviewForm.rating ? 'fill-current' : 'text-zinc-800'}
+                                                                    />
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+
+                                                    <textarea
+                                                        value={reviewForm.review_text}
+                                                        onChange={(event) => updateReviewForm(item.id, { review_text: event.target.value })}
+                                                        rows={3}
+                                                        maxLength={1000}
+                                                        placeholder="Bagikan pengalaman kamu memakai produk ini..."
+                                                        className="mt-3 w-full resize-none rounded-xl border border-zinc-800 bg-zinc-950 px-4 py-3 text-sm font-medium text-white outline-none placeholder:text-zinc-600 focus:border-orange-500/60 focus:ring-2 focus:ring-orange-500/10"
+                                                    />
+
+                                                    <div className="mt-3 flex justify-end">
+                                                        <button
+                                                            type="button"
+                                                            disabled={submittingReviewId === item.id}
+                                                            onClick={() => handleSubmitReview(item)}
+                                                            className="rounded-xl bg-orange-600 px-5 py-2.5 text-xs font-black text-white transition hover:bg-orange-500 disabled:cursor-not-allowed disabled:opacity-60"
+                                                        >
+                                                            {submittingReviewId === item.id ? 'Mengirim...' : 'Kirim Ulasan'}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                ))}
+                                    );
+                                })}
                             </div>
                         </div>
 

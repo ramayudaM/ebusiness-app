@@ -4,12 +4,18 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Services\OrderStockService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 
 class AdminOrderController extends Controller
 {
+    public function __construct(private OrderStockService $stockService)
+    {
+    }
+
     public function index(Request $request)
     {
         $query = Order::query()
@@ -119,7 +125,13 @@ class AdminOrderController extends Controller
             $updateData['cancelled_at'] = now();
         }
 
-        $order->update($updateData);
+        DB::transaction(function () use ($order, $updateData, $frontendStatus) {
+            if ($frontendStatus === 'cancelled') {
+                $this->stockService->restoreForOrder($order);
+            }
+
+            $order->update($updateData);
+        });
 
         $this->createSystemNoteIfAvailable(
             $order,
@@ -159,7 +171,18 @@ class AdminOrderController extends Controller
             $updateData['paid_at'] = now();
         }
 
-        $order->update($updateData);
+        DB::transaction(function () use ($order, $updateData, $paymentStatus) {
+            if (in_array($paymentStatus, ['failed', 'expired', 'refunded'], true)) {
+                $this->stockService->restoreForOrder($order);
+
+                if ($order->status === 'PENDING') {
+                    $updateData['status'] = 'CANCELLED';
+                    $updateData['cancelled_at'] = $order->cancelled_at ?: now();
+                }
+            }
+
+            $order->update($updateData);
+        });
 
         $this->createSystemNoteIfAvailable(
             $order,

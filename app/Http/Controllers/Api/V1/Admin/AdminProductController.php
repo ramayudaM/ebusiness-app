@@ -65,12 +65,18 @@ class AdminProductController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'variation_name' => ['nullable', 'string', 'max:255'],
+            'variations' => ['nullable', 'array', 'min:1'],
+            'variations.*.name' => ['required_with:variations', 'string', 'max:255'],
+            'variations.*.stock_qty' => ['required_with:variations', 'integer', 'min:0'],
             'price_sen' => ['required', 'integer', 'min:0'],
             'weight_gram' => ['required', 'integer', 'min:1'],
             'sku' => ['required', 'string', 'max:100', 'unique:products,sku'],
             'stock_qty' => ['required', 'integer', 'min:0'],
             'is_active' => ['required', 'boolean'],
             'image' => ['nullable', 'image', 'max:2048'],
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'max:2048'],
         ]);
 
         return DB::transaction(function () use ($validated, $request) {
@@ -86,23 +92,23 @@ class AdminProductController extends Controller
                 'is_active' => $validated['is_active'],
             ]);
 
-            ProductVariation::create([
-                'product_id' => $product->id,
-                'name' => 'Default',
-                'sku' => $validated['sku'] . '-DEFAULT',
-                'price_sen' => null,
-                'stock_qty' => $validated['stock_qty'],
-                'is_active' => true,
-            ]);
+            foreach ($this->normalizedVariations($validated) as $variation) {
+                ProductVariation::create([
+                    'product_id' => $product->id,
+                    'name' => $variation['name'],
+                    'sku' => $this->variationSku($validated['sku'], $variation['name']),
+                    'price_sen' => null,
+                    'stock_qty' => $variation['stock_qty'],
+                    'is_active' => true,
+                ]);
+            }
 
-            if ($request->hasFile('image')) {
-                $path = $this->storeProductImage($request, $product);
-
+            foreach ($this->storeProductImages($request, $product) as $index => $path) {
                 ProductImage::create([
                     'product_id' => $product->id,
                     'url' => $path,
-                    'sort_order' => 0,
-                    'is_primary' => true,
+                    'sort_order' => $index,
+                    'is_primary' => $index === 0,
                 ]);
             }
 
@@ -128,6 +134,11 @@ class AdminProductController extends Controller
             'category_id' => ['required', 'exists:categories,id'],
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
+            'variation_name' => ['nullable', 'string', 'max:255'],
+            'variations' => ['nullable', 'array', 'min:1'],
+            'variations.*.id' => ['nullable', 'integer'],
+            'variations.*.name' => ['required_with:variations', 'string', 'max:255'],
+            'variations.*.stock_qty' => ['required_with:variations', 'integer', 'min:0'],
             'price_sen' => ['required', 'integer', 'min:0'],
             'weight_gram' => ['required', 'integer', 'min:1'],
             'sku' => [
@@ -139,6 +150,8 @@ class AdminProductController extends Controller
             'stock_qty' => ['required', 'integer', 'min:0'],
             'is_active' => ['required', 'boolean'],
             'image' => ['nullable', 'image', 'max:2048'],
+            'images' => ['nullable', 'array'],
+            'images.*' => ['image', 'max:2048'],
         ]);
 
         return DB::transaction(function () use ($validated, $request, $product) {
@@ -152,40 +165,24 @@ class AdminProductController extends Controller
                 'is_active' => $validated['is_active'],
             ]);
 
-            $variation = $product->variations()->first();
+            $this->syncVariations($product, $validated);
 
-            if ($variation) {
-                $variation->update([
-                    'stock_qty' => $validated['stock_qty'],
-                    'is_active' => true,
-                ]);
-            } else {
-                ProductVariation::create([
-                    'product_id' => $product->id,
-                    'name' => 'Default',
-                    'sku' => $validated['sku'] . '-DEFAULT',
-                    'price_sen' => null,
-                    'stock_qty' => $validated['stock_qty'],
-                    'is_active' => true,
-                ]);
-            }
+            $newImagePaths = $this->storeProductImages($request, $product);
 
-            if ($request->hasFile('image')) {
-                $oldPrimary = $product->images()->where('is_primary', true)->first();
-
-                if ($oldPrimary) {
-                    Storage::disk('public')->delete($oldPrimary->url);
-                    $oldPrimary->delete();
+            if (!empty($newImagePaths)) {
+                foreach ($product->images as $oldImage) {
+                    Storage::disk('public')->delete($oldImage->url);
+                    $oldImage->delete();
                 }
 
-                $path = $this->storeProductImage($request, $product);
-
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'url' => $path,
-                    'sort_order' => 0,
-                    'is_primary' => true,
-                ]);
+                foreach ($newImagePaths as $index => $path) {
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'url' => $path,
+                        'sort_order' => $index,
+                        'is_primary' => $index === 0,
+                    ]);
+                }
             }
 
             return response()->json([
@@ -223,9 +220,110 @@ class AdminProductController extends Controller
         return 'products/' . Str::slug($product->name);
     }
 
-    private function storeProductImage(Request $request, Product $product): string
+    private function variationName(array $validated): string
     {
-        $file = $request->file('image');
+        return trim($validated['variation_name'] ?? '') ?: 'Default';
+    }
+
+    private function normalizedVariations(array $validated): array
+    {
+        if (!empty($validated['variations'])) {
+            return collect($validated['variations'])
+                ->map(fn ($variation) => [
+                    'id' => $variation['id'] ?? null,
+                    'name' => trim($variation['name'] ?? '') ?: 'Default',
+                    'stock_qty' => (int) ($variation['stock_qty'] ?? 0),
+                ])
+                ->values()
+                ->all();
+        }
+
+        return [[
+            'id' => null,
+            'name' => $this->variationName($validated),
+            'stock_qty' => (int) $validated['stock_qty'],
+        ]];
+    }
+
+    private function syncVariations(Product $product, array $validated): void
+    {
+        $submittedIds = [];
+
+        foreach ($this->normalizedVariations($validated) as $variationData) {
+            $variation = null;
+
+            if (!empty($variationData['id'])) {
+                $variation = $product->variations()
+                    ->whereKey($variationData['id'])
+                    ->first();
+            }
+
+            if ($variation) {
+                $variation->update([
+                    'name' => $variationData['name'],
+                    'sku' => $this->variationSku($validated['sku'], $variationData['name'], $variation->id),
+                    'stock_qty' => $variationData['stock_qty'],
+                    'is_active' => true,
+                ]);
+
+                $submittedIds[] = $variation->id;
+
+                continue;
+            }
+
+            $newVariation = ProductVariation::create([
+                'product_id' => $product->id,
+                'name' => $variationData['name'],
+                'sku' => $this->variationSku($validated['sku'], $variationData['name']),
+                'price_sen' => null,
+                'stock_qty' => $variationData['stock_qty'],
+                'is_active' => true,
+            ]);
+
+            $submittedIds[] = $newVariation->id;
+        }
+
+        $product->variations()
+            ->whereNotIn('id', $submittedIds)
+            ->update(['is_active' => false]);
+    }
+
+    private function variationSku(string $productSku, string $variationName, ?int $ignoreId = null): string
+    {
+        $suffix = Str::upper(Str::slug($variationName)) ?: 'DEFAULT';
+        $base = Str::limit($productSku . '-' . $suffix, 92, '');
+        $sku = $base;
+        $counter = 2;
+
+        while (
+            ProductVariation::where('sku', $sku)
+                ->when($ignoreId, fn ($query) => $query->whereKeyNot($ignoreId))
+                ->exists()
+        ) {
+            $sku = Str::limit($base, 92 - strlen((string) $counter), '') . '-' . $counter;
+            $counter++;
+        }
+
+        return $sku;
+    }
+
+    private function storeProductImages(Request $request, Product $product): array
+    {
+        $files = $request->file('images', []);
+
+        if ($request->hasFile('image')) {
+            $files = array_merge($files, [$request->file('image')]);
+        }
+
+        return collect($files)
+            ->filter()
+            ->map(fn ($file) => $this->storeProductImageFile($file, $product))
+            ->values()
+            ->all();
+    }
+
+    private function storeProductImageFile($file, Product $product): string
+    {
         $directory = $this->productImageDirectory($product);
         $filename = $file->hashName();
         $path = $directory . '/' . $filename;
