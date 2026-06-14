@@ -92,22 +92,28 @@ class AdminDashboardController extends Controller
 
     private function getRevenueQuery()
     {
-        $query = Order::query();
+        return Order::query()
+            ->where(function ($query) {
+                if (Schema::hasColumn('orders', 'paid_at')) {
+                    $query->orWhereNotNull('paid_at');
+                }
 
-        if (Schema::hasColumn('orders', 'paid_at')) {
-            return $query->whereNotNull('paid_at');
-        }
+                if (Schema::hasColumn('orders', 'payment_status')) {
+                    $query->orWhereIn('payment_status', [
+                        'paid',
+                        'settlement',
+                        'capture',
+                        'success',
+                    ]);
+                }
 
-        if (Schema::hasColumn('orders', 'payment_status')) {
-            return $query->whereIn('payment_status', [
-                'paid',
-                'settlement',
-                'capture',
-                'success',
-            ]);
-        }
-
-        return $query;
+                if (Schema::hasTable('payments')) {
+                    $query->orWhereHas('payment', function ($paymentQuery) {
+                        $paymentQuery->whereNotNull('paid_at')
+                            ->orWhere('transaction_status', 'settlement');
+                    });
+                }
+            });
     }
 
     private function countOrderByNormalizedStatus(string $target): int

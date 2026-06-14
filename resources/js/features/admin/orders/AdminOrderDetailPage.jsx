@@ -78,6 +78,7 @@ function getItems(order) {
 
 function getSubtotal(order) {
   return (
+    toNumber(order?.subtotal_sen) ||
     order?.subtotal ||
     order?.subtotal_amount ||
     order?.subtotal_price ||
@@ -86,6 +87,7 @@ function getSubtotal(order) {
       const price =
         toNumber(item?.price) ||
         toNumber(item?.unit_price) ||
+        toNumber(item?.unit_price_sen) ||
         toNumber(item?.price_sen) ||
         0
 
@@ -105,6 +107,7 @@ function getDiscount(order) {
 
 function getShippingCost(order) {
   return (
+    toNumber(order?.shipping_cost_sen) ||
     toNumber(order?.shipping_cost) ||
     toNumber(order?.shipping_fee) ||
     toNumber(order?.delivery_fee) ||
@@ -130,6 +133,7 @@ function getServiceFee(order) {
 
 function getGrandTotal(order) {
   return (
+    toNumber(order?.total_sen) ||
     toNumber(order?.total) ||
     toNumber(order?.grand_total) ||
     toNumber(order?.total_amount) ||
@@ -141,6 +145,7 @@ function getGrandTotal(order) {
 function getPaymentMethod(order) {
   return (
     order?.payment_method ||
+    order?.payment?.payment_type ||
     order?.payment?.method ||
     order?.payment_channel ||
     'Transfer Bank'
@@ -158,6 +163,7 @@ function getTrackingNumber(order) {
 function getCourierName(order) {
   return (
     order?.courier ||
+    order?.shipping_courier ||
     order?.shipping_method ||
     order?.shipment?.courier ||
     'Kurir'

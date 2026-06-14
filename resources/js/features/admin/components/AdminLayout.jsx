@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import AdminIcon from './AdminIcon'
 import SidebarItem from './SidebarItem'
 import { adminTheme as theme } from '../styles/adminTheme'
@@ -86,10 +86,10 @@ function AdminAvatar({ compact = false }) {
 
       {!compact && (
         <div className="min-w-0">
-          <p className="truncate text-sm font-black leading-none text-slate-900">
+          <p className="truncate text-sm font-black leading-none text-white">
             Admin Nada
           </p>
-          <p className="mt-1 text-xs font-bold uppercase tracking-wide text-slate-400">
+          <p className="mt-1 text-xs font-bold uppercase tracking-wide text-zinc-500">
             Super Admin
           </p>
         </div>
@@ -111,7 +111,7 @@ function SidebarContent({
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="relative z-10 flex h-full flex-col">
       <div
         className={`flex items-center ${
           sidebarCollapsed ? 'justify-center' : 'justify-between'
@@ -271,11 +271,6 @@ export default function AdminLayout({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
-  const [themeMode, setThemeMode] = useState(
-    localStorage.getItem('admin_theme_mode') || 'light'
-  )
-
-  const isDark = themeMode === 'dark'
   const sidebarWidth = sidebarCollapsed ? 'xl:ml-[96px]' : 'xl:ml-[292px]'
 
   const breadcrumbItems = String(breadcrumb)
@@ -283,31 +278,25 @@ export default function AdminLayout({
     .map((item) => item.trim())
     .filter(Boolean)
 
-  const handleToggleTheme = () => {
-    setThemeMode((prev) => {
-      const next = prev === 'light' ? 'dark' : 'light'
-      localStorage.setItem('admin_theme_mode', next)
-      return next
-    })
-  }
-
   const handleLogout = () => {
     localStorage.removeItem('admin_token')
     localStorage.removeItem('admin-auth-storage')
     window.location.href = '/login'
   }
 
-  useEffect(() => {
-    document.documentElement.classList.toggle('admin-dark', isDark)
-  }, [isDark])
-
   return (
     <div
-      className="min-h-screen text-slate-950"
+      className="admin-customer-skin relative min-h-screen overflow-x-hidden bg-[#050505] text-white selection:bg-orange-500/30"
       style={{
-        backgroundColor: isDark ? '#0B1220' : theme.background,
+        background:
+          'radial-gradient(circle at 12% 18%, rgba(234,88,12,0.12), transparent 30%), radial-gradient(circle at 82% 8%, rgba(194,65,12,0.08), transparent 32%), #050505',
       }}
     >
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute top-[20%] left-[8%] h-[42vw] w-[42vw] rounded-full bg-orange-600/5 blur-[150px] mix-blend-screen" />
+        <div className="absolute bottom-[8%] right-[4%] h-[50vw] w-[50vw] rounded-full bg-orange-700/5 blur-[150px] mix-blend-screen" />
+      </div>
+
       {mobileSidebarOpen && (
         <button
           type="button"
@@ -318,13 +307,19 @@ export default function AdminLayout({
       )}
 
       <aside
-        className={`fixed left-0 top-0 z-50 hidden h-screen flex-col border-r border-white/10 p-5 text-white shadow-2xl transition-all duration-300 xl:flex ${
+        className={`fixed left-0 top-0 z-50 hidden h-screen flex-col overflow-hidden border-r border-zinc-900/80 p-5 text-white shadow-2xl transition-all duration-300 xl:flex ${
           sidebarCollapsed ? 'w-[96px]' : 'w-[292px]'
         }`}
         style={{
-          background: `linear-gradient(180deg, ${theme.sidebar}, ${theme.navy})`,
+          background:
+            'linear-gradient(180deg, rgba(10,10,10,0.98), rgba(5,5,5,0.98))',
+          boxShadow: '24px 0 90px rgba(0,0,0,0.34)',
         }}
       >
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-32 top-24 h-72 w-72 rounded-full bg-orange-600/10 blur-[110px]" />
+          <div className="absolute -bottom-32 right-0 h-80 w-80 rounded-full bg-orange-700/5 blur-[120px]" />
+        </div>
         <SidebarContent
           activeMenu={activeMenu}
           sidebarCollapsed={sidebarCollapsed}
@@ -334,13 +329,18 @@ export default function AdminLayout({
       </aside>
 
       <aside
-        className={`fixed left-0 top-0 z-50 h-screen w-[292px] border-r border-white/10 p-5 text-white shadow-2xl transition-transform duration-300 xl:hidden ${
+        className={`fixed left-0 top-0 z-50 h-screen w-[292px] overflow-hidden border-r border-zinc-900/80 p-5 text-white shadow-2xl transition-transform duration-300 xl:hidden ${
           mobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{
-          background: `linear-gradient(180deg, ${theme.sidebar}, ${theme.navy})`,
+          background:
+            'linear-gradient(180deg, rgba(10,10,10,0.98), rgba(5,5,5,0.98))',
         }}
       >
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-32 top-24 h-72 w-72 rounded-full bg-orange-600/10 blur-[110px]" />
+          <div className="absolute -bottom-32 right-0 h-80 w-80 rounded-full bg-orange-700/5 blur-[120px]" />
+        </div>
         <SidebarContent
           activeMenu={activeMenu}
           sidebarCollapsed={false}
@@ -349,12 +349,11 @@ export default function AdminLayout({
         />
       </aside>
 
-      <main className={`min-h-screen transition-all duration-300 ${sidebarWidth}`}>
+      <main className={`relative z-10 min-h-screen transition-all duration-300 ${sidebarWidth}`}>
         <header
-          className="sticky top-0 z-30 border-b backdrop-blur-xl"
+          className="sticky top-0 z-30 border-b border-zinc-900/80 bg-[#050505]/80 backdrop-blur-xl"
           style={{
-            backgroundColor: isDark ? 'rgba(15,23,42,0.86)' : `${theme.background}E6`,
-            borderColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(226,232,240,0.8)',
+            boxShadow: '0 20px 70px rgba(0,0,0,0.18)',
           }}
         >
           <div className="flex h-[76px] items-center justify-between gap-4 px-4 md:px-8">
@@ -362,7 +361,7 @@ export default function AdminLayout({
               <button
                 type="button"
                 onClick={() => setMobileSidebarOpen(true)}
-                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 xl:hidden"
+                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/80 text-zinc-200 shadow-sm transition hover:bg-zinc-800 xl:hidden"
               >
                 <AdminIcon name="menu" />
               </button>
@@ -371,7 +370,7 @@ export default function AdminLayout({
                 <button
                   type="button"
                   onClick={() => setSidebarCollapsed(false)}
-                  className="hidden h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 xl:flex"
+                  className="hidden h-11 w-11 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/80 text-zinc-200 shadow-sm transition hover:bg-zinc-800 xl:flex"
                   title="Tampilkan sidebar"
                 >
                   <AdminIcon name="chevronRight" />
@@ -386,16 +385,14 @@ export default function AdminLayout({
                         className={`text-[11px] font-black uppercase tracking-[0.18em] ${
                           index === breadcrumbItems.length - 1
                             ? 'text-orange-600'
-                            : isDark
-                              ? 'text-slate-500'
-                              : 'text-slate-400'
+                            : 'text-zinc-500'
                         }`}
                       >
                         {item}
                       </span>
 
                       {index < breadcrumbItems.length - 1 && (
-                        <span className={isDark ? 'text-slate-600' : 'text-slate-300'}>
+                        <span className="text-zinc-700">
                           ›
                         </span>
                       )}
@@ -404,8 +401,7 @@ export default function AdminLayout({
                 </div>
 
                 <h1
-                  className="mt-1 truncate text-lg font-black tracking-tight md:text-2xl"
-                  style={{ color: isDark ? '#FFFFFF' : theme.textPrimary }}
+                  className="mt-1 truncate text-lg font-black tracking-tight text-white md:text-2xl"
                 >
                   {title}
                 </h1>
@@ -416,11 +412,11 @@ export default function AdminLayout({
               <div
                 className="flex w-full items-center gap-3 rounded-[22px] border px-4 py-3 shadow-sm"
                 style={{
-                  backgroundColor: isDark ? 'rgba(255,255,255,0.05)' : '#FFFFFF',
-                  borderColor: isDark ? 'rgba(255,255,255,0.08)' : theme.border,
+                  backgroundColor: 'rgba(24,24,27,0.58)',
+                  borderColor: 'rgba(63,63,70,0.72)',
                 }}
               >
-                <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>
+                <span className="text-zinc-500">
                   <AdminIcon name="search" />
                 </span>
 
@@ -428,24 +424,15 @@ export default function AdminLayout({
                   type="text"
                   placeholder={searchPlaceholder}
                   className="w-full border-0 bg-transparent text-sm font-semibold outline-none ring-0 placeholder:text-slate-400 focus:border-0 focus:outline-none focus:ring-0"
-                  style={{ color: isDark ? '#FFFFFF' : theme.textPrimary }}
+                  style={{ color: '#FFFFFF' }}
                 />
               </div>
             </div>
 
             <div className="relative flex items-center gap-3">
-              <button
-                type="button"
-                onClick={handleToggleTheme}
-                className="flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50"
-                title={isDark ? 'Gunakan light mode' : 'Gunakan dark mode'}
-              >
-                <AdminIcon name={isDark ? 'sun' : 'moon'} />
-              </button>
-
               <a
                 href="/admin/notifications"
-                className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50"
+                className="relative flex h-11 w-11 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/80 text-zinc-200 shadow-sm transition hover:bg-zinc-800"
                 title="Notifikasi admin"
               >
                 <AdminIcon name="bell" />
@@ -455,16 +442,16 @@ export default function AdminLayout({
                 />
               </a>
 
-              <div className="hidden h-9 w-px bg-slate-200 md:block" />
+              <div className="hidden h-9 w-px bg-zinc-800 md:block" />
 
               <button
                 type="button"
                 onClick={() => setProfileOpen((prev) => !prev)}
-                className="hidden items-center gap-3 rounded-[22px] border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:bg-slate-50 md:flex"
+                className="hidden items-center gap-3 rounded-[22px] border border-zinc-800 bg-zinc-900/80 px-3 py-2 shadow-sm transition hover:bg-zinc-800 md:flex"
               >
                 <AdminAvatar />
 
-                <span className="text-slate-400 transition hover:text-slate-700">
+                <span className="text-zinc-400 transition hover:text-white">
                   <AdminIcon name="chevronDown" />
                 </span>
               </button>
@@ -478,15 +465,15 @@ export default function AdminLayout({
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 top-14 z-50 w-[280px] overflow-hidden rounded-[26px] border border-slate-200 bg-white shadow-2xl">
-                  <div className="border-b border-slate-100 p-4">
+                <div className="absolute right-0 top-14 z-50 w-[280px] overflow-hidden rounded-[26px] border border-zinc-800 bg-[#0A0A0A] shadow-2xl">
+                  <div className="border-b border-zinc-900 p-4">
                     <AdminAvatar />
                   </div>
 
                   <div className="p-2">
                     <a
                       href="/admin/settings"
-                      className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                      className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-zinc-300 transition hover:bg-zinc-900 hover:text-white"
                     >
                       <AdminIcon name="profile" />
                       Profil Admin
@@ -494,7 +481,7 @@ export default function AdminLayout({
 
                     <a
                       href="/admin/settings"
-                      className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                      className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-zinc-300 transition hover:bg-zinc-900 hover:text-white"
                     >
                       <AdminIcon name="settings" />
                       Pengaturan
@@ -502,27 +489,19 @@ export default function AdminLayout({
 
                     <a
                       href="/admin/notifications"
-                      className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                      className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-zinc-300 transition hover:bg-zinc-900 hover:text-white"
                     >
                       <AdminIcon name="bell" />
                       Notifikasi
                     </a>
 
-                    <button
-                      type="button"
-                      onClick={handleToggleTheme}
-                      className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold text-slate-700 transition hover:bg-slate-50"
-                    >
-                      <AdminIcon name={isDark ? 'sun' : 'moon'} />
-                      {isDark ? 'Light Mode' : 'Dark Mode'}
-                    </button>
                   </div>
 
-                  <div className="border-t border-slate-100 p-2">
+                  <div className="border-t border-zinc-900 p-2">
                     <button
                       type="button"
                       onClick={handleLogout}
-                      className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-black text-rose-600 transition hover:bg-rose-50"
+                      className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-black text-rose-400 transition hover:bg-rose-500/10"
                     >
                       <AdminIcon name="logout" />
                       Keluar

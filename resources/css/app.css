@@ -40,6 +40,99 @@
 }
 
 @layer components {
+  .admin-customer-skin :where(.bg-white) {
+    background-color: #0A0A0A !important;
+  }
+
+  .admin-customer-skin :where(.bg-white\/90) {
+    background-color: rgba(10, 10, 10, 0.9) !important;
+  }
+
+  .admin-customer-skin :where(.bg-slate-50, .bg-slate-50\/70, .bg-slate-100, .bg-gray-50) {
+    background-color: rgba(24, 24, 27, 0.72) !important;
+  }
+
+  .admin-customer-skin :where(.bg-orange-50, .bg-orange-100) {
+    background-color: rgba(255, 77, 28, 0.12) !important;
+  }
+
+  .admin-customer-skin :where(.bg-emerald-50, .bg-emerald-100) {
+    background-color: rgba(16, 185, 129, 0.12) !important;
+  }
+
+  .admin-customer-skin :where(.bg-rose-50, .bg-rose-100, .bg-red-50, .bg-red-100) {
+    background-color: rgba(244, 63, 94, 0.12) !important;
+  }
+
+  .admin-customer-skin :where(.bg-blue-50, .bg-blue-100, .bg-indigo-50, .bg-indigo-100) {
+    background-color: rgba(59, 130, 246, 0.12) !important;
+  }
+
+  .admin-customer-skin :where(.bg-amber-50, .bg-amber-100, .bg-yellow-50, .bg-yellow-100) {
+    background-color: rgba(245, 158, 11, 0.12) !important;
+  }
+
+  .admin-customer-skin :where(.hover\:bg-slate-50:hover, .hover\:bg-slate-100:hover, .hover\:bg-gray-50:hover) {
+    background-color: rgba(39, 39, 42, 0.86) !important;
+  }
+
+  .admin-customer-skin :where(.text-slate-950, .text-slate-900, .text-gray-950, .text-gray-900) {
+    color: #ffffff !important;
+  }
+
+  .admin-customer-skin :where(.text-slate-800, .text-slate-700, .text-gray-800, .text-gray-700) {
+    color: #d4d4d8 !important;
+  }
+
+  .admin-customer-skin :where(.text-slate-600, .text-slate-500, .text-gray-600, .text-gray-500) {
+    color: #a1a1aa !important;
+  }
+
+  .admin-customer-skin :where(.text-slate-400, .text-gray-400) {
+    color: #71717a !important;
+  }
+
+  .admin-customer-skin :where(.border-slate-200, .border-slate-100, .border-gray-200, .border-gray-100) {
+    border-color: rgba(63, 63, 70, 0.78) !important;
+  }
+
+  .admin-customer-skin :where(.border-orange-100, .border-orange-200) {
+    border-color: rgba(255, 77, 28, 0.28) !important;
+  }
+
+  .admin-customer-skin :where(.border-emerald-100, .border-emerald-200) {
+    border-color: rgba(16, 185, 129, 0.28) !important;
+  }
+
+  .admin-customer-skin :where(.border-rose-100, .border-rose-200, .border-red-100, .border-red-200) {
+    border-color: rgba(244, 63, 94, 0.28) !important;
+  }
+
+  .admin-customer-skin :where(.divide-slate-100 > :not([hidden]) ~ :not([hidden])) {
+    border-color: rgba(39, 39, 42, 0.78) !important;
+  }
+
+  .admin-customer-skin :where(.ring-slate-100, .ring-slate-200) {
+    --tw-ring-color: rgba(63, 63, 70, 0.78) !important;
+  }
+
+  .admin-customer-skin :where(input, select, textarea) {
+    color: #ffffff;
+    caret-color: #ff4d1c;
+  }
+
+  .admin-customer-skin :where(input, select, textarea)::placeholder {
+    color: #71717a;
+  }
+
+  .admin-customer-skin :where(table thead tr) {
+    background-color: rgba(24, 24, 27, 0.72) !important;
+  }
+
+  .admin-customer-skin :where(tbody tr:hover) {
+    background-color: rgba(39, 39, 42, 0.5) !important;
+  }
+
   .container-page {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }

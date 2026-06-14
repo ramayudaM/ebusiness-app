@@ -1,36 +1,36 @@
 export const adminTheme = {
   primary: '#FF4D1C',
   primaryDark: '#C7350D',
-  primarySoft: '#FFF1EC',
+  primarySoft: 'rgba(255,77,28,0.12)',
 
-  navy: '#0F172A',
-  navyDark: '#0B1220',
-  sidebar: '#0B1220',
+  navy: '#0A0A0A',
+  navyDark: '#050505',
+  sidebar: '#050505',
 
-  background: '#F6F7F9',
-  surface: '#FFFFFF',
-  surfaceSoft: '#F9FAFB',
-  surfaceMuted: '#F3F4F6',
+  background: '#050505',
+  surface: '#0A0A0A',
+  surfaceSoft: 'rgba(24,24,27,0.72)',
+  surfaceMuted: 'rgba(39,39,42,0.72)',
 
-  border: '#E5E7EB',
-  borderSoft: '#EEF0F3',
+  border: 'rgba(63,63,70,0.72)',
+  borderSoft: 'rgba(39,39,42,0.78)',
 
-  textPrimary: '#111827',
-  textSecondary: '#667085',
-  textMuted: '#98A2B3',
+  textPrimary: '#FFFFFF',
+  textSecondary: '#A1A1AA',
+  textMuted: '#71717A',
 
   success: '#16A34A',
-  successSoft: '#ECFDF3',
+  successSoft: 'rgba(22,163,74,0.12)',
 
   warning: '#F59E0B',
-  warningSoft: '#FFFBEB',
+  warningSoft: 'rgba(245,158,11,0.12)',
 
   danger: '#EF4444',
-  dangerSoft: '#FEF2F2',
+  dangerSoft: 'rgba(239,68,68,0.12)',
 
   blue: '#2563EB',
-  blueSoft: '#EFF6FF',
+  blueSoft: 'rgba(37,99,235,0.12)',
 
-  slate: '#475569',
-  slateSoft: '#F1F5F9',
+  slate: '#A1A1AA',
+  slateSoft: 'rgba(39,39,42,0.72)',
 }

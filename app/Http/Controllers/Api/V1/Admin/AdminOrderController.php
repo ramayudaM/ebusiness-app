@@ -13,7 +13,7 @@ class AdminOrderController extends Controller
     public function index(Request $request)
     {
         $query = Order::query()
-            ->with(['user', 'items.product'])
+            ->with(['user', 'items.product', 'payment'])
             ->latest();
 
         if ($request->filled('search')) {
@@ -29,30 +29,35 @@ class AdminOrderController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            $query->whereIn('status', $this->databaseOrderStatuses($request->status));
         }
 
         if ($request->filled('payment_status')) {
-            $query->where('payment_status', $request->payment_status);
+            $this->applyPaymentStatusFilter($query, $request->payment_status);
         }
 
         $orders = $query->paginate($request->input('per_page', 10));
 
+        $items = $orders->getCollection()
+            ->map(fn (Order $order) => $this->serializeOrder($order))
+            ->values();
+
         return response()->json([
             'success' => true,
-            'data' => $orders->items(),
+            'data' => $items,
             'meta' => [
                 'current_page' => $orders->currentPage(),
                 'last_page' => $orders->lastPage(),
                 'per_page' => $orders->perPage(),
                 'total' => $orders->total(),
+                'summary' => $this->getOrderSummary(),
             ],
         ]);
     }
 
     public function show(Order $order)
     {
-        $relations = ['user', 'items.product'];
+        $relations = ['user', 'items.product', 'payment'];
 
         if (Schema::hasTable('order_internal_notes')) {
             $relations[] = 'internalNotes.admin';
@@ -60,7 +65,7 @@ class AdminOrderController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $order->load($relations),
+            'data' => $this->serializeOrder($order->load($relations)),
         ]);
     }
 
@@ -73,31 +78,44 @@ class AdminOrderController extends Controller
                     'pending',
                     'processing',
                     'shipped',
+                    'shipping',
                     'completed',
+                    'delivered',
                     'cancelled',
+                    'canceled',
+                    'PENDING',
+                    'PROCESSING',
+                    'SHIPPED',
+                    'DELIVERED',
+                    'CANCELLED',
                 ]),
             ],
         ]);
 
-        $status = $validated['status'];
+        $status = $this->databaseOrderStatus($validated['status']);
+        $frontendStatus = $this->frontendOrderStatus($status);
 
         $updateData = [
             'status' => $status,
         ];
 
-        if (Schema::hasColumn('orders', 'processed_at') && $status === 'processing' && ! $order->processed_at) {
+        if (Schema::hasColumn('orders', 'processed_at') && $frontendStatus === 'processing' && ! $order->processed_at) {
             $updateData['processed_at'] = now();
         }
 
-        if (Schema::hasColumn('orders', 'shipped_at') && $status === 'shipped' && ! $order->shipped_at) {
+        if (Schema::hasColumn('orders', 'shipped_at') && $frontendStatus === 'shipped' && ! $order->shipped_at) {
             $updateData['shipped_at'] = now();
         }
 
-        if (Schema::hasColumn('orders', 'completed_at') && $status === 'completed' && ! $order->completed_at) {
+        if (Schema::hasColumn('orders', 'completed_at') && $frontendStatus === 'completed' && ! $order->completed_at) {
             $updateData['completed_at'] = now();
         }
 
-        if (Schema::hasColumn('orders', 'cancelled_at') && $status === 'cancelled' && ! $order->cancelled_at) {
+        if (Schema::hasColumn('orders', 'delivered_at') && $frontendStatus === 'completed' && ! $order->delivered_at) {
+            $updateData['delivered_at'] = now();
+        }
+
+        if (Schema::hasColumn('orders', 'cancelled_at') && $frontendStatus === 'cancelled' && ! $order->cancelled_at) {
             $updateData['cancelled_at'] = now();
         }
 
@@ -105,13 +123,13 @@ class AdminOrderController extends Controller
 
         $this->createSystemNoteIfAvailable(
             $order,
-            'Status pesanan diperbarui menjadi ' . $this->formatOrderStatus($status) . '.'
+            'Status pesanan diperbarui menjadi ' . $this->formatOrderStatus($frontendStatus) . '.'
         );
 
         return response()->json([
             'success' => true,
             'message' => 'Status pesanan berhasil diperbarui.',
-            'data' => $order->fresh()->load(['user', 'items.product']),
+            'data' => $this->serializeOrder($order->fresh()->load(['user', 'items.product', 'payment'])),
         ]);
     }
 
@@ -151,7 +169,7 @@ class AdminOrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Status pembayaran berhasil diperbarui.',
-            'data' => $order->fresh()->load(['user', 'items.product']),
+            'data' => $this->serializeOrder($order->fresh()->load(['user', 'items.product', 'payment'])),
         ]);
     }
 
@@ -184,7 +202,7 @@ class AdminOrderController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Nomor resi berhasil diperbarui.',
-            'data' => $order->fresh()->load(['user', 'items.product']),
+            'data' => $this->serializeOrder($order->fresh()->load(['user', 'items.product', 'payment'])),
         ]);
     }
 
@@ -250,6 +268,7 @@ class AdminOrderController extends Controller
             'pending' => 'Menunggu',
             'processing' => 'Sedang Diproses',
             'shipped' => 'Dikirim',
+            'delivered' => 'Selesai',
             'completed' => 'Selesai',
             'cancelled' => 'Dibatalkan',
             default => $status,
@@ -267,5 +286,171 @@ class AdminOrderController extends Controller
             'refunded' => 'Refund',
             default => $status,
         };
+    }
+
+    private function serializeOrder(Order $order): array
+    {
+        $data = $order->toArray();
+        $data['status'] = $this->frontendOrderStatus($order->status);
+        $data['status_raw'] = $order->status;
+        $data['payment_status'] = $this->frontendPaymentStatus($order);
+
+        return $data;
+    }
+
+    private function databaseOrderStatus(string $status): string
+    {
+        return match (strtolower($status)) {
+            'pending' => 'PENDING',
+            'processing', 'processed', 'paid' => 'PROCESSING',
+            'shipping', 'shipped' => 'SHIPPED',
+            'completed', 'delivered' => 'DELIVERED',
+            'cancelled', 'canceled' => 'CANCELLED',
+            default => strtoupper($status),
+        };
+    }
+
+    private function databaseOrderStatuses(string $status): array
+    {
+        return [$this->databaseOrderStatus($status)];
+    }
+
+    private function frontendOrderStatus(?string $status): string
+    {
+        return match (strtolower((string) $status)) {
+            'pending' => 'pending',
+            'processing', 'processed', 'paid' => 'processing',
+            'shipping', 'shipped' => 'shipped',
+            'completed', 'delivered' => 'completed',
+            'cancelled', 'canceled', 'expired' => 'cancelled',
+            default => strtolower((string) ($status ?: 'pending')),
+        };
+    }
+
+    private function frontendPaymentStatus(Order $order): string
+    {
+        $status = strtolower((string) ($order->payment_status ?: ''));
+        $transactionStatus = strtolower((string) ($order->payment?->transaction_status ?: ''));
+        $transactionMappedStatus = match ($transactionStatus) {
+            'settlement', 'capture', 'success' => 'paid',
+            'pending' => 'pending',
+            'expire' => 'expired',
+            'failure', 'deny', 'cancel' => 'failed',
+            default => '',
+        };
+
+        if ($transactionMappedStatus && in_array($status, ['', 'unpaid', 'pending'], true)) {
+            return $transactionMappedStatus;
+        }
+
+        if ($status) {
+            return match ($status) {
+                'settlement', 'capture', 'success' => 'paid',
+                'expire' => 'expired',
+                'cancel' => 'failed',
+                default => $status,
+            };
+        }
+
+        return $transactionMappedStatus ?: 'unpaid';
+    }
+
+    private function applyPaymentStatusFilter($query, string $status): void
+    {
+        $status = strtolower($status);
+
+        if ($status === 'unpaid') {
+            $query->where(function ($statusQuery) {
+                if (Schema::hasColumn('orders', 'payment_status')) {
+                    $statusQuery->where('payment_status', 'unpaid')
+                        ->orWhereNull('payment_status');
+                }
+            });
+
+            if (Schema::hasTable('payments')) {
+                $query->whereDoesntHave('payment', function ($paymentQuery) {
+                    $paymentQuery->whereIn('transaction_status', [
+                        'settlement',
+                    ]);
+                });
+            }
+
+            return;
+        }
+
+        $paymentTransactionStatuses = match ($status) {
+            'paid' => ['settlement'],
+            'pending' => ['pending'],
+            'expired' => ['expire'],
+            'failed' => ['failure', 'cancel'],
+            default => [],
+        };
+
+        $query->where(function ($statusQuery) use ($status, $paymentTransactionStatuses) {
+            if (Schema::hasColumn('orders', 'payment_status')) {
+                $statusQuery->where('payment_status', $status);
+            }
+
+            if (! empty($paymentTransactionStatuses) && Schema::hasTable('payments')) {
+                $statusQuery->orWhereHas('payment', function ($paymentQuery) use ($paymentTransactionStatuses) {
+                    $paymentQuery->whereIn('transaction_status', $paymentTransactionStatuses);
+                });
+            }
+        });
+    }
+
+    private function getOrderSummary(): array
+    {
+        $statuses = Order::query()
+            ->selectRaw('status::text as status_value, COUNT(*) as total')
+            ->groupBy('status_value')
+            ->pluck('total', 'status_value');
+
+        $summary = [
+            'total' => Order::count(),
+            'pending' => 0,
+            'processing' => 0,
+            'shipped' => 0,
+            'completed' => 0,
+            'cancelled' => 0,
+            'paid_revenue_sen' => (int) $this->paidRevenueQuery()->sum('total_sen'),
+        ];
+
+        foreach ($statuses as $status => $count) {
+            $key = $this->frontendOrderStatus($status);
+
+            if (array_key_exists($key, $summary)) {
+                $summary[$key] += (int) $count;
+            }
+        }
+
+        return $summary;
+    }
+
+    private function paidRevenueQuery()
+    {
+        return Order::query()
+            ->where(function ($query) {
+                if (Schema::hasColumn('orders', 'paid_at')) {
+                    $query->orWhereNotNull('paid_at');
+                }
+
+                if (Schema::hasColumn('orders', 'payment_status')) {
+                    $query->orWhereIn('payment_status', [
+                        'paid',
+                        'settlement',
+                        'capture',
+                        'success',
+                    ]);
+                }
+
+                if (Schema::hasTable('payments')) {
+                    $query->orWhereHas('payment', function ($paymentQuery) {
+                        $paymentQuery->whereIn('transaction_status', [
+                            'settlement',
+                        ]);
+                    });
+                }
+            });
     }
 }

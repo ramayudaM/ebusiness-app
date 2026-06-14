@@ -5,7 +5,7 @@ import { adminTheme as theme } from '../styles/adminTheme'
 import { adminReportService } from './adminReportService'
 
 function formatCurrency(value) {
-  const amount = Number(value || 0) / 100
+  const amount = Number(value || 0)
 
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',

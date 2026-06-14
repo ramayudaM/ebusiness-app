@@ -52,32 +52,28 @@ class CheckoutController extends Controller
 
         \Illuminate\Support\Facades\Log::info("Calculating shipping for address {$address->id} (City: {$address->city_id}), Weight: {$totalWeight}g");
 
-        foreach ($couriers as $courier) {
-            $results = $this->rajaOngkir->calculateCost(
-                $address->city_id,
-                $totalWeight,
-                $courier
-            );
+        $results = $this->rajaOngkir->calculateCosts(
+            $address->city_id,
+            $totalWeight,
+            $couriers
+        );
 
-            if (!empty($results)) {
-                $courierData = $results[0] ?? null;
-                if ($courierData && isset($courierData['costs'])) {
-                    foreach ($courierData['costs'] as $item) {
-                        $allServices[] = [
-                            'courier' => $courier,
-                            'service' => $item['service'],
-                            'description' => $item['description'],
-                            'cost' => collect($item['cost'])->map(function($c) {
-                                return [
-                                    'value' => (int) $c['value'],
-                                    'etd' => $c['etd']
-                                ];
-                            })->toArray()
-                        ];
-                    }
+        foreach ($results as $courierData) {
+            $courier = $courierData['code'] ?? null;
+            if ($courier && isset($courierData['costs'])) {
+                foreach ($courierData['costs'] as $item) {
+                    $allServices[] = [
+                        'courier' => $courier,
+                        'service' => $item['service'],
+                        'description' => $item['description'],
+                        'cost' => collect($item['cost'])->map(function($c) {
+                            return [
+                                'value' => (int) $c['value'],
+                                'etd' => $c['etd']
+                            ];
+                        })->toArray()
+                    ];
                 }
-            } else {
-                \Illuminate\Support\Facades\Log::warning("No shipping results for courier {$courier}");
             }
         }
 

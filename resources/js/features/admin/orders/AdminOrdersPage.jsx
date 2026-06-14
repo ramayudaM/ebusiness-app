@@ -44,11 +44,11 @@ function getOrderTotal(order) {
 }
 
 function getCustomerName(order) {
-  return order.user?.name || order.customer?.name || 'Customer'
+  return order.user?.name || order.customer?.name || order.guest_name || 'Customer'
 }
 
 function getCustomerEmail(order) {
-  return order.user?.email || order.customer?.email || '-'
+  return order.user?.email || order.customer?.email || order.guest_email || '-'
 }
 
 function getItemCount(order) {
@@ -302,6 +302,18 @@ export default function AdminOrdersPage() {
   }, [search, status, paymentStatus])
 
   const stats = useMemo(() => {
+    const summary = meta?.summary
+
+    if (summary) {
+      return {
+        total: summary.total || meta?.total || 0,
+        pending: summary.pending || 0,
+        processing: summary.processing || 0,
+        completed: summary.completed || 0,
+        revenue: summary.paid_revenue_sen || 0,
+      }
+    }
+
     const total = meta?.total || orders.length
     const pending = orders.filter((order) => order.status === 'pending').length
     const processing = orders.filter((order) => order.status === 'processing').length
@@ -330,18 +342,42 @@ export default function AdminOrdersPage() {
     setUpdatingId(order.id)
 
     try {
-      await adminOrderService.updateStatus(order.id, nextStatus)
+      const response = await adminOrderService.updateStatus(order.id, nextStatus)
+      const updatedOrder = response?.data?.data || {
+        ...order,
+        status: nextStatus,
+      }
 
       setOrders((prev) =>
         prev.map((item) =>
           item.id === order.id
             ? {
                 ...item,
-                status: nextStatus,
+                ...updatedOrder,
               }
             : item
         )
       )
+      setMeta((prev) => {
+        if (!prev?.summary) return prev
+
+        const previousStatus = order.status || 'pending'
+        const savedStatus = updatedOrder.status || nextStatus
+        const summary = { ...prev.summary }
+
+        if (summary[previousStatus] !== undefined) {
+          summary[previousStatus] = Math.max(Number(summary[previousStatus] || 0) - 1, 0)
+        }
+
+        if (summary[savedStatus] !== undefined) {
+          summary[savedStatus] = Number(summary[savedStatus] || 0) + 1
+        }
+
+        return {
+          ...prev,
+          summary,
+        }
+      })
     } catch (err) {
       alert(
         err.response?.data?.message ||

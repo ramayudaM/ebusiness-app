@@ -66,24 +66,29 @@ class AdminReportController extends Controller
 
     private function getTotalRevenue(): int
     {
-        $query = Order::query();
+        return (int) Order::query()
+            ->where(function ($query) {
+                if (Schema::hasColumn('orders', 'paid_at')) {
+                    $query->orWhereNotNull('paid_at');
+                }
 
-        if (Schema::hasColumn('orders', 'paid_at')) {
-            return (int) $query->whereNotNull('paid_at')->sum('total_sen');
-        }
+                if (Schema::hasColumn('orders', 'payment_status')) {
+                    $query->orWhereIn('payment_status', [
+                        'paid',
+                        'settlement',
+                        'capture',
+                        'success',
+                    ]);
+                }
 
-        if (Schema::hasColumn('orders', 'payment_status')) {
-            return (int) $query
-                ->whereIn('payment_status', [
-                    'paid',
-                    'settlement',
-                    'capture',
-                    'success',
-                ])
-                ->sum('total_sen');
-        }
-
-        return (int) $query->sum('total_sen');
+                if (Schema::hasTable('payments')) {
+                    $query->orWhereHas('payment', function ($paymentQuery) {
+                        $paymentQuery->whereNotNull('paid_at')
+                            ->orWhere('transaction_status', 'settlement');
+                    });
+                }
+            })
+            ->sum('total_sen');
     }
 
     private function getOrderStatusSummary(): array

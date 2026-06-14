@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import AdminLayout from '../components/AdminLayout'
 import AdminIcon from '../components/AdminIcon'
 import { adminTheme as theme } from '../styles/adminTheme'
@@ -46,18 +46,10 @@ function SettingCard({ icon, title, description, children }) {
 
 export default function AdminSettingsPage() {
   const admin = useMemo(() => readAdminStorage(), [])
-  const [themeMode, setThemeMode] = useState(
-    localStorage.getItem('admin_theme_mode') || 'light'
-  )
 
   const adminName = admin?.name || 'Admin NadaKita'
   const adminEmail = admin?.email || 'admin@nadakita.local'
   const adminRole = admin?.role || 'admin'
-
-  const changeTheme = (mode) => {
-    setThemeMode(mode)
-    localStorage.setItem('admin_theme_mode', mode)
-  }
 
   return (
     <AdminLayout
@@ -162,14 +154,6 @@ export default function AdminSettingsPage() {
                 </span>
               </div>
 
-              <div className="flex items-center justify-between rounded-2xl bg-slate-50 p-4">
-                <span className="text-sm font-bold text-slate-600">
-                  Theme Mode
-                </span>
-                <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-black text-orange-700">
-                  {themeMode}
-                </span>
-              </div>
             </div>
           </section>
         </div>
@@ -198,50 +182,6 @@ export default function AdminSettingsPage() {
                   {adminEmail}
                 </p>
               </div>
-            </div>
-          </SettingCard>
-
-          <SettingCard
-            icon="settings"
-            title="Preferensi Tampilan"
-            description="Atur mode tampilan admin panel sesuai kebutuhan."
-          >
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-              <button
-                type="button"
-                onClick={() => changeTheme('light')}
-                className={`rounded-[24px] border p-5 text-left transition ${
-                  themeMode === 'light'
-                    ? 'border-orange-200 bg-orange-50'
-                    : 'border-slate-200 bg-white hover:bg-slate-50'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <AdminIcon name="sun" />
-                  <p className="font-black text-slate-950">Light Mode</p>
-                </div>
-                <p className="mt-3 text-sm font-medium text-slate-500">
-                  Tampilan terang untuk penggunaan harian.
-                </p>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => changeTheme('dark')}
-                className={`rounded-[24px] border p-5 text-left transition ${
-                  themeMode === 'dark'
-                    ? 'border-orange-200 bg-orange-50'
-                    : 'border-slate-200 bg-white hover:bg-slate-50'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <AdminIcon name="moon" />
-                  <p className="font-black text-slate-950">Dark Mode</p>
-                </div>
-                <p className="mt-3 text-sm font-medium text-slate-500">
-                  Tampilan gelap untuk layar kerja malam.
-                </p>
-              </button>
             </div>
           </SettingCard>
 

@@ -17,18 +17,26 @@ export default function SidebarItem({
         collapsed ? 'justify-center px-0' : 'gap-3'
       }`}
       style={{
-        backgroundColor: active ? `${theme.primary}22` : 'transparent',
-        color: active ? theme.primary : 'rgba(255,255,255,0.58)',
+        background: active
+          ? 'linear-gradient(135deg, rgba(255,77,28,0.18), rgba(255,77,28,0.06))'
+          : 'transparent',
+        border: active
+          ? '1px solid rgba(255,77,28,0.28)'
+          : '1px solid transparent',
+        boxShadow: active ? '0 0 28px rgba(234,88,12,0.12)' : 'none',
+        color: active ? '#FFFFFF' : 'rgba(255,255,255,0.58)',
       }}
       onMouseEnter={(event) => {
         if (!active) {
-          event.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.07)'
+          event.currentTarget.style.background = 'rgba(39,39,42,0.62)'
+          event.currentTarget.style.borderColor = 'rgba(63,63,70,0.72)'
           event.currentTarget.style.color = 'rgba(255,255,255,0.92)'
         }
       }}
       onMouseLeave={(event) => {
         if (!active) {
-          event.currentTarget.style.backgroundColor = 'transparent'
+          event.currentTarget.style.background = 'transparent'
+          event.currentTarget.style.borderColor = 'transparent'
           event.currentTarget.style.color = 'rgba(255,255,255,0.58)'
         }
       }}
@@ -45,7 +53,8 @@ export default function SidebarItem({
           collapsed ? 'h-11 w-11 rounded-2xl' : ''
         }`}
         style={{
-          backgroundColor: collapsed && active ? `${theme.primary}22` : 'transparent',
+          backgroundColor: collapsed && active ? 'rgba(255,77,28,0.14)' : 'transparent',
+          color: active ? theme.primary : 'currentColor',
         }}
       >
         <AdminIcon name={icon} size={20} />

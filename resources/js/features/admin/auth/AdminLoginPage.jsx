@@ -43,13 +43,18 @@ const AdminLoginPage = () => {
   return (
     // Halaman fullscreen dengan background gradient
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-4"
+      className="admin-customer-skin relative min-h-screen flex flex-col items-center justify-center overflow-hidden bg-[#050505] px-4 text-white selection:bg-orange-500/30"
       style={{
-        background: `radial-gradient(ellipse at 20% 20%, #1a0a20 0%, transparent 50%),
-                     radial-gradient(ellipse at 80% 80%, #200a08 0%, transparent 50%),
-                     #0B0D14`,
+        background: `radial-gradient(circle at 18% 18%, rgba(234,88,12,0.12), transparent 32%),
+                     radial-gradient(circle at 82% 76%, rgba(194,65,12,0.10), transparent 34%),
+                     #050505`,
       }}
     >
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute left-[8%] top-[18%] h-[42vw] w-[42vw] rounded-full bg-orange-600/5 blur-[150px] mix-blend-screen" />
+        <div className="absolute bottom-[8%] right-[4%] h-[50vw] w-[50vw] rounded-full bg-orange-700/5 blur-[150px] mix-blend-screen" />
+      </div>
+
       {/* ===== LOGO + SUBTITLE (Desktop & Tablet: di atas card) ===== */}
       <div className="hidden md:flex flex-col items-center mb-8">
         <span className="text-[#F15A24] text-2xl font-bold tracking-tight">NadaKita</span>
@@ -60,11 +65,13 @@ const AdminLoginPage = () => {
 
       {/* ===== CARD ===== */}
       <div className="
+        relative z-10
         w-full max-w-[calc(100%-2rem)]
         md:w-[440px] md:max-w-[440px]
         lg:w-[400px] lg:max-w-[400px]
-        bg-[#161B27] border border-[#1E2536] rounded-xl
+        bg-[#0A0A0A]/95 border border-zinc-800 rounded-[2rem]
         p-6 md:p-8 lg:p-10
+        shadow-2xl backdrop-blur-xl
       ">
 
         {/* Logo hanya tampil di dalam card untuk mobile */}
